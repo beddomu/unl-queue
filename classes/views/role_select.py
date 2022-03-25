@@ -4,6 +4,7 @@ import typing
 import discord
 from discord.ext import commands
 from classes.player import Player
+from classes.views.match_found import MatchFoundView
 from classes.views.matchmaking import MatchmakingView
 from classes.role import Role, top, jungle, middle, bottom, support, fill
 
@@ -25,13 +26,12 @@ class RoleSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         ign = "beddomu"
-        rating = 60
+        rating = 63
         role = getattr(sys.modules[__name__], self.values[0].lower())
         player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
         await self.queue.add_player(player)
         view = MatchmakingView(self.queue)
         await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
-
         
 
 
@@ -44,13 +44,10 @@ class RoleSelectView(discord.ui.View):
     @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:949215552671469578>")
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         ign = "beddomu"
-        rating = 60
+        rating = 63
         if interaction.user.id not in self.queue.get_all_ids():
             role = fill
             player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
             await self.queue.add_player(player)
             view = MatchmakingView(self.queue)
             await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
-        else:
-            view = MatchmakingView(self.queue)
-            await interaction.response.send_message(view=view, ephemeral=True)

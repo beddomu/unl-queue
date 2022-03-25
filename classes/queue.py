@@ -43,6 +43,9 @@ class Queue:
     async def add_player(self, player):
         self.players.append(player)
         await self.update_lobby()
+        if self.full == True and self.locked != True:
+            view = MatchFoundView(self)
+            await self.pop(view)
 
     async def remove_player_by_id(self, id):
         for player in self.players:
@@ -107,7 +110,7 @@ class Queue:
         game = self.make_teams()
         self.game = game
         #player_mentions = game.get_player_mentions()
-        view = MatchFoundView(queue)
+        view = MatchFoundView(self)
         #" ".join(player_mentions) + 
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         self.pop_message = await channel.send("\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
@@ -118,34 +121,48 @@ class Queue:
         team_blue = Team(5, "Blue")
         team_red = Team(5, "Red")
         game = Game(team_blue, team_red, None)
+        self.top_list = []
+        self.jungle_list = []
+        self.mid_list = []
+        self.bot_list = []
+        self.supp_list = []
+        self.fill_list = []
+        role_lists = [
+            self.top_list,
+            self.jungle_list,
+            self.mid_list,
+            self.bot_list,
+            self.supp_list
+        ]
 
-        role_list = []
         fill_list = []
         for player in self.players:
-            if player.role != fill:
-                role_list.append(player.role.name)
-                roles_in_queue = Counter(role_list)
+            if player.role == top:
+                self.top_list.append(player)
+            elif player.role == jungle:
+                self.jungle_list.append(player)
+            elif player.role == middle:
+                self.mid_list.append(player)
+            elif player.role == bottom:
+                self.bot_list.append(player)
+            elif player.role == support:
+                self.supp_list.append(player)
             else:
-                fill_list.append(player)
+                self.fill_list.append(player)
 
-        for role in roles_in_queue.values():
-            while role < 2 and len(fill_list) >= 0:
-                role_list.players.append(fill_list.pop(
-                    random.randint(0, (len(fill_list)-1))))
+        for role in role_lists:
+            while len(role) < 2 and len(self.fill_list) >= 0:
+                role.append(self.fill_list.pop(
+                    random.randint(0, (len(self.fill_list)-1))))
                 
         print("balancing teams")
                 
-        topq = []
-        for p in self.players:
-            if p.role.name == "Top":
-                topq.append(p)
+        topq = [self.top_list[0], self.top_list[1]]
         team_blue.add_player(topq.pop(random.randint(0, 1)))
         team_red.add_player(topq[0])
         
-        jgq = []
-        for p in self.players:
-            if p.role.name == "Jungle":
-                jgq.append(p)
+        jgq = [self.jungle_list[0], self.jungle_list[1]]
+        pp(jgq)
         if game.blue_team > game.red_team:
             game.red_team.add_player(max(jgq))
             game.blue_team.add_player(min(jgq))
@@ -153,10 +170,7 @@ class Queue:
             game.red_team.add_player(min(jgq))
             game.blue_team.add_player(max(jgq))
             
-        midq = []
-        for p in self.players:
-            if p.role.name == "Middle":
-                midq.append(p)
+        midq = [self.mid_list[0], self.mid_list[1]]
         if game.blue_team > game.red_team:
             game.red_team.add_player(max(midq))
             game.blue_team.add_player(min(midq))
@@ -164,10 +178,7 @@ class Queue:
             game.red_team.add_player(min(midq))
             game.blue_team.add_player(max(midq))
         
-        adcq = []
-        for p in self.players:
-            if p.role.name == "Bottom":
-                adcq.append(p)
+        adcq = [self.bot_list[0], self.bot_list[1]]
         if game.blue_team > game.red_team:
             game.red_team.add_player(max(adcq))
             game.blue_team.add_player(min(adcq))
@@ -175,10 +186,7 @@ class Queue:
             game.red_team.add_player(min(adcq))
             game.blue_team.add_player(max(adcq))
 
-        suppq = []
-        for p in self.players:
-            if p.role.name == "Support":
-                suppq.append(p)
+        suppq = [self.supp_list[0], self.supp_list[1]]
         if game.blue_team > game.red_team:
             game.red_team.add_player(max(suppq))
             game.blue_team.add_player(min(suppq))

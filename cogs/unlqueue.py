@@ -46,11 +46,7 @@ class UNLQueue(commands.Cog):
                 player = Player(ctx.author.id, f"Target dummy {n + 1}", fill, ctx.author, False, "beddomu", 50)
                 await self.queue.add_player(player)
                 n += 1
-                await self.queue.update_lobby()
-            if self.queue.full == True and self.queue.locked != True:
-                view = MatchFoundView()
-                await self.queue.pop(ctx, view)
-    
+                
     @commands.command(name="debug", aliases=["c"])
     @commands.has_permissions(manage_messages=True)
     async def debug(self, ctx):
