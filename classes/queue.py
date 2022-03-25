@@ -12,7 +12,7 @@ class Queue:
         self.team_size = team_size
         self.message = None
         self.players = []
-        self.roles = [top, jungle, middle, bottom, support, fill]
+        self.roles = [top, jungle, middle, bottom, support]
         self.full = bool
         self.locked = False
         self.pop_message = None
@@ -72,11 +72,15 @@ class Queue:
 
     def ready_check(self):
         role_list = []
+        fill_list = []
         index = 0
         i = 0
         for player in self.players:
-            role_list.append(player.role.name)
-            roles_in_queue = Counter(role_list)
+            if player.role != fill:
+                role_list.append(player.role.name)
+                roles_in_queue = Counter(role_list)
+            else:
+                fill_list.append(player)
         if role_list:
             for r in roles_in_queue.values():
                 if r >= 2:
@@ -84,7 +88,7 @@ class Queue:
                     i += 2
                 elif r == 1:
                     i += 1
-        self.spots_open = 10 - i
+        self.spots_open = 10 - i - len(fill_list)
         if self.spots_open == 0:
             self.full = True
 
@@ -132,3 +136,15 @@ class Queue:
     def unready_all_players(self):
         for player in self.players:
             player.ready = False
+
+    def check_player(self, user):
+        for player in self.players:
+            if player.user == user:
+                if player.ready != True:
+                    return True
+
+    def players_ready_check(self):
+        for player in self.players:
+            if player.ready != True:
+                return False
+        return True

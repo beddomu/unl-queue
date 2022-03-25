@@ -7,7 +7,7 @@ class MatchFoundView(discord.ui.View):
         self.queue = queue
 
     @discord.ui.button(label="Accept", style=discord.ButtonStyle.green)
-    async def accept_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def accept_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         #print(f'{interaction.user.name} pressed accept')
         if self.queue.check_player(interaction.user):
             for player in self.queue.players:
@@ -22,7 +22,7 @@ class MatchFoundView(discord.ui.View):
                 await self.queue.new_lobby()
 
     @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger)
-    async def decline_button_callback(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def decline_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.queue.check_player(interaction.user):
             await self.queue.pop_message.edit(view=None, content=f'{interaction.user.mention} declined the queue. The remaining players have been put back in queue', delete_after=15)
             self.queue.locked = False

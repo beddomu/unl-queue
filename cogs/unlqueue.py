@@ -5,7 +5,7 @@ import random
 import aiohttp
 import discord
 from discord.ext import commands
-from discord import app_commands
+from discord import Interaction, app_commands
 from classes.player import Player
 from classes.queue import Queue
 from classes.views.role_select import RoleSelectView
@@ -37,12 +37,16 @@ class UNLQueue(commands.Cog):
         if len(self.queue.players) < 10:
             n = 0
             while n < input:
-                user = random.choice(self.queue.message.channel.guild.members)
-                player = Player(user.id, user.name, self.queue.roles[random.randint(0, 5)], user, True, "beddomu", 60)
-                if player not in self.queue.players:
-                    await self.queue.add_player(player)
-                    await self.queue.update_lobby()
-                    n += 1
+                user = ctx.author
+                
+                for r in self.queue.roles:
+                    r_n = 0
+                    if r_n <= 2:
+                        player = Player(user.id, user.name, r, user, False, "beddomu", 60)
+                        await self.queue.add_player(player)
+                        await self.queue.update_lobby()
+                        n += 1
+                        r_n += 1
                 
                 
                 if self.queue.full == True and self.queue.locked != True:
