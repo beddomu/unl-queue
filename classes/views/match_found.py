@@ -3,7 +3,7 @@ import discord
 
 class MatchFoundView(discord.ui.View):
     def __init__(self, queue, timeout = None):
-        super().__init__(timeout = 3)
+        super().__init__(timeout = 60)
         self.queue = queue
 
     @discord.ui.button(label="Accept", style=discord.ButtonStyle.green)
@@ -27,7 +27,11 @@ class MatchFoundView(discord.ui.View):
             await self.queue.pop_message.edit(view=None, content=f'{interaction.user.mention} declined the queue. The remaining players have been put back in queue', delete_after=15)
             self.queue.locked = False
             self.queue.full = False
-            self.queue.remove_player(interaction.user.id)
+            players_in_queue = self.queue.players
+            self.queue.players.clear()
+            for player in players_in_queue:
+                if player.id != interaction.id:
+                    self.queue.players.append(player)
             self.queue.unready_all_players()
             await self.queue.update_lobby()
             self.stop()

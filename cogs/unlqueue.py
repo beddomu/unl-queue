@@ -8,7 +8,10 @@ from discord.ext import commands
 from discord import Interaction, app_commands
 from classes.player import Player
 from classes.queue import Queue
+from classes.views.match_found import MatchFoundView
+from classes.views.matchmaking import MatchmakingView
 from classes.views.role_select import RoleSelectView
+from classes.role import fill
 
 
 
@@ -29,30 +32,24 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="queue", description="Enter this command to view the queue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def test(self, interaction: discord.Interaction):
-        await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+        if interaction.user.id not in self.queue.get_all_ids():
+            await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+        else:
+            await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
 
-    @commands.command(name="addfillrandom", aliases=["r"])
+    @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
-    async def add_random_fill(self, ctx: commands.context.Context, input: int):
+    async def add_fill_dummy(self, ctx: commands.context.Context, input: int):
         if len(self.queue.players) < 10:
             n = 0
             while n < input:
-                user = ctx.author
-                
-                for r in self.queue.roles:
-                    r_n = 0
-                    if r_n <= 2:
-                        player = Player(user.id, user.name, r, user, False, "beddomu", 60)
-                        await self.queue.add_player(player)
-                        await self.queue.update_lobby()
-                        n += 1
-                        r_n += 1
-                
-                
-                if self.queue.full == True and self.queue.locked != True:
-                    #view = MatchFoundView()
-                    await self.queue.pop(self.queue)
-                    break
+                player = Player(ctx.author.id, f"Target dummy {n + 1}", fill, ctx.author, False, "beddomu", 50)
+                await self.queue.add_player(player)
+                n += 1
+                await self.queue.update_lobby()
+            if self.queue.full == True and self.queue.locked != True:
+                view = MatchFoundView()
+                await self.queue.pop(ctx, view)
     
     @commands.command(name="debug", aliases=["c"])
     @commands.has_permissions(manage_messages=True)

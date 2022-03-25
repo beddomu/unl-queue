@@ -12,8 +12,8 @@ class Player:
         self.ign = ign
         self.rating = rating
         
-'''    def __lt__(self, other):
+    def __lt__(self, other):
         return self.rating < other.rating
     
     def __eq__(self, other):
-        return self.rating == other.rating'''
+        return self.rating == other.rating

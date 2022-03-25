@@ -1,10 +1,20 @@
 from collections import Counter
+#import json
 import os
 from pprint import pp
+import random
+from time import sleep
 import discord
 from discord.ext import commands
+from classes.game import Game
+from classes.image.image import make_image
 from classes.role import Role, top, jungle, middle, bottom, support, fill
+from classes.team import Team
 from classes.views.match_found import MatchFoundView
+#from lcu.create_lobby import Lobby
+#from lcu.invite_player import invite_player
+#from lcu.leave_lobby import leave_lobby
+from utils.tinyurl import shorten_url
 
 
 class Queue:
@@ -38,7 +48,7 @@ class Queue:
         for player in self.players:
             if player.id == id:
                 self.players.remove(player)
-                await self.update_lobby()
+        await self.update_lobby()
 
     def list_players(self):
         for player in self.players:
@@ -93,15 +103,96 @@ class Queue:
             self.full = True
 
     async def pop(self, queue):
-        self.locked = True
-        '''        
+        self.locked = True      
         game = self.make_teams()
         self.game = game
-        player_mentions = game.get_player_mentions()'''
+        #player_mentions = game.get_player_mentions()
         view = MatchFoundView(queue)
         #" ".join(player_mentions) + 
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         self.pop_message = await channel.send("\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
+
+    def make_teams(self):
+        #with open('C:\\DATA\\unlq.json', 'r') as file:
+        #    unlq = json.load(file)
+        team_blue = Team(5, "Blue")
+        team_red = Team(5, "Red")
+        game = Game(team_blue, team_red, None)
+
+        role_list = []
+        fill_list = []
+        for player in self.players:
+            if player.role != fill:
+                role_list.append(player.role.name)
+                roles_in_queue = Counter(role_list)
+            else:
+                fill_list.append(player)
+
+        for role in roles_in_queue.values():
+            while role < 2 and len(fill_list) >= 0:
+                role_list.players.append(fill_list.pop(
+                    random.randint(0, (len(fill_list)-1))))
+                
+        print("balancing teams")
+                
+        topq = []
+        for p in self.players:
+            if p.role.name == "Top":
+                topq.append(p)
+        team_blue.add_player(topq.pop(random.randint(0, 1)))
+        team_red.add_player(topq[0])
+        
+        jgq = []
+        for p in self.players:
+            if p.role.name == "Jungle":
+                jgq.append(p)
+        if game.blue_team > game.red_team:
+            game.red_team.add_player(max(jgq))
+            game.blue_team.add_player(min(jgq))
+        else:
+            game.red_team.add_player(min(jgq))
+            game.blue_team.add_player(max(jgq))
+            
+        midq = []
+        for p in self.players:
+            if p.role.name == "Middle":
+                midq.append(p)
+        if game.blue_team > game.red_team:
+            game.red_team.add_player(max(midq))
+            game.blue_team.add_player(min(midq))
+        else:
+            game.red_team.add_player(min(midq))
+            game.blue_team.add_player(max(midq))
+        
+        adcq = []
+        for p in self.players:
+            if p.role.name == "Bottom":
+                adcq.append(p)
+        if game.blue_team > game.red_team:
+            game.red_team.add_player(max(adcq))
+            game.blue_team.add_player(min(adcq))
+        else:
+            game.red_team.add_player(min(adcq))
+            game.blue_team.add_player(max(adcq))
+
+        suppq = []
+        for p in self.players:
+            if p.role.name == "Support":
+                suppq.append(p)
+        if game.blue_team > game.red_team:
+            game.red_team.add_player(max(suppq))
+            game.blue_team.add_player(min(suppq))
+        else:
+            game.red_team.add_player(min(suppq))
+            game.blue_team.add_player(max(suppq))
+        
+        print(f"Final Team blue rating: {team_blue.rating}")
+        print(f"Final Team red rating: {team_red.rating}")
+        
+        self.game = game
+        make_image(game)
+        return game
+
 
     async def on_queue_timeout(self):
         self.locked = False
@@ -148,3 +239,49 @@ class Queue:
             if player.ready != True:
                 return False
         return True
+
+    async def initiate_game(self):
+        #lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5)
+        #lobby.create()
+        sleep(1)
+        embed = discord.Embed(color=discord.colour.Colour.brand_red())
+        user = await self.message.guild.fetch_member(948863727032217641)
+        embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
+        embed.set_footer(text=f'Lobby id: {int(str(self.message.id)[:-8])}')
+        file = discord.File('classes\\image\\res.png', filename='res.png')
+        embed.set_image(url=('attachment://res.png'))
+        #embed.set_image(url="https://static.wikia.nocookie.net/leagueoflegends/images/5/53/Summoner%27s_Rift_Update_Map.png/revision/latest/scale-to-width-down/1000?cb=20170223053555.png")
+
+        players = []
+        for team in self.game.teams:
+            team_players_list = []
+            ign_list = []
+            for player in team.players:
+                if player.ign:
+                    #invite_player(player.ign)
+                    ign_list.append(player.ign.replace(" ", ""))
+                players.append(player)
+                team_players_list.append(
+                    player.role.emoji + player.user.mention)
+            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
+                ",".join(ign_list))
+            short_multiopgg = "\nMulti opgg: {}".format(shorten_url(multiopgg))
+            team_players_string = "\n".join(
+                team_players_list) + short_multiopgg
+            embed.add_field(name=f'Team {team.side}',
+                            value=team_players_string)
+        #leave_lobby()
+        channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
+        live_game_messsage = await channel.send(embed=embed, file=file)
+        #with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
+            #unlq_json =  json.load(unlq_file)
+        #unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
+        #unlq_json['lobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
+        #unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
+        #unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
+        #with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            #json.dump(unlq_json, unlq_file)
+            #unlq_file.close()
+        #for p in players:
+            #await p.user.send(embed=embed)
+        self.locked = False
