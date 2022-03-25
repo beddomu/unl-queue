@@ -47,7 +47,8 @@ class UNLQueue(commands.Cog):
                 
                 if self.queue.full == True and self.queue.locked != True:
                     #view = MatchFoundView()
-                    await self.queue.pop()
+                    await self.queue.pop(self.queue)
+                    break
     
     @commands.command(name="debug", aliases=["c"])
     @commands.has_permissions(manage_messages=True)

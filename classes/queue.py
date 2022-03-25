@@ -4,6 +4,7 @@ from pprint import pp
 import discord
 from discord.ext import commands
 from classes.role import Role, top, jungle, middle, bottom, support, fill
+from classes.views.match_found import MatchFoundView
 
 
 class Queue:
@@ -39,25 +40,6 @@ class Queue:
                 self.players.remove(player)
                 await self.update_lobby()
 
-    def ready_check(self):
-        role_list = []
-        index = 0
-        i = 0
-        for player in self.players:
-            role_list.append(player.role.name)
-            roles_in_queue = Counter(role_list)
-        if role_list:
-            for r in roles_in_queue.values():
-                if r >= 2:
-                    index += 1
-                    i += 2
-                elif r == 1:
-                    i += 1
-        self.spots_open = 10 - i
-        if self.spots_open == 0:
-            self.full = True
-        
-
     def list_players(self):
         for player in self.players:
             print(f'{player.name}: {player.role}')
@@ -88,7 +70,65 @@ class Queue:
         end_string = initial_string + player_string + divider + lobby_id_string
         await self.message.edit(content=end_string)
 
-    async def pop(self):
+    def ready_check(self):
+        role_list = []
+        index = 0
+        i = 0
+        for player in self.players:
+            role_list.append(player.role.name)
+            roles_in_queue = Counter(role_list)
+        if role_list:
+            for r in roles_in_queue.values():
+                if r >= 2:
+                    index += 1
+                    i += 2
+                elif r == 1:
+                    i += 1
+        self.spots_open = 10 - i
+        if self.spots_open == 0:
+            self.full = True
+
+    async def pop(self, queue):
         self.locked = True
+        '''        
+        game = self.make_teams()
+        self.game = game
+        player_mentions = game.get_player_mentions()'''
+        view = MatchFoundView(queue)
+        #" ".join(player_mentions) + 
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
-        await channel.send('Queue popped')
+        self.pop_message = await channel.send("\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
+
+    async def on_queue_timeout(self):
+        self.locked = False
+        self.game = None
+        ready_list = []
+        not_ready_list = []
+        for p in self.players:
+            if p.ready != True:
+                not_ready_list.append(p)
+            elif p.ready == True:
+                ready_list.append(p)
+        if self.locked != True:
+            self.full = False
+            self.game = None
+            self.players.clear()
+        for player in ready_list:
+            await self.add_player(player)
+        not_ready_mentions = []
+        for player in not_ready_list:
+            not_ready_mentions.append(player.user.mention)
+        try:
+            if len(ready_list) > 0:
+                await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
+            else:
+                await self.pop_message.edit(view=None, content="Queue expired", delete_after=10)
+        except:
+            print("error")
+        self.unready_all_players()
+        await self.update_lobby()
+        self.full = False
+
+    def unready_all_players(self):
+        for player in self.players:
+            player.ready = False
