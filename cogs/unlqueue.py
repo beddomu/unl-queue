@@ -13,7 +13,7 @@ from classes.views.matchmaking import MatchmakingView
 from classes.views.role_select import RoleSelectView
 from classes.role import fill
 from classes.views.report import Report
-
+from classes.views.link import LinkAccount
 
 
 
@@ -40,8 +40,12 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="report", description="Enter this command to report a player")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def report_player(self, interaction: discord.Interaction):
-        modal = Report()
-        await interaction.response.send_message(modal = modal)
+        await interaction.response.send_message(modal = Report())
+        
+    @app_commands.command(name="link", description="Enter this command to link your EUW account")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def link_account(self, interaction: discord.Interaction):
+        await interaction.response.send_message(modal = LinkAccount())
 
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
