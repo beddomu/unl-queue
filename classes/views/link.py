@@ -1,18 +1,36 @@
+import os
+from pprint import pp
 import discord
 import urllib
 import json
 
-class LinkAccount(discord.ui.Modal):
+class Confirm(discord.ui.View):
     def __init__(self):
-        super().__init__(
-            "Link your EUW account",
-            timeout=5 * 60,  # 5 minutes
-        )
+        super().__init__()
+        self.value = None
+
+    @discord.ui.button(label='Confirm', style=discord.ButtonStyle.green)
+    async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.edit_message(content="This account was successfully linked.", view=None, embed=None)
+        self.value = True
+        self.stop()
+
+    @discord.ui.button(label='Cancel', style=discord.ButtonStyle.grey)
+    async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.edit_message(content="You canceled this operation.", view=None, embed=None)
+        self.value = False
+        self.stop()
+            
+
+class LinkAccount(discord.ui.Modal):
+    def __init__(self, queue, title="Link your EUW account", timeout=5 * 60, custom_id = "linkaccount"):
+        super().__init__(title = title, timeout=timeout, custom_id=custom_id)  # 5 minutes
+        self.queue = queue
 
         self.name = discord.ui.TextInput(
             label="Summoner name",
             min_length=3,
-            max_length=30,
+            max_length=50,
         )
         self.add_item(self.name)
         
@@ -30,7 +48,7 @@ class LinkAccount(discord.ui.Modal):
                 account = json.loads(champ_json.read().decode())
         except Exception as e:
             await interaction.response.send_message(content="Account not found. Try again or ask <@!301821822502961152> for help", ephemeral=True)
-            pprint(e)
+            pp(e)
         if account:
             embed = discord.Embed(
                 title=account['name'], description='Level {}'.format(account['summonerLevel']))
@@ -55,7 +73,7 @@ class LinkAccount(discord.ui.Modal):
                     unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
                     unlq_json['players'][str(interaction.user.id)]['puuid'] = account['puuid']
                     unlq_json['players'][str(interaction.user.id)]['rating'] = 60
-                    channel = await queue.message.guild.fetch_channel(int(os.getenv("CHAT")))
+                    channel = await self.queue.message.guild.fetch_channel(int(os.getenv("CHAT")))
                     await channel.send("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))
                     
 
