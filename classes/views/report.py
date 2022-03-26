@@ -22,7 +22,7 @@ class Report(discord.ui.Modal, title='Report a player'):
         style=discord.TextStyle.long,
         placeholder='Give a detailed description of the issue...',
         required=True,
-        max_length=600,
+        max_length=300,
     )
 
     async def on_submit(self, interaction: discord.Interaction):
