@@ -12,7 +12,7 @@ from classes.views.match_found import MatchFoundView
 from classes.views.matchmaking import MatchmakingView
 from classes.views.role_select import RoleSelectView
 from classes.role import fill
-
+from classes.views.report import Report
 
 
 
@@ -36,6 +36,12 @@ class UNLQueue(commands.Cog):
             await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
         else:
             await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
+
+    @app_commands.command(name="report", description="Enter this command to report a player")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def report_player(self, interaction: discord.Interaction):
+        modal = Report()
+        await interaction.response.send_message(modal = modal)
 
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
