@@ -19,8 +19,11 @@ async def report_game(bot: commands.Bot, game_id):
                     lobby_id = game['info']['gameName']
                     if lobby_id[9:] in unlq_json['lobbies'].keys():
                         channel = await bot.fetch_channel(int(os.getenv("LIVE")))
-                        message = await channel.fetch_message(unlq_json['lobbies'][str(lobby_id[9:])]['game_id'])
-                        await message.delete()
+                        try:
+                            message = await channel.fetch_message(unlq_json['lobbies'][str(lobby_id[9:])]['game_id'])
+                            await message.delete()
+                        except:
+                            pass
                         unlq_json['games'].append(game['info']['gameId'])
                         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                             json.dump(unlq_json, unlq_file)
@@ -68,7 +71,7 @@ async def report_game(bot: commands.Bot, game_id):
                                                 blue = unlq_json['lobbies'][str(lobby_id[9:])]['blue_team']
                                                 red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
                                                 if unlq_json['players'][player]['points'] > int(12+(red-blue)*0.06):
-                                                    unlq_json['players'][player]['points'] -= int(15+(red-blue)*0.06)
+                                                    unlq_json['players'][player]['points'] -= int(12+(red-blue)*0.06)
                                                     pp('{} lost {} LP'.format(p['summonerName'], int(12+(red-blue)*0.06)))
                                                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                         json.dump(unlq_json, unlq_file)

@@ -32,7 +32,7 @@ class UNLQueue(commands.Cog):
     
     @app_commands.command(name="queue", description="Enter this command to view the queue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def test(self, interaction: discord.Interaction):
+    async def queue(self, interaction: discord.Interaction):
         if interaction.user.id not in self.queue.get_all_ids():
             await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
         else:

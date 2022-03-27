@@ -18,7 +18,10 @@ class MatchFoundView(discord.ui.View):
             await self.queue.update_lobby()
             if self.queue.players_ready_check():
                 self.stop()
-                await interaction.message.delete()
+                try:
+                    await interaction.message.delete()
+                except:
+                    pass
                 await self.queue.initiate_game()
                 await self.queue.new_lobby()
 
