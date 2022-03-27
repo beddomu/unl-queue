@@ -2,7 +2,6 @@ import asyncio
 import json
 import os
 import random
-import aiohttp
 import discord
 from discord.ext import commands
 from discord import Interaction, app_commands
@@ -14,6 +13,7 @@ from classes.views.role_select import RoleSelectView
 from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
+from lcu.send_leaderboard import send_leaderboard
 
 
 
@@ -27,6 +27,7 @@ class UNLQueue(commands.Cog):
         message = await channel.send("**Initializing...**")
         self.queue.message = message
         await self.queue.new_lobby()
+        await send_leaderboard(self._bot)
         print("Queue initialized")
     
     @app_commands.command(name="queue", description="Enter this command to view the queue options")

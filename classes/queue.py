@@ -1,4 +1,5 @@
 from collections import Counter
+import json
 #import json
 import os
 from pprint import pp
@@ -6,14 +7,15 @@ import random
 from time import sleep
 import discord
 from discord.ext import commands
+import urllib
 from classes.game import Game
 from classes.image.image import make_image
 from classes.role import Role, top, jungle, middle, bottom, support, fill
 from classes.team import Team
 from classes.views.match_found import MatchFoundView
-#from lcu.create_lobby import Lobby
-#from lcu.invite_player import invite_player
-#from lcu.leave_lobby import leave_lobby
+from lcu.create_lobby import Lobby
+from lcu.invite_player import invite_player
+from lcu.leave_lobby import leave_lobby
 from utils.tinyurl import shorten_url
 
 
@@ -116,8 +118,8 @@ class Queue:
         self.pop_message = await channel.send("\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
 
     def make_teams(self):
-        #with open('C:\\DATA\\unlq.json', 'r') as file:
-        #    unlq = json.load(file)
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
         team_blue = Team(5, "Blue")
         team_red = Team(5, "Red")
         game = Game(team_blue, team_red, None)
@@ -249,8 +251,8 @@ class Queue:
         return True
 
     async def initiate_game(self):
-        #lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5)
-        #lobby.create()
+        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5)
+        lobby.create()
         sleep(1)
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
@@ -266,7 +268,7 @@ class Queue:
             ign_list = []
             for player in team.players:
                 if player.ign:
-                    #invite_player(player.ign)
+                    invite_player(player.ign)
                     ign_list.append(player.ign.replace(" ", ""))
                 players.append(player)
                 team_players_list.append(
@@ -278,18 +280,23 @@ class Queue:
                 team_players_list) + short_multiopgg
             embed.add_field(name=f'Team {team.side}',
                             value=team_players_string)
-        #leave_lobby()
+        leave_lobby()
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
         live_game_messsage = await channel.send(embed=embed, file=file)
-        #with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
-            #unlq_json =  json.load(unlq_file)
-        #unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
-        #unlq_json['lobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
-        #unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
-        #unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
-        #with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
-            #json.dump(unlq_json, unlq_file)
-            #unlq_file.close()
-        #for p in players:
-            #await p.user.send(embed=embed)
+        with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
+            unlq_json =  json.load(unlq_file)
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = []
+        for team in self.game.teams:
+            for player in team.players:
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'].append(player.ign)
+                
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq_json, unlq_file)
+            unlq_file.close()
+        for p in players:
+            await p.user.send(embed=embed)
         self.locked = False
