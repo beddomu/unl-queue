@@ -102,6 +102,10 @@ async def report_game(bot: commands.Bot, game_id):
                                     
                             channel = await bot.fetch_channel(int(os.getenv("LEADERBOARD")))
                             await send_leaderboard(bot)
+                        del unlq_json['lobbies'][str(lobby_id[9:])]
+                        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                            json.dump(unlq_json, unlq_file)
+                            unlq_file.close()
                         
             except urllib.error.HTTPError as e:
                 print('HTTPError: {}'.format(e.code))
@@ -109,6 +113,3 @@ async def report_game(bot: commands.Bot, game_id):
             except urllib.error.URLError as e:
                 print('URLError: {}'.format(e.reason))
                 pp("Game not found.")
-            
-        else:
-            pp("This game is already in the database.")

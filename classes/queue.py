@@ -111,11 +111,10 @@ class Queue:
         self.locked = True      
         game = self.make_teams()
         self.game = game
-        #player_mentions = game.get_player_mentions()
+        player_mentions = game.get_player_mentions()
         view = MatchFoundView(self)
-        #" ".join(player_mentions) + 
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
-        self.pop_message = await channel.send("\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
+        self.pop_message = await channel.send(" ".join(player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
 
     def make_teams(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -297,6 +296,6 @@ class Queue:
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
-        for p in players:
-            await p.user.send(embed=embed)
+        #for p in players:
+            #await p.user.send(embed=embed)
         self.locked = False

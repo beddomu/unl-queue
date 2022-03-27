@@ -27,7 +27,6 @@ class MyBot(commands.Bot):
             
     @tasks.loop(minutes=1)
     async def background_task(self):
-        print('Checking for finished games...')
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         for lobby in unlq['lobbies'].keys():
@@ -48,5 +47,14 @@ class MyBot(commands.Bot):
         await self.tree.sync(guild = discord.Object(int(os.getenv("SERVER_ID"))))
 
 bot = MyBot()
+
+@bot.event
+async def on_message(message):
+    if message.channel.id == int(os.getenv("QUEUE")) and message.author.id != bot.user.id:
+        await bot.process_commands(message)
+        try:
+            await message.delete()
+        except:
+            pass
 
 asyncio.run(bot.run(os.getenv("TOKEN")))
