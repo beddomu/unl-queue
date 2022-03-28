@@ -4,7 +4,7 @@ import os
 import random
 import discord
 from discord.ext import commands
-from discord import Interaction, app_commands
+from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
 from classes.views.match_found import MatchFoundView
@@ -62,6 +62,30 @@ class UNLQueue(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def debug(self, ctx):
         self.queue.list_players()
+        
+    @commands.command(name="develop", aliases=["dev"])
+    @commands.has_permissions(manage_messages=True)
+    async def dev(self, ctx):
+        guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
+        role = discord.utils.get(guild.roles, id = 676740137815900160)
+        channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
+        await channel.set_permissions(role, read_messages=False)
+        channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
+        await channel.set_permissions(role, read_messages=False)
+        channel = await self._bot.fetch_channel(int(os.getenv("LEADERBOARD")))
+        await channel.set_permissions(role, read_messages=False)
+        
+    @commands.command(name="public", aliases=["p"])
+    @commands.has_permissions(manage_messages=True)
+    async def public(self, ctx):
+        guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
+        role = discord.utils.get(guild.roles, id = 676740137815900160)
+        channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
+        await channel.set_permissions(role, read_messages=True)
+        channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
+        await channel.set_permissions(role, read_messages=True)
+        channel = await self._bot.fetch_channel(int(os.getenv("LEADERBOARD")))
+        await channel.set_permissions(role, read_messages=True)
         
 
 
