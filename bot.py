@@ -8,9 +8,9 @@ import discord
 from discord.ext import commands, tasks
 from discord import app_commands
 import dotenv
-from lcu.find_summoner import find_summoner
-from lcu.get_match_history import get_match_history
-from lcu.report_game import report_game
+from utils.find_summoner import find_summoner
+from utils.get_match_history import get_match_history
+from utils.report_game import report_game
 
 
 dotenv.load_dotenv()

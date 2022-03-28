@@ -2,7 +2,7 @@ from time import sleep
 import json
 import requests
 from pprint import pp, pprint
-from lcu.find_summoner import find_summoner
+from utils.find_summoner import find_summoner
 from lcu import lockfile
 
 def invite_player(name):

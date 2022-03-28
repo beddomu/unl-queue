@@ -13,7 +13,7 @@ from classes.views.role_select import RoleSelectView
 from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
-from lcu.send_leaderboard import send_leaderboard
+from utils.send_leaderboard import send_leaderboard
 
 
 
@@ -48,15 +48,35 @@ class UNLQueue(commands.Cog):
     async def link_account(self, interaction: discord.Interaction):
         await interaction.response.send_modal(LinkAccount())
 
+
+    @commands.command(name="addfillrandom", aliases=["r"])
+    @commands.has_permissions(manage_messages=True)
+    async def add_random_fill(self, ctx: commands.context.Context, input: int):
+            n = 0
+            while n < input:
+                if len(self.queue.players) < 10:
+                    user = random.choice(self.queue.message.channel.guild.members)
+                    with open('C:\\DATA\\unlq.json', 'r') as json_file:
+                        unlq_json =  json.load(json_file)
+                    if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
+                        player = Player(user.id, user.name, fill, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
+                        if player not in self.queue.players:
+                            await self.queue.add_player(player)
+                            n += 1
+                else:
+                    break
+                    
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
     async def add_fill_dummy(self, ctx: commands.context.Context, input: int):
-        if len(self.queue.players) < 10:
             n = 0
             while n < input:
-                player = Player(ctx.author.id, f"Target dummy {n + 1}", fill, ctx.author, False, "beddomu", 50)
-                await self.queue.add_player(player)
-                n += 1
+                if len(self.queue.players) < 10:
+                    player = Player(948863727032217641, f"Target dummy {n + 1}", fill, ctx.author, False, None, 50)
+                    await self.queue.add_player(player)
+                    n += 1
+                else:
+                    break
                 
     @commands.command(name="debug", aliases=["c"])
     @commands.has_permissions(manage_messages=True)
