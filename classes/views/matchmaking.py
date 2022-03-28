@@ -15,6 +15,6 @@ class MatchmakingView(discord.ui.View):
         
         else:
             #view = RoleSelectView()
-            await interaction.response.edit_message(content='You left the queue. Please re-select your role to continue, or dismiss this message to stop.', view=None)
+            await interaction.response.edit_message(content='You left the queue.', view=None)
             await self.queue.remove_player_by_id(interaction.user.id)
         await self.queue.update_lobby()

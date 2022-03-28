@@ -17,7 +17,6 @@ class Team:
     def add_player(self, obj):
         if isinstance(obj, Player):
             self.players.append(obj)
-            pprint(f'{self.side}: {self.rating} + {obj.rating}')
             self.rating += obj.rating
             
 

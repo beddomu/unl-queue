@@ -35,12 +35,12 @@ class Queue:
         await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
         print(f"New lobby has been created with the id: {message.id}")
-        if self.locked != True:
-            self.full = False
-            self.game = None
-            self.message = message
-            self.players.clear()
-            await self.update_lobby()
+        self.locked = False
+        self.full = False
+        self.game = None
+        self.message = message
+        self.players.clear()
+        await self.update_lobby()
 
     async def add_player(self, player):
         self.players.append(player)
@@ -86,26 +86,27 @@ class Queue:
         await self.message.edit(content=end_string)
 
     def ready_check(self):
-        role_list = []
-        fill_list = []
-        index = 0
-        i = 0
-        for player in self.players:
-            if player.role != fill:
-                role_list.append(player.role.name)
-                roles_in_queue = Counter(role_list)
-            else:
-                fill_list.append(player)
-        if role_list:
-            for r in roles_in_queue.values():
-                if r >= 2:
-                    index += 1
-                    i += 2
-                elif r == 1:
-                    i += 1
-        self.spots_open = 10 - i - len(fill_list)
-        if self.spots_open == 0:
-            self.full = True
+        if self.full != True:
+            role_list = []
+            fill_list = []
+            index = 0
+            i = 0
+            for player in self.players:
+                if player.role != fill:
+                    role_list.append(player.role.name)
+                    roles_in_queue = Counter(role_list)
+                else:
+                    fill_list.append(player)
+            if role_list:
+                for r in roles_in_queue.values():
+                    if r >= 2:
+                        index += 1
+                        i += 2
+                    elif r == 1:
+                        i += 1
+            self.spots_open = 10 - i - len(fill_list)
+            if self.spots_open == 0:
+                self.full = True
 
     async def pop(self, queue):
         self.locked = True      
@@ -163,37 +164,56 @@ class Queue:
         team_red.add_player(topq[0])
         
         jgq = [self.jungle_list[0], self.jungle_list[1]]
-        pp(jgq)
+        better_player = jgq.index(max(jgq))
+        options = [jgq.pop(better_player), jgq[0]]
         if game.blue_team > game.red_team:
-            game.red_team.add_player(max(jgq))
-            game.blue_team.add_player(min(jgq))
+            game.red_team.add_player(options[0])
+            game.blue_team.add_player(options[1])
+        elif game.red_team > game.blue_team:
+            game.red_team.add_player(options[1])
+            game.blue_team.add_player(options[0])
         else:
-            game.red_team.add_player(min(jgq))
-            game.blue_team.add_player(max(jgq))
+            game.blue_team.add_player(self.jungle_list[0])
+            game.red_team.add_player(self.jungle_list[1])
             
         midq = [self.mid_list[0], self.mid_list[1]]
+        better_player = midq.index(max(midq))
+        options = [midq.pop(better_player), midq[0]]
         if game.blue_team > game.red_team:
-            game.red_team.add_player(max(midq))
-            game.blue_team.add_player(min(midq))
+            game.red_team.add_player(options[0])
+            game.blue_team.add_player(options[1])
+        elif game.red_team > game.blue_team:
+            game.red_team.add_player(options[1])
+            game.blue_team.add_player(options[0])
         else:
-            game.red_team.add_player(min(midq))
-            game.blue_team.add_player(max(midq))
+            game.blue_team.add_player(self.jungle_list[0])
+            game.red_team.add_player(self.jungle_list[1])
         
         adcq = [self.bot_list[0], self.bot_list[1]]
+        better_player = adcq.index(max(adcq))
+        options = [adcq.pop(better_player), adcq[0]]
         if game.blue_team > game.red_team:
-            game.red_team.add_player(max(adcq))
-            game.blue_team.add_player(min(adcq))
+            game.red_team.add_player(options[0])
+            game.blue_team.add_player(options[1])
+        elif game.red_team > game.blue_team:
+            game.red_team.add_player(options[1])
+            game.blue_team.add_player(options[0])
         else:
-            game.red_team.add_player(min(adcq))
-            game.blue_team.add_player(max(adcq))
-
+            game.blue_team.add_player(self.jungle_list[0])
+            game.red_team.add_player(self.jungle_list[1])
+            
         suppq = [self.supp_list[0], self.supp_list[1]]
+        better_player = suppq.index(max(suppq))
+        options = [suppq.pop(better_player), suppq[0]]
         if game.blue_team > game.red_team:
-            game.red_team.add_player(max(suppq))
-            game.blue_team.add_player(min(suppq))
+            game.red_team.add_player(options[0])
+            game.blue_team.add_player(options[1])
+        elif game.red_team > game.blue_team:
+            game.red_team.add_player(options[1])
+            game.blue_team.add_player(options[0])
         else:
-            game.red_team.add_player(min(suppq))
-            game.blue_team.add_player(max(suppq))
+            game.blue_team.add_player(self.jungle_list[0])
+            game.red_team.add_player(self.jungle_list[1])
         
         print(f"Final Team blue rating: {team_blue.rating}")
         print(f"Final Team red rating: {team_red.rating}")
@@ -259,8 +279,6 @@ class Queue:
         embed.set_footer(text=f'Lobby id: {int(str(self.message.id)[:-8])}')
         file = discord.File('classes\\image\\res.png', filename='res.png')
         embed.set_image(url=('attachment://res.png'))
-        #embed.set_image(url="https://static.wikia.nocookie.net/leagueoflegends/images/5/53/Summoner%27s_Rift_Update_Map.png/revision/latest/scale-to-width-down/1000?cb=20170223053555.png")
-
         players = []
         for team in self.game.teams:
             team_players_list = []
@@ -270,15 +288,11 @@ class Queue:
                     invite_player(player.ign)
                     ign_list.append(player.ign.replace(" ", ""))
                 players.append(player)
-                team_players_list.append(
-                    player.role.emoji + player.user.mention)
-            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
-                ",".join(ign_list))
+                team_players_list.append(player.role.emoji + player.user.mention)
+            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(",".join(ign_list))
             short_multiopgg = "\nMulti opgg: {}".format(shorten_url(multiopgg))
-            team_players_string = "\n".join(
-                team_players_list) + short_multiopgg
-            embed.add_field(name=f'Team {team.side}',
-                            value=team_players_string)
+            team_players_string = "\n".join(team_players_list) + short_multiopgg
+            embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
         live_game_messsage = await channel.send(embed=embed, file=file)

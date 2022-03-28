@@ -30,15 +30,20 @@ class RoleSelect(discord.ui.Select):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
         for p in unlq_json['players'].keys():
-            if p == str(interaction.user.id):
+            if p == str(interaction.user.id) and interaction.user.id not in self.queue.get_all_ids():
                 ign = unlq_json['players'][p]['name']
                 rating = unlq_json['players'][p]['rating']
                 role = getattr(sys.modules[__name__], self.values[0].lower())
                 player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
-                await self.queue.add_player(player)
-                view = MatchmakingView(self.queue)
-                await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
-        
+                if self.queue.full != True:
+                    await self.queue.add_player(player)
+                    try:
+                        view = MatchmakingView(self.queue)
+                        await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+                    except:
+                        print("error at 40 in role_select.py")
+                else:
+                    await interaction.response.send_message("The queue is currently full.", ephemeral=True)
 
 
 class RoleSelectView(discord.ui.View):
@@ -53,13 +58,12 @@ class RoleSelectView(discord.ui.View):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
         for p in unlq_json['players'].keys():
-            if p == str(interaction.user.id):
+            if p == str(interaction.user.id) and interaction.user.id not in self.queue.get_all_ids():
                 ign = unlq_json['players'][p]['name']
                 rating = unlq_json['players'][p]['rating']
-                
-        if interaction.user.id not in self.queue.get_all_ids():
-            role = fill
-            player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
-            await self.queue.add_player(player)
-            view = MatchmakingView(self.queue)
-            await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+                role = fill
+                player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                if self.queue.full != True:
+                    await self.queue.add_player(player)
+                else:
+                    await interaction.response.send_message("The queue is currently full.", ephemeral=True)

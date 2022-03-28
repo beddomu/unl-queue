@@ -35,12 +35,11 @@ class MyBot(commands.Bot):
             if account:
                 history = get_match_history(account['puuid'])
                 if history:
-                    for game in history:
+                    for game in history[:3]:
                         await report_game(self, game[5:])
             time.sleep(1)
         
     async def on_ready(self):
-        print('Ready')
         for fn in os.listdir("./cogs"):
             if fn.endswith(".py"):
                 await bot.load_extension(f'cogs.{fn[:-3]}')

@@ -27,16 +27,16 @@ class UNLQueue(commands.Cog):
         message = await channel.send("**Initializing...**")
         self.queue.message = message
         await self.queue.new_lobby()
-        await send_leaderboard(self._bot)
         print("Queue initialized")
     
     @app_commands.command(name="queue", description="Enter this command to view the queue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def queue(self, interaction: discord.Interaction):
         if interaction.user.id not in self.queue.get_all_ids():
-            await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
-        else:
-            await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
+            try:
+                await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+            except:
+                print("error at 37 in role_select.py")
 
     @app_commands.command(name="report", description="Enter this command to report a player")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
@@ -106,6 +106,11 @@ class UNLQueue(commands.Cog):
         await channel.set_permissions(role, read_messages=True)
         channel = await self._bot.fetch_channel(int(os.getenv("LEADERBOARD")))
         await channel.set_permissions(role, read_messages=True)
+        
+    @commands.command(name="leaderboard", aliases=["l"])
+    @commands.has_permissions(manage_messages=True)
+    async def leaderboard(self, ctx):
+        await send_leaderboard(self._bot)
         
 
 

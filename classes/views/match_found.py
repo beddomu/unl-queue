@@ -9,21 +9,24 @@ class MatchFoundView(discord.ui.View):
 
     @discord.ui.button(label="Accept", style=discord.ButtonStyle.green)
     async def accept_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        #print(f'{interaction.user.name} pressed accept')
-        if self.queue.check_player(interaction.user):
-            for player in self.queue.players:
-                if player.user == interaction.user and player:
-                    player.ready = True
+        try:
+            #print(f'{interaction.user.name} pressed accept')
+            if self.queue.check_player(interaction.user):
+                for player in self.queue.players:
+                    if player.user == interaction.user and player:
+                        player.ready = True
 
-            await self.queue.update_lobby()
-            if self.queue.players_ready_check():
-                self.stop()
-                try:
-                    await interaction.message.delete()
-                except:
-                    pass
-                await self.queue.initiate_game()
-                await self.queue.new_lobby()
+                await self.queue.update_lobby()
+                if self.queue.players_ready_check():
+                    self.stop()
+                    try:
+                        await interaction.message.delete()
+                    except:
+                        pass
+                    await self.queue.initiate_game()
+                    await self.queue.new_lobby()
+        except:
+            await interaction.response.send_message("Something went wrong. Wait a few seconds then try again.", ephemeral=True)
 
     @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger)
     async def decline_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
