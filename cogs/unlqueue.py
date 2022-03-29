@@ -31,7 +31,7 @@ class UNLQueue(commands.Cog):
     
     @app_commands.command(name="queue", description="Enter this command to view the queue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def queue(self, interaction: discord.Interaction):
+    async def queue_command(self, interaction: discord.Interaction):
         if interaction.user.id not in self.queue.get_all_ids():
             try:
                 await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
@@ -112,6 +112,14 @@ class UNLQueue(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def leaderboard(self, ctx):
         await send_leaderboard(self._bot)
+        
+    @commands.command(name="reset", aliases=["n"])
+    @commands.has_permissions(manage_messages=True)
+    async def newlobbymessage(self, ctx: commands.context.Context):
+        self.queue.locked = False
+        await self.queue.reset_lobby()
+        channel = await self._bot.fetch_channel(int(os.getenv("CHAT")))
+        await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         
 
 

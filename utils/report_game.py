@@ -37,8 +37,7 @@ async def report_game(bot: commands.Bot, game_id):
                         if game['info']:
                             for p in game['info']['participants']:
                                 if p['win'] == True:                                    
-                                    if p['teamId'] == 100:                               
-                                        #print('{} won'.format(p['summonerName']))
+                                    if p['teamId'] == 100:
                                         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                             unlq_json =  json.load(unlq_file)
                                         for player in unlq_json['players'].keys():
@@ -77,7 +76,6 @@ async def report_game(bot: commands.Bot, game_id):
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()
                                 else:
-                                    #print('{} lost'.format(p['summonerName']))
                                     if p['teamId'] == 100:
                                         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                             unlq_json =  json.load(unlq_file)

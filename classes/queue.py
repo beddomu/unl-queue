@@ -29,6 +29,20 @@ class Queue:
         self.locked = False
         self.pop_message = None
         self.spots_open = 10
+        
+    async def reset_lobby(self, players = None):
+        channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
+        await channel.purge(limit=100)
+        message = await channel.send("**Initializing...**")
+        print(f"New lobby has been created with the id: {message.id}")
+        self.locked = False
+        self.full = False
+        self.game = None
+        self.pop_message = None
+        self.message = message
+        self.players.clear()
+        self.spots_open = 10
+        await self.update_lobby()
 
     async def new_lobby(self, players = None):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
