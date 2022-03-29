@@ -4,7 +4,7 @@ import json
 import os
 from pprint import pp
 import random
-from time import sleep
+import time
 import discord
 from discord.ext import commands
 import urllib
@@ -65,13 +65,6 @@ class Queue:
         if self.full == True and self.locked != True:
             view = MatchFoundView(self)
             await self.pop(view)
-
-    async def remove_player_by_id(self, id):
-        for player in self.players:
-            if player.id == id:
-                self.players.remove(player)
-                print(f"{player} left the queue")
-        await self.update_lobby()
 
     def list_players(self):
         for player in self.players:
@@ -289,7 +282,7 @@ class Queue:
     async def initiate_game(self):
         lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5)
         lobby.create()
-        sleep(1)
+        time.sleep(1)
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
         embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
@@ -320,6 +313,7 @@ class Queue:
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = []
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['time_created'] = int(time.time())
         for team in self.game.teams:
             for player in team.players:
                 unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'].append(player.ign)

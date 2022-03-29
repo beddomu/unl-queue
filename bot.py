@@ -30,14 +30,21 @@ class MyBot(commands.Bot):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         for lobby in unlq['lobbies'].keys():
-            random_ign = unlq['lobbies'][lobby]['players'][random.randint(0, len(unlq['lobbies'][lobby]['players'])-1)]
-            account = find_summoner(random_ign)
-            if account:
-                history = get_match_history(account['puuid'])
-                if history:
-                    for game in history[:3]:
-                        await report_game(self, game[5:])
-            time.sleep(1)
+            if time.time() > unlq['lobbies'][lobby]['time_created'] + 60 * 60 * 2:
+                print(f"Lobby {lobby} expired")
+                del unlq['lobbies'][lobby]
+                with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                    json.dump(unlq, unlq_file)
+                    unlq_file.close()
+            else:
+                random_ign = unlq['lobbies'][lobby]['players'][random.randint(0, len(unlq['lobbies'][lobby]['players'])-1)]
+                account = find_summoner(random_ign)
+                if account:
+                    history = get_match_history(account['puuid'])
+                    if history:
+                        for game in history[:3]:
+                            await report_game(self, game[5:])
+            time.sleep(0.5)
         
     async def on_ready(self):
         for fn in os.listdir("./cogs"):

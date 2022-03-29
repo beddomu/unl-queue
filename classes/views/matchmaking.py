@@ -1,3 +1,4 @@
+from pprint import pp
 import discord
 
 class MatchmakingView(discord.ui.View):
@@ -13,7 +14,7 @@ class MatchmakingView(discord.ui.View):
     async def leavequeue_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.queue.locked != True:
             for player in self.queue.players:
-                if interaction.user == player.user:
-                    await self.queue.remove_player_by_id(interaction.user.id)
+                if interaction.user.id == player.user.id:
+                    self.queue.players.remove(player)
                     await self.queue.update_lobby()
                     await interaction.response.edit_message(content='You left the queue.', view=None)
