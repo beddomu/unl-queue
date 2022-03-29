@@ -2,11 +2,10 @@ from time import sleep
 import json
 import requests
 from pprint import pp, pprint
-from lcu.is_online import is_online
 from utils.find_summoner import find_summoner
 from lcu import lockfile
 
-def invite_player(name):
+def friend_request(name):
     
     account = find_summoner(name)
 
@@ -19,24 +18,17 @@ def invite_player(name):
     summonerName = account['name']
 
 
-    url = f'https://127.0.0.1:{lockfile.port}/lol-lobby/v2/lobby/invitations'
+    url = f'https://127.0.0.1:{lockfile.port}/lol-chat/v1/friend-requests'
     headers = {'accept': 'application/json',
                 'Authorization': f'Basic {lockfile.auth}', 'Content-Type': 'application/json'}
-    data_json = [
-        {
-            "invitationType": "lobby",
-            "state": "Pending",
-            "timestamp": "",
-            "toSummonerId": summonerId,
-            "toSummonerName": summonerName
+    data_json = {
+        "direction": "both",
+        "name": account['name'],
+        "gameTag": "EUW"
         }
-    ]
     data = json.dumps(data_json)
-    if is_online(account['name']):
-        r = requests.post(url, headers=headers, data=data, verify=True)
-        if r.status_code == 200:
-            print('{} was sucessfully invited to the lobby'.format(account['name']))
-        else:
-            pprint(r.content)
+    r = requests.post(url, headers=headers, data=data, verify=True)
+    if r.status_code == 204:
+        print('Friend request was sucessfully sent to: {}'.format(account['name']))
     else:
-        print(f"{account['name']} is offline")
+        pprint(r.content)

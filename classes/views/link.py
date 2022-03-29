@@ -4,6 +4,8 @@ import discord
 import urllib
 import json
 
+from lcu.friend_request import friend_request
+
 class Confirm(discord.ui.View):
     def __init__(self):
         super().__init__()
@@ -73,6 +75,7 @@ class LinkAccount(discord.ui.Modal):
                     pp("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))
                     
                 unlq_json['players'][str(interaction.user.id)]["name"] = account['name']
+                friend_request(account['name'])
                 with open('C:\\DATA\\unlq.json', 'w') as json_file:
                     json.dump(unlq_json, json_file, ensure_ascii=False)
                     
