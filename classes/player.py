@@ -11,6 +11,10 @@ class Player:
         self.ready = ready
         self.ign = ign
         self.rating = rating
+
+    def __repr__(self):
+        rep = self.name
+        return rep
         
     def __lt__(self, other):
         return self.rating < other.rating

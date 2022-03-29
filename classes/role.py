@@ -3,6 +3,10 @@ class Role:
         self.id = id
         self.name = name
         self.emoji = emoji
+        
+    def __repr__(self):
+        rep = self.name
+        return rep
 
 top = Role("Top", 0, "<:top:949215554441465866>")
 jungle = Role("Jungle", 1, "<:jungle:949215552591765544>")

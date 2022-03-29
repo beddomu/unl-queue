@@ -85,16 +85,16 @@ async def report_game(bot: commands.Bot, game_id):
                                             if unlq_json['players'][player]['puuid'] == p['puuid']:
                                                 blue = unlq_json['lobbies'][str(lobby_id[9:])]['blue_team']
                                                 red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
-                                                if unlq_json['players'][player]['points'] >= int(12+(red-blue)*0.06):
-                                                    unlq_json['players'][player]['points'] -= int(12+(red-blue)*0.06)
-                                                    embed = discord.Embed(title=f'-{int(12+(red-blue)*0.06)}')
+                                                if unlq_json['players'][player]['points'] >= int(12-(red-blue)*0.06):
+                                                    unlq_json['players'][player]['points'] -= int(12-(red-blue)*0.06)
+                                                    embed = discord.Embed(title=f'-{int(12-(red-blue)*0.06)}')
                                                     embed.set_footer(text=f'game id: {game_id}')
                                                     embed.color = discord.colour.Color.red()
                                                     embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                                     user = await bot.fetch_user(int(player))
                                                     embed.description = "{}'s current LP: {}".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
                                                     await user.send(embed=embed)
-                                                    pp('{} lost {} LP'.format(p['summonerName'], int(12+(red-blue)*0.06)))
+                                                    pp('{} lost {} LP'.format(p['summonerName'], int(12-(red-blue)*0.06)))
                                                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                         json.dump(unlq_json, unlq_file)
                                                         unlq_file.close()
@@ -120,16 +120,16 @@ async def report_game(bot: commands.Bot, game_id):
                                             if unlq_json['players'][player]['puuid'] == p['puuid']:
                                                 blue = unlq_json['lobbies'][str(lobby_id[9:])]['blue_team']
                                                 red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
-                                                if unlq_json['players'][player]['points'] >= int(12+(blue-red)*0.06):
-                                                    unlq_json['players'][player]['points'] -= int(12+(blue-red)*0.06)
-                                                    embed = discord.Embed(title=f'-{int(12+(blue-red)*0.06)}')
+                                                if unlq_json['players'][player]['points'] >= int(12-(blue-red)*0.06):
+                                                    unlq_json['players'][player]['points'] -= int(12-(blue-red)*0.06)
+                                                    embed = discord.Embed(title=f'-{int(12-(blue-red)*0.06)}')
                                                     embed.set_footer(text=f'game id: {game_id}')
                                                     embed.color = discord.colour.Color.red()
                                                     embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                                     user = await bot.fetch_user(int(player))
                                                     embed.description = "{}'s current LP: {}".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
                                                     await user.send(embed=embed)
-                                                    pp('{} lost {} LP'.format(p['summonerName'], int(12+(blue-red)*0.06)))
+                                                    pp('{} lost {} LP'.format(p['summonerName'], int(12-(blue-red)*0.06)))
                                                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                         json.dump(unlq_json, unlq_file)
                                                         unlq_file.close()

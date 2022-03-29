@@ -41,7 +41,7 @@ class RoleSelect(discord.ui.Select):
                         view = MatchmakingView(self.queue)
                         await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
                     except:
-                        print("error at 40 in role_select.py")
+                        pass
                 else:
                     await interaction.response.send_message("The queue is currently full.", ephemeral=True)
 
@@ -65,5 +65,10 @@ class RoleSelectView(discord.ui.View):
                 player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
                 if self.queue.full != True:
                     await self.queue.add_player(player)
+                    try:
+                        view = MatchmakingView(self.queue)
+                        await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+                    except:
+                        pass
                 else:
                     await interaction.response.send_message("The queue is currently full.", ephemeral=True)

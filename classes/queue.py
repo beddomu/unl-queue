@@ -30,7 +30,7 @@ class Queue:
         self.pop_message = None
         self.spots_open = 10
 
-    async def new_lobby(self):
+    async def new_lobby(self, players = None):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
@@ -40,10 +40,13 @@ class Queue:
         self.game = None
         self.message = message
         self.players.clear()
+        if players:
+            self.players = players
         await self.update_lobby()
 
     async def add_player(self, player):
         self.players.append(player)
+        print(f"{player} is now in queue as: {player.role}")
         await self.update_lobby()
         if self.full == True and self.locked != True:
             view = MatchFoundView(self)
@@ -53,11 +56,12 @@ class Queue:
         for player in self.players:
             if player.id == id:
                 self.players.remove(player)
+                print(f"{player} left the queue")
         await self.update_lobby()
 
     def list_players(self):
         for player in self.players:
-            print(f'{player.name}: {player.role}')
+            print(f'{player}: {player.role}')
 
     def get_all_ids(self):
         list = []
@@ -86,9 +90,9 @@ class Queue:
         await self.message.edit(content=end_string)
 
     def ready_check(self):
+        role_list = []
+        fill_list = []
         if self.full != True:
-            role_list = []
-            fill_list = []
             index = 0
             i = 0
             for player in self.players:
@@ -151,13 +155,12 @@ class Queue:
                 self.supp_list.append(player)
             else:
                 self.fill_list.append(player)
-
         for role in role_lists:
             while len(role) < 2 and len(self.fill_list) >= 0:
                 role.append(self.fill_list.pop(
                     random.randint(0, (len(self.fill_list)-1))))
                 
-        print("balancing teams")
+        print("balancing teams...")
                 
         topq = [self.top_list[0], self.top_list[1]]
         team_blue.add_player(topq.pop(random.randint(0, 1)))

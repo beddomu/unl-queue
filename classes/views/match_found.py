@@ -24,7 +24,13 @@ class MatchFoundView(discord.ui.View):
                     except:
                         pass
                     await self.queue.initiate_game()
-                    await self.queue.new_lobby()
+                    last_game_players = self.queue.game.get_players()
+                    last_queue_players = self.queue.players
+                    players = []
+                    for player in last_queue_players:
+                        if player not in last_game_players:
+                            players.append(player)
+                    await self.queue.new_lobby(players)
         except:
             await interaction.response.send_message("Something went wrong. Wait a few seconds then try again.", ephemeral=True)
 

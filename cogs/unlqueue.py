@@ -36,7 +36,12 @@ class UNLQueue(commands.Cog):
             try:
                 await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
             except:
-                print("error at 37 in role_select.py")
+                print("error at 37 in unlqueue.py")
+        else:
+            try:
+                await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
+            except:
+                print("error at 42 in unlqueue.py")
 
     @app_commands.command(name="report", description="Enter this command to report a player")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
