@@ -54,7 +54,10 @@ async def report_game(bot: commands.Bot, game_id):
                                             embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                             user = await bot.fetch_user(int(player))
                                             embed.description = "{}'s current LP: {}".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
-                                            await user.send(embed=embed)
+                                            try:
+                                                await user.send(embed=embed)
+                                            except:
+                                                print(f"Cannot send dm to: {user.name}")
                                             pp('{} gained {} LP'.format(p['summonerName'], int(15+(red-blue)*0.06)))
                                             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                 json.dump(unlq_json, unlq_file)
@@ -77,7 +80,10 @@ async def report_game(bot: commands.Bot, game_id):
                                             embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                             user = await bot.fetch_user(int(player))
                                             embed.description = "{}'s current LP: {}".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
-                                            await user.send(embed=embed)
+                                            try:
+                                                await user.send(embed=embed)
+                                            except:
+                                                print(f"Cannot send dm to: {user.name}")
                                             pp('{} gained {} LP'.format(p['summonerName'], int(15+(blue-red)*0.06)))
                                             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                 json.dump(unlq_json, unlq_file)
@@ -102,7 +108,10 @@ async def report_game(bot: commands.Bot, game_id):
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                                 user = await bot.fetch_user(int(player))
                                                 embed.description = "{}'s current LP: {}".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
-                                                await user.send(embed=embed)
+                                                try:
+                                                    await user.send(embed=embed)
+                                                except:
+                                                    print(f"Cannot send dm to: {user.name}")
                                                 pp('{} lost {} LP'.format(p['summonerName'], int(12-(red-blue)*0.06)))
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
@@ -117,7 +126,10 @@ async def report_game(bot: commands.Bot, game_id):
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                                 user = await bot.fetch_user(int(player))
                                                 embed.description = "{}'s current LP: {} ._.".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
-                                                await user.send(embed=embed)
+                                                try:
+                                                    await user.send(embed=embed)
+                                                except:
+                                                    print(f"Cannot send dm to: {user.name}")
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()
@@ -140,7 +152,10 @@ async def report_game(bot: commands.Bot, game_id):
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                                 user = await bot.fetch_user(int(player))
                                                 embed.description = "{}'s current LP: {}".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
-                                                await user.send(embed=embed)
+                                                try:
+                                                    await user.send(embed=embed)
+                                                except:
+                                                    print(f"Cannot send dm to: {user.name}")
                                                 pp('{} lost {} LP'.format(p['summonerName'], int(12-(blue-red)*0.06)))
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
@@ -155,7 +170,10 @@ async def report_game(bot: commands.Bot, game_id):
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
                                                 user = await bot.fetch_user(int(player))
                                                 embed.description = "{}'s current LP: {} ._.".format(unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
-                                                await user.send(embed=embed)
+                                                try:
+                                                    await user.send(embed=embed)
+                                                except:
+                                                    print(f"Cannot send dm to: {user.name}")
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()

@@ -20,7 +20,7 @@ def leave_lobby(timeout_in_seconds: int = 30):
         r = requests.get(url, headers=headers, verify=True)
 
         file = r.json()
-        if len(file['members']) > 1 or time.time() > time_all_invited + timeout_in_seconds:
+        if len(file['members']) > 1:
             member_joined = True
             print("Leaving the lobby now...")
             url = f'https://127.0.0.1:{lockfile.port}/lol-lobby/v2/lobby'

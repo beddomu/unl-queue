@@ -71,12 +71,16 @@ class LinkAccount(discord.ui.Modal):
                     unlq_json['players'][str(interaction.user.id)]['id'] = account['id']
                     unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
                     unlq_json['players'][str(interaction.user.id)]['puuid'] = account['puuid']
+                    unlq_json['players'][str(interaction.user.id)]['summonerIconId'] = account['profileIconId']
                     unlq_json['players'][str(interaction.user.id)]['rating'] = 60
                     unlq_json['players'][str(interaction.user.id)]['wins'] = 0
                     unlq_json['players'][str(interaction.user.id)]['losses'] = 0
                     pp("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))
                     
                 unlq_json['players'][str(interaction.user.id)]["name"] = account['name']
+                unlq_json['players'][str(interaction.user.id)]['id'] = account['id']
+                unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
+                unlq_json['players'][str(interaction.user.id)]['summonerIconId'] = account['profileIconId']
                 friend_request(account['name'])
                 with open('C:\\DATA\\unlq.json', 'w') as json_file:
                     json.dump(unlq_json, json_file, ensure_ascii=False)

@@ -25,7 +25,7 @@ class MyBot(commands.Bot):
     async def setup_hook(self):
         self.background_task.start()
             
-    @tasks.loop(minutes=1)
+    @tasks.loop(minutes=1.5)
     async def background_task(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)

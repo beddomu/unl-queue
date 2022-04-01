@@ -11,7 +11,7 @@ class MatchFoundView(discord.ui.View):
     async def accept_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             #print(f'{interaction.user.name} pressed accept')
-            if self.queue.check_player(interaction.user):
+            if self.queue.check_player(interaction.user) and self.queue.locked == True:
                 for player in self.queue.players:
                     if player.user == interaction.user and player:
                         player.ready = True
@@ -19,10 +19,6 @@ class MatchFoundView(discord.ui.View):
                 await self.queue.update_lobby()
                 if self.queue.players_ready_check():
                     self.stop()
-                    try:
-                        await interaction.message.delete()
-                    except:
-                        pass
                     await self.queue.initiate_game()
                     last_game_players = self.queue.game.get_players()
                     last_queue_players = self.queue.players

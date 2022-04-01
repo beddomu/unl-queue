@@ -33,8 +33,8 @@ async def send_leaderboard(bot: commands.Bot):
             new_dict[player]['summonerIconId'] = unlq['players'][player]['summonerIconId']
             new_dict[player]['name'] = unlq['players'][player]['name']
             new_dict[player]['lp'] = unlq['players'][player]['points']
-            new_dict[player]['wins'] = random.randint(0, 10)
-            new_dict[player]['losses'] = random.randint(0, 10)
+            new_dict[player]['wins'] = unlq['players'][player]['wins']
+            new_dict[player]['losses'] = unlq['players'][player]['losses']
             
         res = collections.OrderedDict(sorted(new_dict.items(), key=lambda t:t[1]["lp"], reverse=True))
         with open('..\\unlqueue.xyz\\json\\leaderboard.json', 'w') as unlq_file:

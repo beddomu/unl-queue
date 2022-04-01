@@ -120,7 +120,7 @@ class Queue:
                 self.full = True
 
     async def pop(self, queue):
-        self.locked = True      
+        self.locked = True
         game = self.make_teams()
         self.game = game
         player_mentions = game.get_player_mentions()
@@ -294,9 +294,8 @@ class Queue:
             team_players_list = []
             ign_list = []
             for player in team.players:
-                if player.ign:
-                    invite_player(player.ign)
-                    ign_list.append(player.ign.replace(" ", ""))
+                invite_player(player.ign)
+                ign_list.append(player.ign.replace(" ", ""))
                 players.append(player)
                 team_players_list.append(player.role.emoji + player.user.mention)
             multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(",".join(ign_list))
