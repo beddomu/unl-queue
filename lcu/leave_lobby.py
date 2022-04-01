@@ -6,10 +6,11 @@ import requests
 from pprint import pp, pprint
 
 
-def leave_lobby(timeout_in_seconds: int = 60*5):
+def leave_lobby(timeout_in_seconds: int = 30):
     member_joined = False
-    timeout = time.time() + timeout_in_seconds
-    while member_joined == False or time.time() > timeout:
+    time_all_invited = time.time()
+    pp("waiting for someone to join...")
+    while member_joined == False or time.time() > time_all_invited + timeout_in_seconds:
 
         url = f'https://127.0.0.1:{lockfile.port}/lol-lobby/v2/lobby'
 
@@ -18,10 +19,9 @@ def leave_lobby(timeout_in_seconds: int = 60*5):
 
         r = requests.get(url, headers=headers, verify=True)
 
-        pp("waiting for someone to join...")
-
         file = r.json()
-        if len(file['members']) > 1 or time.time() > timeout:
+        if len(file['members']) > 1 or time.time() > time_all_invited + timeout_in_seconds:
+            print("Lobby invites timed out")
             member_joined = True
             print("SOMEONE JOINED! Leaving the lobby now.")
             url = f'https://127.0.0.1:{lockfile.port}/lol-lobby/v2/lobby'

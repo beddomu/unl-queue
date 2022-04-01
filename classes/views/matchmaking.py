@@ -20,5 +20,3 @@ class MatchmakingView(discord.ui.View):
                     self.queue.players.remove(player)
                     await self.queue.update_lobby()
                     await interaction.response.edit_message(content='You left the queue.', view=None)
-                else:
-                    print(player.name + " is not it.")
