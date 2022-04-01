@@ -13,7 +13,7 @@ from classes.views.role_select import RoleSelectView
 from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
-from utils.send_leaderboard import send_leaderboard
+from utils.update_leaderboard import update_leaderboard
 
 
 
@@ -111,7 +111,7 @@ class UNLQueue(commands.Cog):
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)
     async def leaderboard(self, ctx):
-        await send_leaderboard(self._bot)
+        await update_leaderboard(self._bot)
         
     @commands.command(name="reset", aliases=["n"])
     @commands.has_permissions(manage_messages=True)

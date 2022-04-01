@@ -6,7 +6,7 @@ from pprint import pp
 
 import urllib
 
-from utils.send_leaderboard import send_leaderboard
+from utils.update_leaderboard import update_leaderboard
 
 
 async def report_game(bot: commands.Bot, game_id):
@@ -178,8 +178,8 @@ async def report_game(bot: commands.Bot, game_id):
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()
                                 
-                        channel = await bot.fetch_channel(int(os.getenv("LEADERBOARD")))
-                        await send_leaderboard(bot)
+                        channel = await bot.fetch_channel(int(os.getenv("HUB")))
+                        await update_leaderboard()
                     del unlq_json['lobbies'][str(lobby_id[9:])]
                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                         json.dump(unlq_json, unlq_file)
