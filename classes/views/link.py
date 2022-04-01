@@ -72,6 +72,8 @@ class LinkAccount(discord.ui.Modal):
                     unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
                     unlq_json['players'][str(interaction.user.id)]['puuid'] = account['puuid']
                     unlq_json['players'][str(interaction.user.id)]['rating'] = 60
+                    unlq_json['players'][str(interaction.user.id)]['wins'] = 0
+                    unlq_json['players'][str(interaction.user.id)]['losses'] = 0
                     pp("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))
                     
                 unlq_json['players'][str(interaction.user.id)]["name"] = account['name']

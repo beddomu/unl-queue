@@ -18,6 +18,3 @@ class Player:
         
     def __lt__(self, other):
         return self.rating < other.rating
-    
-    def __eq__(self, other):
-        return self.rating == other.rating

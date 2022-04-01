@@ -29,6 +29,7 @@ class MyBot(commands.Bot):
     async def background_task(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
+            
         for lobby in unlq['lobbies'].keys():
             if time.time() > unlq['lobbies'][lobby]['time_created'] + 60 * 60 * 2:
                 print(f"Lobby {lobby} expired")
@@ -44,6 +45,7 @@ class MyBot(commands.Bot):
                     if history:
                         for game in history[:3]:
                             await report_game(self, game[5:])
+        
             time.sleep(0.5)
         
     async def on_ready(self):
