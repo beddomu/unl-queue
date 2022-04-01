@@ -34,6 +34,7 @@ class Report(discord.ui.Modal):
         embed = discord.Embed(title="Anonymous UNL Queue player report")
         embed.add_field(name = "----------------------------------", value = f'**{self.name.value}**' + "\n\n" + self.feedback.value)
         embed.set_author(name = self.bot.user.name, icon_url= self.bot.user.avatar.url)
+        embed.set_footer(text = f"From: {interaction.user.name}")
         embed.set_thumbnail(url="https://cdn-icons-png.flaticon.com/512/76/76402.png")
         moderator = await self.bot.fetch_user(301821822502961152)
         await moderator.send(embed=embed)
