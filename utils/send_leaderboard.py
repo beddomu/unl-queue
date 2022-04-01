@@ -37,7 +37,7 @@ async def send_leaderboard(bot: commands.Bot):
             new_dict[player]['losses'] = random.randint(0, 10)
             
         res = collections.OrderedDict(sorted(new_dict.items(), key=lambda t:t[1]["lp"], reverse=True))
-        with open('website\\json\\leaderboard.json', 'w') as unlq_file:
+        with open('..\\unlqueue.xyz\\json\\leaderboard.json', 'w') as unlq_file:
             json.dump(res, unlq_file)
 
         embed.add_field(name="Player", value=player_string)
