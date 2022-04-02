@@ -17,6 +17,7 @@ from classes.views.match_found import MatchFoundView
 from lcu.create_lobby import Lobby
 from lcu.invite_player import invite_player
 from lcu.leave_lobby import leave_lobby
+from utils.ban import ban
 from utils.tinyurl import shorten_url
 
 
@@ -260,6 +261,7 @@ class Queue:
         not_ready_mentions = []
         for player in not_ready_list:
             not_ready_mentions.append(player.user.mention)
+            ban(player.user.id, 60*5)
         if len(ready_list) > 0:
             await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
         else:

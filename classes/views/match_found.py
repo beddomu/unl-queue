@@ -1,5 +1,9 @@
+import json
 from pprint import pp
+from time import time
 import discord
+
+from utils.ban import ban
 
 
 class MatchFoundView(discord.ui.View):
@@ -39,6 +43,8 @@ class MatchFoundView(discord.ui.View):
             for player in list:
                 if interaction.user.id == player.user.id:
                     print(player.name + " declined the queue")
+                    ban(player.user.id, 60*3)
+                    await interaction.response.send_message("You have been timed out from queueing for 3 minutes.", ephemeral=True)
                     self.queue.players.remove(player)
             self.queue.unready_all_players()
             await self.queue.update_lobby()

@@ -1,8 +1,11 @@
 import asyncio
+import datetime
 import json
 import os
 import random
+import time
 import discord
+import pytz
 from discord.ext import commands
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
@@ -32,8 +35,19 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="queue", description="Enter this command to view the queue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def queue_command(self, interaction: discord.Interaction):
-        if interaction.user.id not in self.queue.get_all_ids():
-            await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        if str(interaction.user.id) in unlq['players']:
+            if interaction.user.id not in self.queue.get_all_ids():
+                if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
+                    await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+                else:
+                    banned_until = unlq['players'][str(interaction.user.id)]['banned_until']
+                    value = datetime.datetime.fromtimestamp(banned_until, pytz.timezone('Europe/London'))
+                    res = value.strftime('%d %B %I:%M %p')
+                    await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
+        else:
+            await interaction.response.send_message("You need to link an account first! Try using **/link**")
 
 
     @app_commands.command(name="report", description="Enter this command to report a player")
