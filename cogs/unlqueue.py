@@ -33,15 +33,8 @@ class UNLQueue(commands.Cog):
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def queue_command(self, interaction: discord.Interaction):
         if interaction.user.id not in self.queue.get_all_ids():
-            try:
-                await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
-            except:
-                print("error at 37 in unlqueue.py")
-        else:
-            try:
-                await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
-            except:
-                print("error at 42 in unlqueue.py")
+            await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+
 
     @app_commands.command(name="report", description="Enter this command to report a player")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))

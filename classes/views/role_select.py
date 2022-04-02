@@ -37,15 +37,10 @@ class RoleSelect(discord.ui.Select):
                 rating = unlq_json['players'][p]['rating']
                 role = getattr(sys.modules[__name__], self.values[0].lower())
                 player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                await self.queue.add_player(player)
                 if self.queue.full != True:
-                    await self.queue.add_player(player)
-                    try:
-                        view = MatchmakingView(self.queue)
-                        await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
-                    except:
-                        pass
-                else:
-                    await interaction.response.send_message("The queue is currently full.", ephemeral=True)
+                    view = MatchmakingView(self.queue)
+                    await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
 
 
 class RoleSelectView(discord.ui.View):
@@ -58,6 +53,7 @@ class RoleSelectView(discord.ui.View):
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
             await interaction.response.edit_message(content="Queue is now full", view=None)
+            self.queue.full = True
         ign = None
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
@@ -67,12 +63,7 @@ class RoleSelectView(discord.ui.View):
                 rating = unlq_json['players'][p]['rating']
                 role = fill
                 player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                await self.queue.add_player(player)
                 if self.queue.full != True:
-                    await self.queue.add_player(player)
-                    try:
-                        view = MatchmakingView(self.queue)
-                        await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
-                    except:
-                        pass
-                else:
-                    await interaction.response.send_message("The queue is currently full.", ephemeral=True)
+                    view = MatchmakingView(self.queue)
+                    await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")

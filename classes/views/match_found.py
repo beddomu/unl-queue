@@ -10,6 +10,8 @@ class MatchFoundView(discord.ui.View):
     @discord.ui.button(label="Accept", style=discord.ButtonStyle.green)
     async def accept_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         #print(f'{interaction.user.name} pressed accept')
+        
+        await interaction.response.defer()
         if self.queue.check_player(interaction.user) and self.queue.locked == True:
             for player in self.queue.players:
                 if player.user == interaction.user and player:

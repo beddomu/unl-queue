@@ -6,7 +6,7 @@ class Cancel(discord.ui.View):
         super().__init__()
         self.value = None
 
-    @discord.ui.button(label='Bugged lobby', emoji="🧑‍🔧", style=discord.ButtonStyle.danger)
+    @discord.ui.button(label='Bugged lobby?', emoji="🧑‍🔧", style=discord.ButtonStyle.danger)
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id in [301821822502961152, 194932912729227264]:
             with open('C:\\DATA\\unlq.json', 'r') as file:
