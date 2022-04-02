@@ -7,9 +7,7 @@ import discord
 from discord.ext import commands
 from git import Repo
 
-async def update_leaderboard(bot: commands.Bot):
-        channel = await bot.fetch_channel(int(os.getenv("HUB")))
-        await channel.purge(limit=10)
+async def update_leaderboard():
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
 

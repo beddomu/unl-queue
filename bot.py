@@ -38,8 +38,6 @@ class MyBot(commands.Bot):
                 if history:
                     for game in history[:3]:
                         await report_game(self, game[5:])
-    
-            time.sleep(0.5)
         
     async def on_ready(self):
         for fn in os.listdir("./cogs"):

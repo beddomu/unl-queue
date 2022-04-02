@@ -12,6 +12,7 @@ from classes.game import Game
 from classes.image.image import make_image
 from classes.role import Role, top, jungle, middle, bottom, support, fill
 from classes.team import Team
+from classes.views.cancel_game import Cancel
 from classes.views.match_found import MatchFoundView
 from lcu.create_lobby import Lobby
 from lcu.invite_player import invite_player
@@ -27,10 +28,11 @@ class Queue:
         self.roles = [top, jungle, middle, bottom, support]
         self.full = bool
         self.locked = False
+        self.initiated = False
         self.pop_message = None
         self.spots_open = 10
         
-    async def reset_lobby(self, players = None):
+    async def reset_lobby(self):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
@@ -38,6 +40,7 @@ class Queue:
         self.locked = False
         self.full = False
         self.game = None
+        self.initiated = False
         self.pop_message = None
         self.message = message
         self.players.clear()
@@ -52,6 +55,7 @@ class Queue:
         self.locked = False
         self.full = False
         self.game = None
+        self.initiated = False
         self.message = message
         self.players.clear()
         if players:
@@ -248,17 +252,14 @@ class Queue:
             self.game = None
             self.players.clear()
         for player in ready_list:
-            await self.add_player(player)
+            self.players.append(player)
         not_ready_mentions = []
         for player in not_ready_list:
             not_ready_mentions.append(player.user.mention)
-        try:
-            if len(ready_list) > 0:
-                await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
-            else:
-                await self.pop_message.edit(view=None, content="Queue expired", delete_after=10)
-        except:
-            print("error")
+        if len(ready_list) > 0:
+            await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
+        else:
+            await self.pop_message.edit(view=None, content="Queue expired", delete_after=10)
         self.unready_all_players()
         await self.update_lobby()
         self.full = False
@@ -280,6 +281,7 @@ class Queue:
         return True
 
     async def initiate_game(self):
+        self.initiated = True
         lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5)
         lobby.create()
         time.sleep(1)
@@ -304,7 +306,8 @@ class Queue:
             embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
-        live_game_messsage = await channel.send(embed=embed, file=file)
+        view = Cancel()
+        live_game_messsage = await channel.send(view = view, embed = embed, file = file)
         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
             unlq_json =  json.load(unlq_file)
         unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}

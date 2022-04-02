@@ -66,10 +66,12 @@ class UNLQueue(commands.Cog):
                     if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
                         player = Player(user.id, user.name, fill, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
                         if player not in self.queue.players:
-                            await self.queue.add_player(player)
+                            self.queue.players.append(player)
                             n += 1
                 else:
                     break
+            else:
+                await self.queue.update_lobby()
                     
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
@@ -111,7 +113,7 @@ class UNLQueue(commands.Cog):
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)
     async def leaderboard(self, ctx):
-        await update_leaderboard(self._bot)
+        await update_leaderboard()
         
     @commands.command(name="reset", aliases=["n"])
     @commands.has_permissions(manage_messages=True)
@@ -119,7 +121,7 @@ class UNLQueue(commands.Cog):
         self.queue.locked = False
         await self.queue.reset_lobby()
         channel = await self._bot.fetch_channel(int(os.getenv("CHAT")))
-        await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
+        #await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         
 
 

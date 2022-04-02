@@ -26,11 +26,13 @@ class RoleSelect(discord.ui.Select):
         super().__init__(placeholder='Select your role...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
+        if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
+            await interaction.response.edit_message(content="Queue is now full", view=None)
         ign = None
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
         for p in unlq_json['players'].keys():
-            if p == str(interaction.user.id) and interaction.user.id not in self.queue.get_all_ids():
+            if p == str(interaction.user.id):
                 ign = unlq_json['players'][p]['name']
                 rating = unlq_json['players'][p]['rating']
                 role = getattr(sys.modules[__name__], self.values[0].lower())
@@ -54,11 +56,13 @@ class RoleSelectView(discord.ui.View):
         
     @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:949215552671469578>")
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
+            await interaction.response.edit_message(content="Queue is now full", view=None)
         ign = None
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
         for p in unlq_json['players'].keys():
-            if p == str(interaction.user.id) and interaction.user.id not in self.queue.get_all_ids():
+            if p == str(interaction.user.id):
                 ign = unlq_json['players'][p]['name']
                 rating = unlq_json['players'][p]['rating']
                 role = fill

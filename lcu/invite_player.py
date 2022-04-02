@@ -36,6 +36,8 @@ def invite_player(name):
         r = requests.post(url, headers=headers, data=data, verify=True)
         if r.status_code == 200:
             print('{} was sucessfully invited to the lobby'.format(account['name']))
+        elif r.status_code == 400:
+            print(f"{account['name']} was already invited")
         else:
             pprint(r.content)
     else:
