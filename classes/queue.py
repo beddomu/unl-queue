@@ -45,6 +45,8 @@ class Queue:
         self.message = message
         self.players.clear()
         self.spots_open = 10
+        channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
+        await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def new_lobby(self, players = None):
@@ -60,6 +62,8 @@ class Queue:
         self.players.clear()
         if players:
             self.players = players
+        channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
+        await channel.send("New queue is live. Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
@@ -323,6 +327,4 @@ class Queue:
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
-        #for p in players:
-            #await p.user.send(embed=embed)
         self.locked = False

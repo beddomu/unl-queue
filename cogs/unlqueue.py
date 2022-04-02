@@ -113,8 +113,6 @@ class UNLQueue(commands.Cog):
     async def newlobbymessage(self, ctx: commands.context.Context):
         self.queue.locked = False
         await self.queue.reset_lobby()
-        channel = await self._bot.fetch_channel(int(os.getenv("CHAT")))
-        #await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         
 
 
