@@ -66,7 +66,7 @@ class LinkAccount(discord.ui.Modal):
                 if not str(interaction.user.id) in unlq_json['players'].keys():
                     unlq_json['players'][str(interaction.user.id)] = {}
                     unlq_json['players'][str(interaction.user.id)]['discord_name'] = interaction.user.name
-                    unlq_json['players'][str(interaction.user.id)]['points'] = 0
+                    unlq_json['players'][str(interaction.user.id)]['points'] = 100
                     unlq_json['players'][str(interaction.user.id)]['last_dodge'] = 0
                     unlq_json['players'][str(interaction.user.id)]['id'] = account['id']
                     unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']

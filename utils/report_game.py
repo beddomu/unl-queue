@@ -41,6 +41,10 @@ async def report_game(bot: commands.Bot, game_id):
                                         unlq_json =  json.load(unlq_file)
                                     for player in unlq_json['players'].keys():
                                         if unlq_json['players'][player]['puuid'] == p['puuid']:
+                                            if unlq_json['players'][player]['mmr'] < 1000-50:
+                                                unlq_json['players'][player]['mmr'] += 50
+                                            else:
+                                                unlq_json['players'][player]['mmr'] = 1000
                                             if "wins" in unlq_json['players'][player].keys():
                                                 unlq_json['players'][player]['wins'] += 1
                                             else:
@@ -67,6 +71,10 @@ async def report_game(bot: commands.Bot, game_id):
                                         unlq_json =  json.load(unlq_file)
                                     for player in unlq_json['players'].keys():
                                         if unlq_json['players'][player]['puuid'] == p['puuid']:
+                                            if unlq_json['players'][player]['mmr'] < 1000-50:
+                                                unlq_json['players'][player]['mmr'] += 50
+                                            else:
+                                                unlq_json['players'][player]['mmr'] = 1000
                                             if "wins" in unlq_json['players'][player].keys():
                                                 unlq_json['players'][player]['wins'] += 1
                                             else:
@@ -94,6 +102,10 @@ async def report_game(bot: commands.Bot, game_id):
                                         unlq_json =  json.load(unlq_file)
                                     for player in unlq_json['players'].keys():
                                         if unlq_json['players'][player]['puuid'] == p['puuid']:
+                                            if unlq_json['players'][player]['mmr'] > -1000+50:
+                                                unlq_json['players'][player]['mmr'] -= 50
+                                            else:
+                                                unlq_json['players'][player]['mmr'] = -1000
                                             if "losses" in unlq_json['players'][player].keys():
                                                 unlq_json['players'][player]['losses'] += 1
                                             else:
@@ -120,7 +132,7 @@ async def report_game(bot: commands.Bot, game_id):
                                             else:
                                                 pp('{} lost a game at 0 LP'.format(p['summonerName']))
                                                 unlq_json['players'][player]['points'] = 0
-                                                embed = discord.Embed(title='-0')
+                                                embed = discord.Embed(title=f"-{unlq_json['players'][player]['points']}")
                                                 embed.set_footer(text=f'game id: {game_id}')
                                                 embed.color = discord.colour.Color.red()
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
@@ -138,6 +150,10 @@ async def report_game(bot: commands.Bot, game_id):
                                         unlq_json =  json.load(unlq_file)
                                     for player in unlq_json['players'].keys():
                                         if unlq_json['players'][player]['puuid'] == p['puuid']:
+                                            if unlq_json['players'][player]['mmr'] > -1000+50:
+                                                unlq_json['players'][player]['mmr'] -= 50
+                                            else:
+                                                unlq_json['players'][player]['mmr'] = -1000
                                             if "losses" in unlq_json['players'][player].keys():
                                                 unlq_json['players'][player]['losses'] += 1
                                             else:
@@ -164,7 +180,7 @@ async def report_game(bot: commands.Bot, game_id):
                                             else:
                                                 pp('{} lost a game at 0 LP'.format(p['summonerName']))
                                                 unlq_json['players'][player]['points'] = 0
-                                                embed = discord.Embed(title='-0')
+                                                embed = discord.Embed(title=f"-{unlq_json['players'][player]['points']}")
                                                 embed.set_footer(text=f'game id: {game_id}')
                                                 embed.color = discord.colour.Color.red()
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)

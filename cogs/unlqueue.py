@@ -106,6 +106,7 @@ class UNLQueue(commands.Cog):
         await channel.set_permissions(role, read_messages=False)
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
         await channel.set_permissions(role, read_messages=False)
+        self.queue.devmode = True
         
     @commands.command(name="public", aliases=["p"])
     @commands.has_permissions(manage_messages=True)
@@ -116,6 +117,7 @@ class UNLQueue(commands.Cog):
         await channel.set_permissions(role, read_messages=True)
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
         await channel.set_permissions(role, read_messages=True)
+        self.queue.devmode = False
         
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)

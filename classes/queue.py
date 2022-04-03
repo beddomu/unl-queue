@@ -32,6 +32,7 @@ class Queue:
         self.initiated = False
         self.pop_message = None
         self.spots_open = 10
+        self.devmode = True
         
     async def reset_lobby(self):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
@@ -47,7 +48,8 @@ class Queue:
         self.players.clear()
         self.spots_open = 10
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
-        await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
+        if self.devmode == False:
+            await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def new_lobby(self, players = None):
@@ -64,7 +66,8 @@ class Queue:
         if players:
             self.players = players
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
-        await channel.send("New queue is live. Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
+        if self.devmode == False:
+            await channel.send("New queue is live. Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
@@ -261,7 +264,7 @@ class Queue:
         not_ready_mentions = []
         for player in not_ready_list:
             not_ready_mentions.append(player.user.mention)
-            ban(player.user.id, 60*5)
+            ban(player.user.id, 60*30)
         if len(ready_list) > 0:
             await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
         else:
@@ -302,6 +305,16 @@ class Queue:
             team_players_list = []
             ign_list = []
             for player in team.players:
+                guild = self.message.guild
+                member = guild.get_member(player.id)
+                if team.side == "Blue":
+                    voice = discord.utils.get(guild.voice_channels, name="Team Blue🔵")
+                else:
+                    voice = discord.utils.get(guild.voice_channels, name="Team Red 🔴")
+                try:
+                    await member.move_to(voice)
+                except:
+                    print(f'{player.name} is not in a voice channel.')
                 invite_player(player.ign)
                 ign_list.append(player.ign.replace(" ", ""))
                 players.append(player)
