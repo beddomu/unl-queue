@@ -36,7 +36,7 @@ class RoleSelect(discord.ui.Select):
             for p in unlq_json['players'].keys():
                 if p == str(interaction.user.id):
                     ign = unlq_json['players'][p]['name']
-                    rating = unlq_json['players'][p]['rating']
+                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
                     role = getattr(sys.modules[__name__], self.values[0].lower())
                     player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
                     await self.queue.add_player(player)
@@ -64,7 +64,7 @@ class RoleSelectView(discord.ui.View):
             for p in unlq_json['players'].keys():
                 if p == str(interaction.user.id):
                     ign = unlq_json['players'][p]['name']
-                    rating = unlq_json['players'][p]['rating']
+                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
                     role = fill
                     player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
                     await self.queue.add_player(player)

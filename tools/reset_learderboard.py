@@ -7,6 +7,8 @@ for player in unlq['players']:
     unlq['players'][player]['points'] = 0
     unlq['players'][player]['wins'] = 0
     unlq['players'][player]['losses'] = 0
+    unlq['players'][player]['mmr'] = 0
+    unlq['players'][player]['lp_history'] = []
 
 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
     json.dump(unlq, unlq_file)
