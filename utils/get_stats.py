@@ -59,7 +59,10 @@ def get_stats(puuid):
     s += f'Kills: {kills}\n'
     s += f'Deaths: {deaths}\n'
     s += f'Assists: {assists}\n'
-    s += f'KDA: {round((kills + assists) / deaths, 2)}\n'
+    if deaths > 0:
+        s += f'KDA: {round((kills + assists) / deaths, 2)}\n'
+    else:
+        s += f'KDA: ∞\n'
     s += f'Skillshots hit: {skillshots_hit}\n'
     s += f'Skillshots dodged (big window): {skillshots_dodged}\n'
     s += f'Skillshots dodged (small window): {skillshots_dodged_small_window}\n'

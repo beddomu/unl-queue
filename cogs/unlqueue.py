@@ -48,7 +48,7 @@ class UNLQueue(commands.Cog):
                     res = value.strftime('%d %B %I:%M %p')
                     await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
         else:
-            await interaction.response.send_message("You need to link an account first! Try using **/link**")
+            await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
 
 
     @app_commands.command(name="report", description="Enter this command to report a player")
