@@ -53,7 +53,7 @@ async def report_game(bot: commands.Bot, game_id):
                                             red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
                                             mmr = int(unlq_json['players'][player]['mmr']/100)
                                             unlq_json['players'][player]['points'] += int(15+mmr + (red-blue)*0.06)
-                                            unlq_json['players'][player]['lp_history'].append(f'+{15+mmr + (red-blue)*0.06}')
+                                            unlq_json['players'][player]['lp_history'].append(f'+{int(15+mmr + (red-blue)*0.06)}')
                                             embed = discord.Embed(title=f'+{int(15+mmr+(red-blue)*0.06)}')
                                             embed.set_footer(text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.green()
@@ -85,7 +85,7 @@ async def report_game(bot: commands.Bot, game_id):
                                             red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
                                             mmr = int(unlq_json['players'][player]['mmr']/100)
                                             unlq_json['players'][player]['points'] += int(15+mmr+(blue-red)*0.06)
-                                            unlq_json['players'][player]['lp_history'].append(f'+{15+mmr+(blue-red)*0.06}')
+                                            unlq_json['players'][player]['lp_history'].append(f'+{int(15+mmr+(blue-red)*0.06)}')
                                             embed = discord.Embed(title=f'+{int(15+mmr+(blue-red)*0.06)}')
                                             embed.set_footer(text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.green()
@@ -117,10 +117,10 @@ async def report_game(bot: commands.Bot, game_id):
                                             blue = unlq_json['lobbies'][str(lobby_id[9:])]['blue_team']
                                             red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
                                             mmr = int(unlq_json['players'][player]['mmr']/100)
-                                            if unlq_json['players'][player]['points'] >= int(12+mmr-(red-blue)*0.06):
-                                                unlq_json['players'][player]['points'] -= int(12+mmr-(red-blue)*0.06)
-                                                unlq_json['players'][player]['lp_history'].append(f'-{12+mmr-(red-blue)*0.06}')
-                                                embed = discord.Embed(title=f'-{int(12+mmr-(red-blue)*0.06)}')
+                                            if unlq_json['players'][player]['points'] >= int(12-mmr-(red-blue)*0.06):
+                                                unlq_json['players'][player]['points'] -= int(12-mmr-(red-blue)*0.06)
+                                                unlq_json['players'][player]['lp_history'].append(f'-{int(12+mmr-(red-blue)*0.06)}')
+                                                embed = discord.Embed(title=f'-{int(12-mmr-(red-blue)*0.06)}')
                                                 embed.set_footer(text=f'game id: {game_id}')
                                                 embed.color = discord.colour.Color.red()
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
@@ -130,7 +130,7 @@ async def report_game(bot: commands.Bot, game_id):
                                                     await user.send(embed=embed)
                                                 except:
                                                     print(f"Cannot send dm to: {user.name}")
-                                                pp('{} lost {} LP'.format(p['summonerName'], int(12+mmr-(red-blue)*0.06)))
+                                                pp('{} lost {} LP'.format(p['summonerName'], int(12-mmr-(red-blue)*0.06)))
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()
@@ -167,10 +167,10 @@ async def report_game(bot: commands.Bot, game_id):
                                                 unlq_json['players'][player]['losses'] = 1
                                             blue = unlq_json['lobbies'][str(lobby_id[9:])]['blue_team']
                                             red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
-                                            if unlq_json['players'][player]['points'] >= int(12+mmr-(blue-red)*0.06):
-                                                unlq_json['players'][player]['points'] -= int(12+mmr-(blue-red)*0.06)
-                                                unlq_json['players'][player]['lp_history'].append(f'+{12+mmr-(blue-red)*0.06}')
-                                                embed = discord.Embed(title=f'-{int(12+mmr-(blue-red)*0.06)}')
+                                            if unlq_json['players'][player]['points'] >= int(12-mmr-(blue-red)*0.06):
+                                                unlq_json['players'][player]['points'] -= int(12-mmr-(blue-red)*0.06)
+                                                unlq_json['players'][player]['lp_history'].append(f'+{int(12+mmr-(blue-red)*0.06)}')
+                                                embed = discord.Embed(title=f'-{int(12-mmr-(blue-red)*0.06)}')
                                                 embed.set_footer(text=f'game id: {game_id}')
                                                 embed.color = discord.colour.Color.red()
                                                 embed.set_author(name="UNL Queue", icon_url=bot.user.avatar.url)
@@ -180,7 +180,7 @@ async def report_game(bot: commands.Bot, game_id):
                                                     await user.send(embed=embed)
                                                 except:
                                                     print(f"Cannot send dm to: {user.name}")
-                                                pp('{} lost {} LP'.format(p['summonerName'], int(12+mmr-(blue-red)*0.06)))
+                                                pp('{} lost {} LP'.format(p['summonerName'], int(12-mmr-(blue-red)*0.06)))
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()
