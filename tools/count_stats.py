@@ -20,14 +20,13 @@ solo_kills = 0
 csd = 0
 skillshots_dodged_small_window = 0
 
-input = input("Player: ")
 
 for fn in os.listdir("C:\\DATA\\games"):
     with open(f'C:\\DATA\\games\\{fn}', 'r') as file:
         game = json.load(file)
     
     for player in game['info']['participants']:
-        if player['summonerName'] == input:
+        if player['puuid'] == "rb-PlbOWiGZOzwc34R2sq9Lr3kLSLDB2SXE8j12MSL96tBtoVD2KJb6wge_PDBQ62ZOS9xuGvg6ZYw":
             name = player['summonerName']
             index += 1
             kills += player['kills']
