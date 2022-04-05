@@ -32,7 +32,9 @@ class Queue:
         self.initiated = False
         self.pop_message = None
         self.spots_open = 10
-        self.devmode = True
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        self.devmode = unlq['dev_mode']
         
     async def reset_lobby(self):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
@@ -67,7 +69,7 @@ class Queue:
             self.players = players
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
         if self.devmode == False:
-            await channel.send("New queue is live. Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
+            await channel.send("Queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
@@ -246,6 +248,7 @@ class Queue:
 
 
     async def on_queue_timeout(self):
+        self.unready_all_players()
         self.locked = False
         self.game = None
         ready_list = []
@@ -269,7 +272,6 @@ class Queue:
             await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
         else:
             await self.pop_message.edit(view=None, content="Queue expired", delete_after=10)
-        self.unready_all_players()
         await self.update_lobby()
         self.full = False
 

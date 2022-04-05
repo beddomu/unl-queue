@@ -4,8 +4,11 @@ with open('C:\\DATA\\unlq.json', 'r') as file:
     unlq = json.load(file)
     
 for p in unlq['players']:
-    for n in unlq['players'][p]['lp_history']:
-        unlq['players'][p]['lp_history'][unlq['players'][p]['lp_history'].index(n)] = int(float(n))
+    if 'last_dodge' in unlq['players'][p].keys():
+        del unlq['players'][p]['last_dodge']
+    else:
+        print(unlq['players'][p]['discord_name'])
+        
 
 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
     json.dump(unlq, unlq_file)

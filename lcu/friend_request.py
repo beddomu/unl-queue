@@ -29,6 +29,6 @@ def friend_request(name):
     data = json.dumps(data_json)
     r = requests.post(url, headers=headers, data=data, verify=True)
     if r.status_code == 204:
-        print('Friend request was sucessfully sent to: {}'.format(account['name']))
+        print('Friend request was successfully sent to: {}'.format(account['name']))
     else:
         pprint(r.content)

@@ -41,6 +41,13 @@ async def report_game(bot: commands.Bot, game_id):
                                         unlq_json =  json.load(unlq_file)
                                     for player in unlq_json['players'].keys():
                                         if unlq_json['players'][player]['puuid'] == p['puuid']:
+                                            guild = bot.get_guild(int(os.getenv("SERVER_ID")))
+                                            member = guild.get_member(int(player))
+                                            voice = discord.utils.get(guild.voice_channels, name="Queue")
+                                            try:
+                                                await member.move_to(voice)
+                                            except:
+                                                print(f'{player["discord_name"]} is not in a voice channel.')
                                             if unlq_json['players'][player]['mmr'] < 1000-75:
                                                 unlq_json['players'][player]['mmr'] += 75
                                             else:
@@ -169,7 +176,7 @@ async def report_game(bot: commands.Bot, game_id):
                                             red = unlq_json['lobbies'][str(lobby_id[9:])]['red_team']
                                             if unlq_json['players'][player]['points'] >= int(12-mmr-(blue-red)*0.06):
                                                 unlq_json['players'][player]['points'] -= int(12-mmr-(blue-red)*0.06)
-                                                unlq_json['players'][player]['lp_history'].append(f'+{int(12+mmr-(blue-red)*0.06)}')
+                                                unlq_json['players'][player]['lp_history'].append(f'-{int(12+mmr-(blue-red)*0.06)}')
                                                 embed = discord.Embed(title=f'-{int(12-mmr-(blue-red)*0.06)}')
                                                 embed.set_footer(text=f'game id: {game_id}')
                                                 embed.color = discord.colour.Color.red()
@@ -202,9 +209,8 @@ async def report_game(bot: commands.Bot, game_id):
                                                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                     json.dump(unlq_json, unlq_file)
                                                     unlq_file.close()
-                                
-                        channel = await bot.fetch_channel(int(os.getenv("HUB")))
                         await update_leaderboard()
+                        
                     del unlq_json['lobbies'][str(lobby_id[9:])]
                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                         json.dump(unlq_json, unlq_file)

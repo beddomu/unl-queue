@@ -109,9 +109,16 @@ class UNLQueue(commands.Cog):
     async def debug(self, ctx):
         self.queue.list_players()
         
-    @commands.command(name="develop", aliases=["dev"])
+    @commands.command(name="devmode", aliases=["dev"])
     @commands.has_permissions(manage_messages=True)
     async def dev(self, ctx):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+            
+        unlq['dev_mode'] = True
+
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
         guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
         role = discord.utils.get(guild.roles, id = 676740137815900160)
         channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
@@ -123,6 +130,13 @@ class UNLQueue(commands.Cog):
     @commands.command(name="public", aliases=["p"])
     @commands.has_permissions(manage_messages=True)
     async def public(self, ctx):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+            
+        unlq['dev_mode'] = False
+
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
         guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
         role = discord.utils.get(guild.roles, id = 676740137815900160)
         channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
@@ -130,6 +144,7 @@ class UNLQueue(commands.Cog):
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
         await channel.set_permissions(role, read_messages=True)
         self.queue.devmode = False
+        await self.queue.new_lobby()
         
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)
