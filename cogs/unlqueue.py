@@ -17,6 +17,7 @@ from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.get_stats import get_stats
+from utils.report_game import report_game
 from utils.update_leaderboard import update_leaderboard
 
 

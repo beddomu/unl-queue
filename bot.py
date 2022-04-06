@@ -23,7 +23,7 @@ class MyBot(commands.Bot):
         
 
     async def setup_hook(self):
-        self.background_task.start()
+        pass
             
     @tasks.loop(minutes=1)
     async def background_task(self):
@@ -37,9 +37,10 @@ class MyBot(commands.Bot):
                 history = get_match_history(account['puuid'])
                 if history:
                     for game in history[:3]:
-                        await report_game(self, game[5:])
+                        await report_game(self, game[5:], bot.get_guild(603515060119404584))
         
     async def on_ready(self):
+        self.background_task.start()
         for fn in os.listdir("./cogs"):
             if fn.endswith(".py"):
                 await bot.load_extension(f'cogs.{fn[:-3]}')

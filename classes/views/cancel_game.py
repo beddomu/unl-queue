@@ -1,10 +1,12 @@
 import json
+from pprint import pp
 import discord
 
 class Cancel(discord.ui.View):
-    def __init__(self):
+    def __init__(self, lobby_id):
         super().__init__()
         self.value = None
+        self.lobby_id = lobby_id
 
     @discord.ui.button(label='Bugged lobby?', emoji="🧑‍🔧", style=discord.ButtonStyle.danger)
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -19,6 +21,11 @@ class Cancel(discord.ui.View):
             del unlq['lobbies'][the_lobby]
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(unlq, unlq_file)
+            guild = interaction.guild
+            game_category = discord.utils.get(guild.categories, name=str(self.lobby_id))
+            for channel in game_category.voice_channels:
+                await channel.delete()
+            await game_category.delete()
             await interaction.message.delete()
             self.value = False
             self.stop()

@@ -35,7 +35,7 @@ class Queue:
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         self.devmode = unlq['dev_mode']
-        
+
     async def reset_lobby(self):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         await channel.purge(limit=100)
@@ -54,7 +54,7 @@ class Queue:
             await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
-    async def new_lobby(self, players = None):
+    async def new_lobby(self, players=None):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
@@ -180,13 +180,13 @@ class Queue:
             while len(role) < 2 and len(self.fill_list) >= 0:
                 role.append(self.fill_list.pop(
                     random.randint(0, (len(self.fill_list)-1))))
-                
+
         print("balancing teams...")
-                
+
         topq = [self.top_list[0], self.top_list[1]]
         team_blue.add_player(topq.pop(random.randint(0, 1)))
         team_red.add_player(topq[0])
-        
+
         jgq = [self.jungle_list[0], self.jungle_list[1]]
         better_player = jgq.index(max(jgq))
         options = [jgq.pop(better_player), jgq[0]]
@@ -199,7 +199,7 @@ class Queue:
         else:
             game.blue_team.add_player(self.jungle_list[0])
             game.red_team.add_player(self.jungle_list[1])
-            
+
         midq = [self.mid_list[0], self.mid_list[1]]
         better_player = midq.index(max(midq))
         options = [midq.pop(better_player), midq[0]]
@@ -212,7 +212,7 @@ class Queue:
         else:
             game.blue_team.add_player(self.jungle_list[0])
             game.red_team.add_player(self.jungle_list[1])
-        
+
         adcq = [self.bot_list[0], self.bot_list[1]]
         better_player = adcq.index(max(adcq))
         options = [adcq.pop(better_player), adcq[0]]
@@ -225,7 +225,7 @@ class Queue:
         else:
             game.blue_team.add_player(self.jungle_list[0])
             game.red_team.add_player(self.jungle_list[1])
-            
+
         suppq = [self.supp_list[0], self.supp_list[1]]
         better_player = suppq.index(max(suppq))
         options = [suppq.pop(better_player), suppq[0]]
@@ -238,14 +238,13 @@ class Queue:
         else:
             game.blue_team.add_player(self.jungle_list[0])
             game.red_team.add_player(self.jungle_list[1])
-        
+
         print(f"Final Team blue rating: {team_blue.rating}")
         print(f"Final Team red rating: {team_red.rating}")
-        
+
         self.game = game
         make_image(game)
         return game
-
 
     async def on_queue_timeout(self):
         self.unready_all_players()
@@ -299,20 +298,33 @@ class Queue:
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
         embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
-        embed.set_footer(text=f'Lobby id: {int(str(self.message.id)[:-8])}')
+        embed.set_footer(text=f'Lobby ID: {int(str(self.message.id)[:-8])}')
         file = discord.File('classes\\image\\res.png', filename='res.png')
         embed.set_image(url=('attachment://res.png'))
         players = []
+        guild = self.message.guild
+        role = discord.utils.get(guild.roles, id=676740137815900160)
+        member = guild.get_member(301821822502961152)
+        permissions = {
+            role: discord.PermissionOverwrite(view_channel=True),
+            member: discord.PermissionOverwrite(view_channel=True)
+        }
+        unlq_category = discord.utils.get(
+            guild.categories, id=953292613115605012)
+        category = await guild.create_category(name=f"{int(str(self.message.id)[:-8])}", position=(unlq_category.position - 1), overwrites=permissions)
+        await guild.create_voice_channel("Team Blue🔵", category=category, overwrites=permissions)
+        await guild.create_voice_channel("Team Red 🔴", category=category, overwrites=permissions)
         for team in self.game.teams:
             team_players_list = []
             ign_list = []
             for player in team.players:
-                guild = self.message.guild
                 member = guild.get_member(player.id)
                 if team.side == "Blue":
-                    voice = discord.utils.get(guild.voice_channels, name="Team Blue🔵")
+                    voice = discord.utils.get(
+                        category.voice_channels, name="Team Blue🔵")
                 else:
-                    voice = discord.utils.get(guild.voice_channels, name="Team Red 🔴")
+                    voice = discord.utils.get(
+                        category.voice_channels, name="Team Red 🔴")
                 try:
                     await member.move_to(voice)
                 except:
@@ -320,32 +332,41 @@ class Queue:
                 invite_player(player.ign)
                 ign_list.append(player.ign.replace(" ", ""))
                 players.append(player)
-                team_players_list.append(player.role.emoji + player.user.mention)
-            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(",".join(ign_list))
+                team_players_list.append(
+                    player.role.emoji + player.user.mention)
+            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
+                ",".join(ign_list))
             try:
-                short_multiopgg = "\nMulti opgg: {}".format(shorten_url(multiopgg))
+                short_multiopgg = "\nMulti opgg: {}".format(
+                    shorten_url(multiopgg))
             except:
                 pass
             team_players_string = "\n".join(team_players_list)
             if short_multiopgg:
                 team_players_string += short_multiopgg
-            embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
+            embed.add_field(
+                name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
-        view = Cancel()
-        live_game_messsage = await channel.send(view = view, embed = embed, file = file)
+        view = Cancel(str(self.message.id)[:-8])
+        live_game_messsage = await channel.send(view=view, embed=embed, file=file)
         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
-            unlq_json =  json.load(unlq_file)
+            unlq_json = json.load(unlq_file)
         unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['game_id'] = live_game_messsage.id
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['blue_team'] = self.game.blue_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['red_team'] = self.game.red_team.rating
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['time_created'] = int(time.time())
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['time_created'] = int(time.time())
         for team in self.game.teams:
             for player in team.players:
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'].append(player.ign)
-                
+                unlq_json['lobbies'][int(str(self.message.id)[
+                                         :-8])]['players'].append(player.ign)
+
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
