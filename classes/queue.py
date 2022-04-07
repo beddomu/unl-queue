@@ -141,6 +141,7 @@ class Queue:
         player_mentions = game.get_player_mentions()
         view = MatchFoundView(self)
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
+        random.shuffle(player_mentions)
         self.pop_message = await channel.send(" ".join(player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
 
     def make_teams(self):

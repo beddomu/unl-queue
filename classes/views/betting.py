@@ -34,6 +34,7 @@ class BetModal(discord.ui.Modal):
                     self.unlq['players'][str(self.user_id)]['bets'][str(self.lobby_id)] = {}
                     self.unlq['players'][str(self.user_id)]['bets'][str(self.lobby_id)][self.team] = your_bet
                     self.unlq['players'][str(self.user_id)]['unp'] -= your_bet
+                    print(f"{interaction.user.name} bet {your_bet} UN Points on team {self.team}")
                     await interaction.response.send_message(f"You bet {your_bet} UN Points on the {self.team.capitalize()} team in lobby ID: {self.lobby_id}", ephemeral=True)
                 else:
                     await interaction.response.send_message("You've already placed a bet for this game.", ephemeral=True)

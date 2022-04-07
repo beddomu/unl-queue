@@ -41,7 +41,8 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5
+                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
                                         
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
@@ -97,8 +98,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2
-                                            
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5
+                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
+   
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
@@ -155,8 +157,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2
-                                    
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5
+                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
+                                
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
@@ -238,7 +241,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5
+                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
+
                                             
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:

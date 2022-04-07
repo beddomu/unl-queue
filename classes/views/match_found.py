@@ -44,7 +44,7 @@ class MatchFoundView(discord.ui.View):
                 if interaction.user.id == player.user.id:
                     print(player.name + " declined the queue")
                     ban(player.user.id, 60*5)
-                    await interaction.response.send_message("You have been timed out from queueing for 3 minutes.", ephemeral=True)
+                    await interaction.response.send_message("You have been timed out from queueing for 5 minutes.", ephemeral=True)
                     self.queue.players.remove(player)
             self.queue.unready_all_players()
             await self.queue.update_lobby()
