@@ -28,7 +28,7 @@ class RoleSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
-            await interaction.response.edit_message(content="Queue is now full", view=None)
+            await interaction.response.edit_message(content="Game is about to begin...", view=None)
         ign = None
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)

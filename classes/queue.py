@@ -12,7 +12,7 @@ from classes.game import Game
 from classes.image.image import make_image
 from classes.role import Role, top, jungle, middle, bottom, support, fill
 from classes.team import Team
-from classes.views.cancel_game import Cancel
+from classes.views.live_game import LiveGame
 from classes.views.match_found import MatchFoundView
 from lcu.create_lobby import Lobby
 from lcu.invite_player import invite_player
@@ -67,6 +67,7 @@ class Queue:
         self.players.clear()
         if players:
             self.players = players
+        self.unready_all_players()
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
         if self.devmode == False:
             await channel.send("Queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
@@ -348,24 +349,21 @@ class Queue:
                 name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
-        view = Cancel(str(self.message.id)[:-8])
+        view = LiveGame(str(self.message.id)[:-8])
         live_game_messsage = await channel.send(view=view, embed=embed, file=file)
         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
             unlq_json = json.load(unlq_file)
         unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['game_id'] = live_game_messsage.id
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['blue_team'] = self.game.blue_team.rating
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['red_team'] = self.game.red_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['time_created'] = int(time.time())
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'] = []
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['time_created'] = int(time.time())
         for team in self.game.teams:
             for player in team.players:
-                unlq_json['lobbies'][int(str(self.message.id)[
-                                         :-8])]['players'].append(player.ign)
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'].append(player.ign)
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'].append(player.user.id)
 
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)

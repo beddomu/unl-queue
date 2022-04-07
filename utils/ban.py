@@ -4,7 +4,7 @@ import datetime
 
 
 def ban(player_id, seconds):
-    banned_until = time.time() + 60*3
+    banned_until = time.time() + seconds
     with open('C:\\DATA\\unlq.json', 'r') as file:
         unlq = json.load(file)
     unlq['players'][str(player_id)]['banned_until'] = banned_until

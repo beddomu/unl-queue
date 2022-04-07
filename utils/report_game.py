@@ -37,6 +37,12 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
+                                    
+                                for player in unlq_json['players'].keys():
+                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                                        if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2
+                                        
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
@@ -89,6 +95,11 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
                                 for player in unlq_json['players'].keys():
+                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                                        if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2
+                                            
+                                for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
                                         voice = discord.utils.get(
@@ -140,6 +151,12 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
+                                    
+                                for player in unlq_json['players'].keys():
+                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                                        if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2
+                                    
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
@@ -164,13 +181,13 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['red_team']
                                         mmr = int(
                                             unlq_json['players'][player]['mmr']/100)
-                                        if unlq_json['players'][player]['points'] >= int(12-mmr-(red-blue)*0.06):
+                                        if unlq_json['players'][player]['points'] >= int(15-mmr-(red-blue)*0.06):
                                             unlq_json['players'][player]['points'] -= int(
-                                                12-mmr-(red-blue)*0.06)
+                                                15-mmr-(red-blue)*0.06)
                                             unlq_json['players'][player]['lp_history'].append(
-                                                f'-{int(12+mmr-(red-blue)*0.06)}')
+                                                f'-{int(15+mmr-(red-blue)*0.06)}')
                                             embed = discord.Embed(
-                                                title=f'-{int(12-mmr-(red-blue)*0.06)}')
+                                                title=f'-{int(15-mmr-(red-blue)*0.06)}')
                                             embed.set_footer(
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
@@ -185,7 +202,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                                 print(
                                                     f"Cannot send dm to: {user.name}")
                                             pp('{} lost {} LP'.format(
-                                                p['summonerName'], int(12-mmr-(red-blue)*0.06)))
+                                                p['summonerName'], int(15-mmr-(red-blue)*0.06)))
                                             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                 json.dump(unlq_json, unlq_file)
                                                 unlq_file.close()
@@ -217,6 +234,12 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             else:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
+                                    
+                                for player in unlq_json['players'].keys():
+                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                                        if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2
+                                            
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
@@ -241,13 +264,13 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['red_team']
                                         mmr = int(
                                             unlq_json['players'][player]['mmr']/100)
-                                        if unlq_json['players'][player]['points'] >= int(12-mmr-(blue-red)*0.06):
+                                        if unlq_json['players'][player]['points'] >= int(15-mmr-(blue-red)*0.06):
                                             unlq_json['players'][player]['points'] -= int(
-                                                12-mmr-(blue-red)*0.06)
+                                                15-mmr-(blue-red)*0.06)
                                             unlq_json['players'][player]['lp_history'].append(
-                                                f'-{int(12+mmr-(blue-red)*0.06)}')
+                                                f'-{int(15+mmr-(blue-red)*0.06)}')
                                             embed = discord.Embed(
-                                                title=f'-{int(12-mmr-(blue-red)*0.06)}')
+                                                title=f'-{int(15-mmr-(blue-red)*0.06)}')
                                             embed.set_footer(
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
@@ -262,7 +285,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                                 print(
                                                     f"Cannot send dm to: {user.name}")
                                             pp('{} lost {} LP'.format(
-                                                p['summonerName'], int(12-mmr-(blue-red)*0.06)))
+                                                p['summonerName'], int(15-mmr-(blue-red)*0.06)))
                                             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                 json.dump(unlq_json, unlq_file)
                                                 unlq_file.close()

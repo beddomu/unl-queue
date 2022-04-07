@@ -48,6 +48,8 @@ class UNLQueue(commands.Cog):
                     value = datetime.datetime.fromtimestamp(banned_until, pytz.timezone('Europe/London'))
                     res = value.strftime('%d %B %I:%M %p')
                     await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
+            else:
+                await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
         else:
             await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
 
