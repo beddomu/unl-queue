@@ -37,23 +37,17 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
-                                    
+
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5
-                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
-                                        
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
+                                                lobby_id[9:])]['blue']*2/5
+                                            print(
+                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
+
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                        member = guild.get_member(int(player))
-                                        voice = discord.utils.get(
-                                            guild.voice_channels, id=959880784116854794)
-                                        try:
-                                            await member.move_to(voice)
-                                        except:
-                                            print(
-                                                f'{unlq_json["players"][player]["discord_name"]} is not in the queue voice channel.')
                                         if unlq_json['players'][player]['mmr'] < 1000-75:
                                             unlq_json['players'][player]['mmr'] += 75
                                         else:
@@ -98,19 +92,13 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5
-                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
-   
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
+                                                lobby_id[9:])]['red']*2/5
+                                            print(
+                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
+
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                        member = guild.get_member(int(player))
-                                        voice = discord.utils.get(
-                                            guild.voice_channels, id=959880784116854794)
-                                        try:
-                                            await member.move_to(voice)
-                                        except:
-                                            print(
-                                                f'{unlq_json["players"][player]["discord_name"]} is not in the queue voice channel.')
                                         if unlq_json['players'][player]['mmr'] < 1000-75:
                                             unlq_json['players'][player]['mmr'] += 75
                                         else:
@@ -153,23 +141,17 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
-                                    
+
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5
-                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
-                                
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
+                                                lobby_id[9:])]['blue']*2/5
+                                            print(
+                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
+
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                        member = guild.get_member(int(player))
-                                        voice = discord.utils.get(
-                                            guild.voice_channels, id=959880784116854794)
-                                        try:
-                                            await member.move_to(voice)
-                                        except:
-                                            print(
-                                                f'{unlq_json["players"][player]["discord_name"]} is not in the queue voice channel.')
                                         if unlq_json['players'][player]['mmr'] > -1000+75:
                                             unlq_json['players'][player]['mmr'] -= 75
                                         else:
@@ -237,24 +219,19 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             else:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
-                                    
+
                                 for player in unlq_json['players'].keys():
                                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                         if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5
-                                            print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
+                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
+                                                lobby_id[9:])]['red']*2/5
+                                            print(
+                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
 
-                                            
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
-                                        voice = discord.utils.get(
-                                            guild.voice_channels, id=959880784116854794)
-                                        try:
-                                            await member.move_to(voice)
-                                        except:
-                                            print(
-                                                f'{unlq_json["players"][player]["discord_name"]} is not in the queue voice channel.')
+
                                         if unlq_json['players'][player]['mmr'] > -1000+75:
                                             unlq_json['players'][player]['mmr'] -= 75
                                         else:
@@ -322,7 +299,14 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                     await update_leaderboard()
                     game_category = discord.utils.get(
                         guild.categories, name=lobby_id[9:])
+                    queue_voice = discord.utils.get(guild.voice_channels, id=959880784116854794)
                     for channel in game_category.voice_channels:
+                        for member in channel.members:
+                            try:
+                                await member.move_to(queue_voice)
+                            except:
+                                print(
+                                    f'{unlq_json["players"][player]["discord_name"]} is not in the queue voice channel.')
                         await channel.delete()
                     await game_category.delete()
                 del unlq_json['lobbies'][str(lobby_id[9:])]
