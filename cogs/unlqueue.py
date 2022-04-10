@@ -10,7 +10,6 @@ from discord.ext import commands
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
-from classes.views.match_found import MatchFoundView
 from classes.views.matchmaking import MatchmakingView
 from classes.views.role_select import RoleSelectView
 from classes.role import fill
@@ -18,7 +17,6 @@ from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.get_stats import get_stats
 from utils.is_player_gold_plus import is_player_gold_plus
-from utils.report_game import report_game
 from utils.update_leaderboard import update_leaderboard
 
 
@@ -43,7 +41,7 @@ class UNLQueue(commands.Cog):
         if str(interaction.user.id) in unlq['players']:
             if interaction.user.id not in self.queue.get_all_ids():
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
-                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']):
+                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354]:
                         await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
                     else:
                         await interaction.response.send_message(f"You need to be ranked Gold 4 or above in Ranked Solo/Duo to play UNL Queue.", ephemeral=True)
@@ -101,15 +99,22 @@ class UNLQueue(commands.Cog):
                     
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
-    async def add_fill_dummy(self, ctx: commands.context.Context, input: int):
+    async def add_fill(self, ctx: commands.context.Context, input: int):
             n = 0
             while n < input:
                 if len(self.queue.players) < 10:
-                    player = Player(948863727032217641, f"Target dummy {n + 1}", fill, ctx.author, False, None, 50)
-                    await self.queue.add_player(player)
-                    n += 1
+                    user = random.choice(self.queue.message.channel.guild.members)
+                    with open('C:\\DATA\\unlq.json', 'r') as json_file:
+                        unlq_json =  json.load(json_file)
+                    if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
+                        player = Player(user.id, user.name, fill, user, False, "beddomu", unlq_json['players'][str(user.id)]['rating'])
+                        if player not in self.queue.players:
+                            self.queue.players.append(player)
+                            n += 1
                 else:
                     break
+            else:
+                await self.queue.update_lobby()
                 
     @commands.command(name="debug", aliases=["c"])
     @commands.has_permissions(manage_messages=True)

@@ -24,13 +24,13 @@ from utils.tinyurl import shorten_url
 class Queue:
     def __init__(self, team_size):
         self.team_size = team_size
-        self.message = None
+        self.message: discord.Message = None
         self.players = []
         self.roles = [top, jungle, middle, bottom, support]
         self.full = bool
         self.locked = False
         self.initiated = False
-        self.pop_message = None
+        self.pop_message: discord.Message = None
         self.spots_open = 10
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
@@ -93,7 +93,7 @@ class Queue:
 
     async def update_lobby(self):
         self.ready_check()
-        initial_string = f"**Players in queue:**\n`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------\n"
+        initial_string = f"**Players in queue:**\n`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------"
         player_string_list = []
 
         top_list = []
@@ -124,7 +124,7 @@ class Queue:
                 string = f"       `{player.name}`"
             player_string_list.append(string)
         if player_string_list:
-            player_string = "\n".join(player_string_list)
+            player_string = "\n" + "\n".join(player_string_list)
         else:
             player_string = "       `none`"
 
@@ -132,9 +132,22 @@ class Queue:
 
         divider = "\n---------------------------------------------"
         lobby_id_string = f"\n`Lobby id: {int(str(self.message.id)[:-8])}`"
-        end_string = initial_string + player_string + \
-            divider + role_list + divider + lobby_id_string
+        end_string = initial_string +  role_list + divider + lobby_id_string
         await self.message.edit(content=end_string)
+        
+    async def update_queue_pop(self):
+        player_string_list = []
+        for player in self.players:
+            if player.ready == True:
+                string = f"✅ `{player.name}`"
+            else:
+                string = f"       `{player.name}`"
+            player_string_list.append(string)
+        if player_string_list:
+            player_string = "\n" + "\n".join(player_string_list)
+            await self.pop_message.edit(content="\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string)
+
+        
 
     def ready_check(self):
         role_list = []
@@ -167,7 +180,16 @@ class Queue:
         view = MatchFoundView(self)
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         random.shuffle(player_mentions)
-        self.pop_message = await channel.send(" ".join(player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*", view=view)
+        player_string_list = []
+        for player in self.players:
+            if player.ready == True:
+                string = f"✅ `{player.name}`"
+            else:
+                string = f"       `{player.name}`"
+            player_string_list.append(string)
+        if player_string_list:
+            player_string = "\n" + "\n".join(player_string_list)    
+            self.pop_message = await channel.send(" ".join(player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string, view=view)
 
     def make_teams(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -373,6 +395,7 @@ class Queue:
             embed.add_field(
                 name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
+        
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
         view = LiveGame(str(self.message.id)[:-8])
         live_game_messsage = await channel.send(view=view, embed=embed, file=file)

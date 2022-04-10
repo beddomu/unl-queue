@@ -21,10 +21,14 @@ class MatchFoundView(discord.ui.View):
                 if player.user == interaction.user and player:
                     player.ready = True
 
+            await self.queue.update_queue_pop()
             await self.queue.update_lobby()
             if self.queue.players_ready_check() and self.queue.initiated == False:
                 self.stop()
-                await self.queue.initiate_game()
+                if self.queue.devmode == False:
+                    await self.queue.initiate_game()
+                else:
+                    print("[DEV] Initiating game...")
                 last_game_players = self.queue.game.get_players()
                 last_queue_players = self.queue.players
                 players = []
@@ -48,6 +52,7 @@ class MatchFoundView(discord.ui.View):
                     self.queue.players.remove(player)
             self.queue.unready_all_players()
             await self.queue.update_lobby()
+            await self.queue.update_queue_pop()
             self.stop()
 
 
