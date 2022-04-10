@@ -47,11 +47,11 @@ class Queue:
         self.initiated = False
         self.pop_message = None
         self.message = message
-        self.players.clear()
-        self.spots_open = 10
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
         if self.devmode == False:
-            await channel.send("The lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
+            await channel.send(f"{' '.join(self.get_player_mentions())}\nThe lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
+        self.players.clear()
+        self.spots_open = 10
         await self.update_lobby()
 
     async def new_lobby(self, players=None):
@@ -400,3 +400,9 @@ class Queue:
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
         self.locked = False
+        
+    def get_player_mentions(self):
+        list = []
+        for p in self.players:
+            list.append(p.user.mention)
+        return list
