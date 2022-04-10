@@ -95,20 +95,45 @@ class Queue:
         self.ready_check()
         initial_string = f"**Players in queue:**\n`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------\n"
         player_string_list = []
+
+        top_list = []
+        jungle_list = []
+        mid_list = []
+        bot_list = []
+        supp_list = []
+        fill_list = []
+
         for player in self.players:
-            spaces = " -" * (20 - len(player.name))
-            if player.ready == True:
-                string = f"✅ `{player.name}`{spaces}{player.role.name} {player.role.emoji}"
+            if player.role == top:
+                top_list.append(player)
+            elif player.role == jungle:
+                jungle_list.append(player)
+            elif player.role == middle:
+                mid_list.append(player)
+            elif player.role == bottom:
+                bot_list.append(player)
+            elif player.role == support:
+                supp_list.append(player)
             else:
-                string = f"       `{player.name}`{spaces}{player.role.name} {player.role.emoji}"
+                fill_list.append(player)
+
+        for player in self.players:
+            if player.ready == True:
+                string = f"✅ `{player.name}`"
+            else:
+                string = f"       `{player.name}`"
             player_string_list.append(string)
         if player_string_list:
             player_string = "\n".join(player_string_list)
         else:
             player_string = "       `none`"
+
+        role_list = f"\nTop        <:top:949215554441465866>: {len(top_list)}/2\nJungle   <:jungle:949215552591765544>: {len(jungle_list)}/2\nMiddle   <:mid:949215552621129728>: {len(mid_list)}/2\nBottom  <:bot:949215552507883560>: {len(bot_list)}/2\nSupport <:support:949215552180719617>: {len(supp_list)}/2\nFill           <:fill:949215552671469578>: {len(fill_list)}"
+
         divider = "\n---------------------------------------------"
         lobby_id_string = f"\n`Lobby id: {int(str(self.message.id)[:-8])}`"
-        end_string = initial_string + player_string + divider + lobby_id_string
+        end_string = initial_string + player_string + \
+            divider + role_list + divider + lobby_id_string
         await self.message.edit(content=end_string)
 
     def ready_check(self):
@@ -164,7 +189,6 @@ class Queue:
             self.supp_list
         ]
 
-        fill_list = []
         for player in self.players:
             if player.role == top:
                 self.top_list.append(player)
@@ -355,16 +379,22 @@ class Queue:
         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
             unlq_json = json.load(unlq_file)
         unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['blue_team'] = self.game.blue_team.rating
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['red_team'] = self.game.red_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['game_id'] = live_game_messsage.id
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['blue_team'] = self.game.blue_team.rating
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['red_team'] = self.game.red_team.rating
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = []
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['time_created'] = int(time.time())
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])
+                             ]['time_created'] = int(time.time())
         for team in self.game.teams:
             for player in team.players:
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'].append(player.ign)
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'].append(player.user.id)
+                unlq_json['lobbies'][int(str(self.message.id)[
+                                         :-8])]['players'].append(player.ign)
+                unlq_json['lobbies'][int(str(self.message.id)[
+                                         :-8])]['player_ids'].append(player.user.id)
 
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)

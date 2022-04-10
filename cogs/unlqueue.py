@@ -17,6 +17,7 @@ from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.get_stats import get_stats
+from utils.is_player_gold_plus import is_player_gold_plus
 from utils.report_game import report_game
 from utils.update_leaderboard import update_leaderboard
 
@@ -42,7 +43,10 @@ class UNLQueue(commands.Cog):
         if str(interaction.user.id) in unlq['players']:
             if interaction.user.id not in self.queue.get_all_ids():
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
-                    await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']):
+                        await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+                    else:
+                        await interaction.response.send_message(f"You need to be ranked Gold 4 or above in Ranked Solo/Duo to play UNL Queue.", ephemeral=True)
                 else:
                     banned_until = unlq['players'][str(interaction.user.id)]['banned_until']
                     value = datetime.datetime.fromtimestamp(banned_until, pytz.timezone('Europe/London'))

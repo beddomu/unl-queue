@@ -95,7 +95,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
                                                 lobby_id[9:])]['red']*2/5
                                             print(
-                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team red.")
+                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5} UN Points betting on team red.")
 
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
@@ -297,8 +297,11 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                                 json.dump(unlq_json, unlq_file)
                                                 unlq_file.close()
                     await update_leaderboard()
-                    game_category = discord.utils.get(
-                        guild.categories, name=lobby_id[9:])
+                    try:
+                        game_category = discord.utils.get(
+                            guild.categories, name=lobby_id[9:])
+                    except:
+                        print("Game category doesn't exist")
                     queue_voice = discord.utils.get(guild.voice_channels, id=959880784116854794)
                     for channel in game_category.voice_channels:
                         for member in channel.members:
@@ -307,8 +310,14 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             except:
                                 print(
                                     f'{unlq_json["players"][player]["discord_name"]} is not in the queue voice channel.')
-                        await channel.delete()
-                    await game_category.delete()
+                        try:
+                            await channel.delete()
+                        except:
+                            print("Voice channel doesn't exist")
+                    try:
+                        await game_category.delete()
+                    except:
+                        print("Game category doesn't exist")
                 del unlq_json['lobbies'][str(lobby_id[9:])]
                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                     json.dump(unlq_json, unlq_file)

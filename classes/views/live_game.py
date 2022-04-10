@@ -7,7 +7,7 @@ from classes.views.betting import Betting
 
 class LiveGame(discord.ui.View):
     def __init__(self, lobby_id):
-        super().__init__()
+        super().__init__(timeout=None)
         self.value = None
         self.lobby_id = lobby_id
 
