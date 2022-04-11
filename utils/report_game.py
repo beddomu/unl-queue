@@ -29,23 +29,37 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                 with open(f'C:\\DATA\\games\\{str(game_id)}.json', 'w') as game_file:
                     json.dump(game, game_file)
                     game_file.close()
+                
+                # bets
+                if game['info']['teams'][0]['win'] == True:
+                    for player in unlq_json['players'].keys():
+                            if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                                if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
+                                    unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2
+                                    user = await bot.fetch_user(int(player))
+                                    await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} UN Points betting on team blue.")
+                                    print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} UN Points betting on team blue.")
+                                    del unlq_json['players'][player]['bets'][str(lobby_id[9:])]
+                elif game['info']['teams'][1]['win'] == True:
+                    for player in unlq_json['players'].keys():
+                            if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                                if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
+                                    unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2
+                                    user = await bot.fetch_user(int(player))
+                                    await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} UN Points betting on team red.")
+                                    print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} UN Points betting on team red.")
+                                    del unlq_json['players'][player]['bets'][str(lobby_id[9:])]
+                with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                    json.dump(unlq_json, unlq_file)
+                    
 
-                # points
+                # lp
                 if game['info']:
                     for p in game['info']['participants']:
                         if p['win'] == True:
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
-
-                                for player in unlq_json['players'].keys():
-                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
-                                        if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
-                                                lobby_id[9:])]['blue']*2/5
-                                            print(
-                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
-
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         if unlq_json['players'][player]['mmr'] < 1000-75:
@@ -60,8 +74,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['blue_team']
                                         red = unlq_json['lobbies'][str(
                                             lobby_id[9:])]['red_team']
-                                        mmr = int(
-                                            unlq_json['players'][player]['mmr']/100)
+                                        mmr = int(unlq_json['players'][player]['mmr']/150)
                                         unlq_json['players'][player]['points'] += int(
                                             15+mmr + (red-blue)*0.06)
                                         unlq_json['players'][player]['lp_history'].append(
@@ -90,14 +103,6 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
                                 for player in unlq_json['players'].keys():
-                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
-                                        if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
-                                                lobby_id[9:])]['red']*2/5
-                                            print(
-                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5} UN Points betting on team red.")
-
-                                for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         if unlq_json['players'][player]['mmr'] < 1000-75:
                                             unlq_json['players'][player]['mmr'] += 75
@@ -111,8 +116,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['blue_team']
                                         red = unlq_json['lobbies'][str(
                                             lobby_id[9:])]['red_team']
-                                        mmr = int(
-                                            unlq_json['players'][player]['mmr']/100)
+                                        mmr = int(unlq_json['players'][player]['mmr']/150)
                                         unlq_json['players'][player]['points'] += int(
                                             15+mmr+(blue-red)*0.06)
                                         unlq_json['players'][player]['lp_history'].append(
@@ -141,19 +145,10 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
-
-                                for player in unlq_json['players'].keys():
-                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
-                                        if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
-                                                lobby_id[9:])]['blue']*2/5
-                                            print(
-                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2/5} UN Points betting on team blue.")
-
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                        if unlq_json['players'][player]['mmr'] > -1000+75:
-                                            unlq_json['players'][player]['mmr'] -= 75
+                                        if unlq_json['players'][player]['mmr'] > -1000+100:
+                                            unlq_json['players'][player]['mmr'] -= 100
                                         else:
                                             unlq_json['players'][player]['mmr'] = -1000
                                         if "losses" in unlq_json['players'][player].keys():
@@ -164,8 +159,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['blue_team']
                                         red = unlq_json['lobbies'][str(
                                             lobby_id[9:])]['red_team']
-                                        mmr = int(
-                                            unlq_json['players'][player]['mmr']/100)
+                                        mmr = int(unlq_json['players'][player]['mmr']/150)
                                         if unlq_json['players'][player]['points'] >= int(15-mmr-(red-blue)*0.06):
                                             unlq_json['players'][player]['points'] -= int(
                                                 15-mmr-(red-blue)*0.06)
@@ -219,21 +213,12 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             else:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                                     unlq_json = json.load(unlq_file)
-
-                                for player in unlq_json['players'].keys():
-                                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
-                                        if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
-                                            unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(
-                                                lobby_id[9:])]['red']*2/5
-                                            print(
-                                                f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2/5} UN Points betting on team red.")
-
                                 for player in unlq_json['players'].keys():
                                     if unlq_json['players'][player]['puuid'] == p['puuid']:
                                         member = guild.get_member(int(player))
 
-                                        if unlq_json['players'][player]['mmr'] > -1000+75:
-                                            unlq_json['players'][player]['mmr'] -= 75
+                                        if unlq_json['players'][player]['mmr'] > -1000+100:
+                                            unlq_json['players'][player]['mmr'] -= 100
                                         else:
                                             unlq_json['players'][player]['mmr'] = -1000
                                         if "losses" in unlq_json['players'][player].keys():
@@ -244,8 +229,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['blue_team']
                                         red = unlq_json['lobbies'][str(
                                             lobby_id[9:])]['red_team']
-                                        mmr = int(
-                                            unlq_json['players'][player]['mmr']/100)
+                                        mmr = int(unlq_json['players'][player]['mmr']/150)
                                         if unlq_json['players'][player]['points'] >= int(15-mmr-(blue-red)*0.06):
                                             unlq_json['players'][player]['points'] -= int(
                                                 15-mmr-(blue-red)*0.06)

@@ -145,7 +145,7 @@ class Queue:
             player_string_list.append(string)
         if player_string_list:
             player_string = "\n" + "\n".join(player_string_list)
-            await self.pop_message.edit(content="\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string)
+            await self.pop_message.edit(content=" ".join(self.player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string)
 
         
 
@@ -176,10 +176,10 @@ class Queue:
         self.locked = True
         game = self.make_teams()
         self.game = game
-        player_mentions = game.get_player_mentions()
+        self.player_mentions = game.get_player_mentions()
+        random.shuffle(self.player_mentions)
         view = MatchFoundView(self)
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
-        random.shuffle(player_mentions)
         player_string_list = []
         for player in self.players:
             if player.ready == True:
@@ -189,7 +189,7 @@ class Queue:
             player_string_list.append(string)
         if player_string_list:
             player_string = "\n" + "\n".join(player_string_list)    
-            self.pop_message = await channel.send(" ".join(player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string, view=view)
+            self.pop_message = await channel.send(" ".join(self.player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string, view=view)
 
     def make_teams(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:

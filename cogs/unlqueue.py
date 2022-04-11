@@ -61,6 +61,38 @@ class UNLQueue(commands.Cog):
     async def report_player(self, interaction: discord.Interaction):
         await interaction.response.send_modal(Report(self._bot))
         
+    @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def me_command(self, interaction: discord.Interaction):
+        with open('..\\unlqueue.xyz\\json\\leaderboard.json', 'r') as json_file:
+            leaderboard = json.load(json_file)
+        with open('C:\\DATA\\unlq.json', 'r') as json_file:
+            unlq = json.load(json_file)
+        index = 0
+        
+        un_points = 0
+        for p in unlq['players']:
+            if interaction.user.id == int(p):
+                un_points = unlq['players'][p]['unp']
+                break
+        else:
+            await interaction.response.send_message(content="Couldn't find your info, sorry <:Sadge:798976650926096395>", ephemeral=True)
+        
+        for p in leaderboard.keys():
+            index += 1
+            if interaction.user.id == int(p):
+                me = ""
+                me += f"**{interaction.user.name}**\n"
+                me += f"IGN: {leaderboard[p]['name']}\n"
+                me += f"Rank: {index}/{len(leaderboard.keys())}\n"
+                me += f"LP: {leaderboard[p]['lp']}\n"
+                me += f"Wins: {leaderboard[p]['wins']}\n"
+                me += f"Losses: {leaderboard[p]['losses']}\n"
+                me += f"UN Points: {int(un_points)}\n"
+                
+                await interaction.response.send_message(content=me, ephemeral=True)
+                break
+        
     @app_commands.command(name="link", description="Enter this command to link your EUW account")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def link_account(self, interaction: discord.Interaction):
