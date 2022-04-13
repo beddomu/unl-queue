@@ -77,8 +77,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                         mmr = int(unlq_json['players'][player]['mmr']/150)
                                         unlq_json['players'][player]['points'] += int(
                                             15+mmr + (red-blue)*0.06)
-                                        unlq_json['players'][player]['lp_history'].append(
-                                            f'+{int(15+mmr + (red-blue)*0.06)}')
+                                        unlq_json['players'][player]['lp_history'].append(f'+{int(15+mmr + (red-blue)*0.06)}')
                                         embed = discord.Embed(
                                             title=f'+{int(15+mmr+(red-blue)*0.06)}')
                                         embed.set_footer(
@@ -119,8 +118,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                         mmr = int(unlq_json['players'][player]['mmr']/150)
                                         unlq_json['players'][player]['points'] += int(
                                             15+mmr+(blue-red)*0.06)
-                                        unlq_json['players'][player]['lp_history'].append(
-                                            f'+{int(15+mmr+(blue-red)*0.06)}')
+                                        unlq_json['players'][player]['lp_history'].append(f'+{int(15+mmr+(blue-red)*0.06)}')
                                         embed = discord.Embed(
                                             title=f'+{int(15+mmr+(blue-red)*0.06)}')
                                         embed.set_footer(
@@ -161,12 +159,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['red_team']
                                         mmr = int(unlq_json['players'][player]['mmr']/150)
                                         if unlq_json['players'][player]['points'] >= int(15-mmr-(red-blue)*0.06):
-                                            unlq_json['players'][player]['points'] -= int(
-                                                15-mmr-(red-blue)*0.06)
-                                            unlq_json['players'][player]['lp_history'].append(
-                                                f'-{int(15+mmr-(red-blue)*0.06)}')
-                                            embed = discord.Embed(
-                                                title=f'-{int(15-mmr-(red-blue)*0.06)}')
+                                            unlq_json['players'][player]['points'] -= int(15-mmr-(red-blue)*0.06)
+                                            unlq_json['players'][player]['lp_history'].append(f'-{int(15-mmr-(red-blue)*0.06)}')
+                                            embed = discord.Embed(title=f'-{int(15-mmr-(red-blue)*0.06)}')
                                             embed.set_footer(
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
@@ -190,12 +185,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             pp('{} lost a game at 0 LP'.format(
                                                 p['summonerName']))
                                             unlq_json['players'][player]['points'] = 0
-                                            unlq_json['players'][player]['lp_history'].append(
-                                                f"-{unlq_json['players'][player]['points']}")
-                                            embed = discord.Embed(
-                                                title=f"-{unlq_json['players'][player]['points']}")
-                                            embed.set_footer(
-                                                text=f'game id: {game_id}')
+                                            unlq_json['players'][player]['lp_history'].append(f"-{unlq_json['players'][player]['points']}")
+                                            embed = discord.Embed(title=f"-{unlq_json['players'][player]['points']}")
+                                            embed.set_footer(text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
                                             embed.set_author(
                                                 name="UNL Queue", icon_url=bot.user.avatar.url)
@@ -231,12 +223,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             lobby_id[9:])]['red_team']
                                         mmr = int(unlq_json['players'][player]['mmr']/150)
                                         if unlq_json['players'][player]['points'] >= int(15-mmr-(blue-red)*0.06):
-                                            unlq_json['players'][player]['points'] -= int(
-                                                15-mmr-(blue-red)*0.06)
-                                            unlq_json['players'][player]['lp_history'].append(
-                                                f'-{int(15+mmr-(blue-red)*0.06)}')
-                                            embed = discord.Embed(
-                                                title=f'-{int(15-mmr-(blue-red)*0.06)}')
+                                            unlq_json['players'][player]['points'] -= int(15-mmr-(blue-red)*0.06)
+                                            unlq_json['players'][player]['lp_history'].append(f'-{int(15-mmr-(blue-red)*0.06)}')
+                                            embed = discord.Embed(title=f'-{int(15-mmr-(blue-red)*0.06)}')
                                             embed.set_footer(
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
@@ -260,10 +249,8 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             pp('{} lost a game at 0 LP'.format(
                                                 p['summonerName']))
                                             unlq_json['players'][player]['points'] = 0
-                                            unlq_json['players'][player]['lp_history'].append(
-                                                f"-{unlq_json['players'][player]['points']}")
-                                            embed = discord.Embed(
-                                                title=f"-{unlq_json['players'][player]['points']}")
+                                            unlq_json['players'][player]['lp_history'].append(f"-{unlq_json['players'][player]['points']}")
+                                            embed = discord.Embed(title=f"-{unlq_json['players'][player]['points']}")
                                             embed.set_footer(
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
