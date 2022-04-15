@@ -258,8 +258,8 @@ class Queue:
             game.red_team.add_player(options[1])
             game.blue_team.add_player(options[0])
         else:
-            game.blue_team.add_player(self.jungle_list[0])
-            game.red_team.add_player(self.jungle_list[1])
+            game.blue_team.add_player(self.mid_list[0])
+            game.red_team.add_player(self.mid_list[1])
 
         adcq = [self.bot_list[0], self.bot_list[1]]
         better_player = adcq.index(max(adcq))
@@ -271,8 +271,8 @@ class Queue:
             game.red_team.add_player(options[1])
             game.blue_team.add_player(options[0])
         else:
-            game.blue_team.add_player(self.jungle_list[0])
-            game.red_team.add_player(self.jungle_list[1])
+            game.blue_team.add_player(self.bot_list[0])
+            game.red_team.add_player(self.bot_list[1])
 
         suppq = [self.supp_list[0], self.supp_list[1]]
         better_player = suppq.index(max(suppq))
@@ -284,8 +284,8 @@ class Queue:
             game.red_team.add_player(options[1])
             game.blue_team.add_player(options[0])
         else:
-            game.blue_team.add_player(self.jungle_list[0])
-            game.red_team.add_player(self.jungle_list[1])
+            game.blue_team.add_player(self.supp_list[0])
+            game.red_team.add_player(self.supp_list[1])
 
         print(f"Final Team blue rating: {team_blue.rating}")
         print(f"Final Team red rating: {team_red.rating}")
