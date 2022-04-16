@@ -13,7 +13,7 @@ def is_online(name):
     headers = {'accept': 'application/json',
                 'Authorization': f'Basic {lockfile.auth}', 'Content-Type': 'application/json'}
 
-    r = requests.get(url, headers=headers, verify=True)
+    r = requests.get(url, headers=headers, verify=False)
     if r.status_code == 200:
         friends = r.json()
         for friend in friends:

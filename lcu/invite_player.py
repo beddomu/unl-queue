@@ -33,7 +33,7 @@ def invite_player(name):
     ]
     data = json.dumps(data_json)
     if is_online(account['name']):
-        r = requests.post(url, headers=headers, data=data, verify=True)
+        r = requests.post(url, headers=headers, data=data, verify=False)
         if r.status_code == 200:
             print('{} was successfully invited to the lobby'.format(account['name']))
         elif r.status_code == 400:

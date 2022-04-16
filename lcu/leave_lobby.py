@@ -17,7 +17,7 @@ def leave_lobby(timeout_in_seconds: int = 30):
         headers = {'accept': 'application/json',
                    'Authorization': f'Basic {lockfile.auth}', 'Content-Type': 'application/json'}
 
-        r = requests.get(url, headers=headers, verify=True)
+        r = requests.get(url, headers=headers, verify=False)
 
         file = r.json()
         if len(file['members']) > 1:
