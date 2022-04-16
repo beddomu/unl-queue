@@ -41,7 +41,8 @@ class UNLQueue(commands.Cog):
         if str(interaction.user.id) in unlq['players']:
             if interaction.user.id not in self.queue.get_all_ids():
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
-                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354]:
+                    #if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354]:
+                    if True:
                         await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
                     else:
                         await interaction.response.send_message(f"You need to be ranked Gold 4 or above in Ranked Solo/Duo to play UNL Queue.", ephemeral=True)
