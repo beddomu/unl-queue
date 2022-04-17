@@ -24,6 +24,6 @@ def leave_lobby(timeout_in_seconds: int = 30):
             member_joined = True
             print("Leaving the lobby now...")
             url = f'https://127.0.0.1:{lockfile.port}/lol-lobby/v2/lobby'
-            requests.delete(url=url, headers=headers)
+            requests.delete(url=url, headers=headers, verify=False)
             break
         sleep(1)
