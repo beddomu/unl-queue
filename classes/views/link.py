@@ -89,6 +89,6 @@ class LinkAccount(discord.ui.Modal):
                 with open('C:\\DATA\\unlq.json', 'w') as json_file:
                     json.dump(unlq_json, json_file, ensure_ascii=False)
                     
-    async def on_error(self, error: Exception, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message('Oops! Something went wrong.', ephemeral=True)
+    #async def on_error(self, error: Exception, interaction: discord.Interaction) -> None:
+        #await interaction.response.send_message('Oops! Something went wrong.', ephemeral=True)
 
