@@ -38,6 +38,8 @@ class LinkAccount(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json = json.load(json_file)
+            
+        pp("API key: " + os.getenv("RIOT_API_KEY"))
 
         account_name = self.name.value.replace(" ", "").lower()
         account = None
