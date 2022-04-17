@@ -35,7 +35,7 @@ class Lobby:
         self.headers = {'accept': 'application/json', 'Authorization': 'Basic {}'.format(self.auth), 'Content-Type': 'application/json'}
 
     def create(self):
-        r = requests.post(self.url, data=json.dumps(self.payload),headers=self.headers, verify=False)
+        r = requests.post(self.url, data=json.dumps(self.payload),headers=self.headers, verify=True)
         if r.status_code == 200:
             print("Lobby created successfully")
 

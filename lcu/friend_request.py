@@ -27,7 +27,7 @@ def friend_request(name):
         "gameTag": "EUW"
         }
     data = json.dumps(data_json)
-    r = requests.post(url, headers=headers, data=data, verify=False)
+    r = requests.post(url, headers=headers, data=data, verify=True)
     if r.status_code == 204:
         print('Friend request was successfully sent to: {}'.format(account['name']))
     else:
