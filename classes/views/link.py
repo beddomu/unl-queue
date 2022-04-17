@@ -84,6 +84,8 @@ class LinkAccount(discord.ui.Modal):
                 unlq_json['players'][str(interaction.user.id)]["name"] = account['name']
                 unlq_json['players'][str(interaction.user.id)]['id'] = account['id']
                 unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
+                unlq_json['players'][str(interaction.user.id)]['puuid'] = account['puuid']
+                unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
                 unlq_json['players'][str(interaction.user.id)]['summonerIconId'] = account['profileIconId']
                 friend_request(account['name'])
                 with open('C:\\DATA\\unlq.json', 'w') as json_file:
