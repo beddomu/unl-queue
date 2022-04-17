@@ -13,7 +13,7 @@ def invite_player(name):
     url = f'https://127.0.0.1:{lockfile.port}/lol-summoner/v2/summoners/names'
     data = [account['name']]
     headers = {'accept': 'application/json','Authorization': f'Basic {lockfile.auth}', 'Content-Type': 'application/json'}
-    r = requests.post(url, headers=headers, data=json.dumps(data), verify=True)
+    r = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
     file = r.json()
     summonerId = int(file[0]['summonerId'])
     summonerName = account['name']
