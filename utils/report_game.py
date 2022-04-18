@@ -5,6 +5,7 @@ from discord.ext import commands
 from pprint import pp
 import dotenv
 import urllib
+from utils.find_summoner import find_summoner
 
 from utils.update_leaderboard import update_leaderboard
 
@@ -62,7 +63,8 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             unlq_json = json.load(unlq_file)
                         for player in unlq_json['players'].keys():
                             if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                unlq_json['players'][player]['summonerIconId'] = game['info']['participants'][p]['profileIconId']
+                                account = find_summoner(p['name'])
+                                unlq_json['players'][player]['summonerIconId'] = account['profileIconId']
                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                         json.dump(unlq_json, unlq_file)
                         
