@@ -55,7 +55,17 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
 
                 # lp
                 if game['info']:
+                    
+                    #update icon
                     for p in game['info']['participants']:
+                        with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
+                            unlq_json = json.load(unlq_file)
+                        for player in unlq_json['players'].keys():
+                            if unlq_json['players'][player]['puuid'] == p['puuid']:
+                                unlq_json['players'][player]['summonerIconId'] = p['profileIconId']
+                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                        json.dump(unlq_json, unlq_file)
+                        
                         if p['win'] == True:
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
