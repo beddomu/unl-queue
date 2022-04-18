@@ -21,8 +21,11 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
             lobby_id = game['info']['gameName']
             if lobby_id[9:] in unlq_json['lobbies'].keys():
                 channel = await bot.fetch_channel(int(os.getenv("LIVE")))
-                message = await channel.fetch_message(unlq_json['lobbies'][str(lobby_id[9:])]['game_id'])
-                await message.delete()
+                try:
+                    message = await channel.fetch_message(unlq_json['lobbies'][str(lobby_id[9:])]['game_id'])
+                    await message.delete()
+                except:
+                    pass
                 unlq_json['games'].append(game['info']['gameId'])
                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                     json.dump(unlq_json, unlq_file)
