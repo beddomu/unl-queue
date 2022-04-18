@@ -63,7 +63,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                             unlq_json = json.load(unlq_file)
                         for player in unlq_json['players'].keys():
                             if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                account = find_summoner(p['name'])
+                                account = find_summoner(p['summonerName'])
                                 unlq_json['players'][player]['summonerIconId'] = account['profileIconId']
                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                         json.dump(unlq_json, unlq_file)
