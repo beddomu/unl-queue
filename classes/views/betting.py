@@ -25,7 +25,7 @@ class BetModal(discord.ui.Modal):
         
     async def on_submit(self, interaction: discord.Interaction):
         if self.bet.value.isnumeric():
-            if self.unlq['lobbies'][self.lobby_id]['time_created'] > time.time() - 60*5:
+            if self.unlq['lobbies'][self.lobby_id]['time_created'] > time.time() - 60*8:
                 if self.unlq['players'][str(self.user_id)]['unp'] > int(self.bet.value):
                     your_bet = int(self.bet.value)
                 else:

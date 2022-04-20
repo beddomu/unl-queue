@@ -69,6 +69,7 @@ class LinkAccount(discord.ui.Modal):
                     unlq_json['players'][str(interaction.user.id)] = {}
                     unlq_json['players'][str(interaction.user.id)]['discord_name'] = interaction.user.name
                     unlq_json['players'][str(interaction.user.id)]['points'] = 100
+                    unlq_json['players'][str(interaction.user.id)]['unp'] = 0
                     unlq_json['players'][str(interaction.user.id)]['id'] = account['id']
                     unlq_json['players'][str(interaction.user.id)]['accountId'] = account['accountId']
                     unlq_json['players'][str(interaction.user.id)]['puuid'] = account['puuid']

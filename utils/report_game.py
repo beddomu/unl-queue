@@ -43,7 +43,6 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                     user = await bot.fetch_user(int(player))
                                     await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} UN Points betting on team blue.")
                                     print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} UN Points betting on team blue.")
-                                    del unlq_json['players'][player]['bets'][str(lobby_id[9:])]
                 elif game['info']['teams'][1]['win'] == True:
                     for player in unlq_json['players'].keys():
                             if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
@@ -52,7 +51,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                     user = await bot.fetch_user(int(player))
                                     await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} UN Points betting on team red.")
                                     print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} UN Points betting on team red.")
-                                    del unlq_json['players'][player]['bets'][str(lobby_id[9:])]
+                for player in unlq_json['players'].keys():
+                    if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
+                        del unlq_json['players'][player]['bets'][str(lobby_id[9:])]
                 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                     json.dump(unlq_json, unlq_file)
                     
@@ -60,16 +61,13 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                 # lp
                 if game['info']:
                     for p in game['info']['participants']:
-                        '''
                         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                             unlq_json = json.load(unlq_file)
                         for player in unlq_json['players'].keys():
                             if unlq_json['players'][player]['puuid'] == p['puuid']:
-                                account = find_summoner(p['summonerName'])
-                                unlq_json['players'][player]['summonerIconId'] = account['profileIconId']
-                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
-                        json.dump(unlq_json, unlq_file)'''
-                        
+                                unlq_json['players'][player]['unp'] += 200
+
+                                                
                         if p['win'] == True:
                             if p['teamId'] == 100:
                                 with open('C:\\DATA\\unlq.json', 'r') as unlq_file:

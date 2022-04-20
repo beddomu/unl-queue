@@ -4,7 +4,9 @@ with open('C:\\DATA\\unlq.json', 'r') as file:
     unlq = json.load(file)
     
 for p in unlq['players']:
-    unlq['players'][p]['banned_until'] = 0
+    if "unp" not in unlq['players'][p].keys():
+        unlq['players'][p]['unp'] = 0
+        print(p)
         
 
 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:

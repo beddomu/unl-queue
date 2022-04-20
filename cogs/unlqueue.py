@@ -191,6 +191,26 @@ class UNLQueue(commands.Cog):
         self.queue.devmode = False
         await self.queue.new_lobby()
         
+    @app_commands.command(name="cash_out", description="Enter this command to convert all your UN points into LP")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def cash_out(self, interaction: discord.Interaction):
+        with open('C:\\DATA\\unlq.json', 'r') as json_file:
+            unlq = json.load(json_file)
+        for p in unlq['players']:
+            if interaction.user.id == int(p):
+                if unlq['players'][p]['unp'] > 500:
+                    unlq['players'][p]['points'] += int(unlq['players'][p]['unp']/500)
+                    await interaction.response.send_message(content=f"You exchanged {unlq['players'][p]['unp']} UN Points for {int(unlq['players'][p]['unp']/500)} LP.\nCurrent LP: {unlq['players'][p]['points']}", ephemeral=True)
+                    unlq['players'][p]['unp'] = 0
+                    break
+                else:
+                    await interaction.response.send_message("You don't have enough UN Points to exchange. Minimum required: 500")
+        else:
+            await interaction.response.send_message(content="Couldn't find your profile, sorry <:Sadge:798976650926096395>. Have you linked your account?", ephemeral=True)
+
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
+        
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)
     async def leaderboard(self, ctx):
