@@ -17,6 +17,7 @@ from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.get_stats import get_stats
 from utils.is_player_gold_plus import is_player_gold_plus
+from utils.update_games import update_games
 from utils.update_leaderboard import update_leaderboard
 
 
@@ -214,6 +215,7 @@ class UNLQueue(commands.Cog):
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)
     async def leaderboard(self, ctx):
+        update_games()
         await update_leaderboard()
         
     @commands.command(name="reset", aliases=["n"])
