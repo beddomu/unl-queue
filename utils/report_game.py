@@ -6,6 +6,7 @@ from pprint import pp
 import dotenv
 import urllib
 from utils.find_summoner import find_summoner
+from utils.update_games import update_games
 
 from utils.update_leaderboard import update_leaderboard
 
@@ -279,6 +280,8 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                                                 json.dump(unlq_json, unlq_file)
                                                 unlq_file.close()
+                                                
+                    update_games()
                     await update_leaderboard()
                     try:
                         game_category = discord.utils.get(

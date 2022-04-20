@@ -31,7 +31,7 @@ async def update_leaderboard():
     file_list = [
         'json\\leaderboard.json'
     ]
-    commit_message = 'Updating leaderboard'
+    commit_message = 'Updating website'
     repo.index.add(file_list)
     repo.index.commit(commit_message)
     origin = repo.remote('origin')
