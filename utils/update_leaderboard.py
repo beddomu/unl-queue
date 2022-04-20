@@ -29,7 +29,7 @@ async def update_leaderboard():
     repo_dir = '..\\unlqueue.xyz'
     repo = Repo(repo_dir)
     file_list = [
-        'json\\leaderboard.json'
+        'json\\leaderboard.json',
         'games\\games.json'
     ]
     commit_message = 'Updating website'
