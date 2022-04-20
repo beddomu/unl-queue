@@ -30,6 +30,7 @@ async def update_leaderboard():
     repo = Repo(repo_dir)
     file_list = [
         'json\\leaderboard.json'
+        'games\\games.json'
     ]
     commit_message = 'Updating website'
     repo.index.add(file_list)
