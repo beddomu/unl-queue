@@ -8,5 +8,5 @@ for fn in os.listdir("C:\\DATA\\games"):
             game = json.load(file)
         games.insert(0, game)
         
-with open('..\\unlqueue.xyz\\games\\games.json') as file:
+with open('..\\unlqueue.xyz\\games\\games.json' , 'w') as file:
     json.dump(games, file)
