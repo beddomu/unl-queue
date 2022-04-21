@@ -34,6 +34,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                 with open(f'C:\\DATA\\games\\{str(game_id)}.json', 'w') as game_file:
                     json.dump(game, game_file)
                     game_file.close()
+                with open(f'..\\unlqueue.xyz\\games\\{str(game_id)}.json', 'w') as web_game_file:
+                    json.dump(game, web_game_file)
+                    web_game_file.close()
                 
                 # bets
                 if game['info']['teams'][0]['win'] == True:

@@ -6,6 +6,7 @@ import random
 import discord
 from discord.ext import commands
 from git import Repo
+import os
 
 async def update_leaderboard():
     with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -25,13 +26,14 @@ async def update_leaderboard():
     with open('..\\unlqueue.xyz\\json\\leaderboard.json', 'w') as unlq_file:
         json.dump(res, unlq_file)
             
-            
     repo_dir = '..\\unlqueue.xyz'
     repo = Repo(repo_dir)
     file_list = [
         'json\\leaderboard.json',
         'games\\games.json'
     ]
+    for fn in os.listdir("..\\unlqueue.xyz\\games"):
+        file_list.append(f"games\\{fn}")
     commit_message = 'Updating website'
     repo.index.add(file_list)
     repo.index.commit(commit_message)
