@@ -294,6 +294,7 @@ class Queue:
         print(f"Final Team red rating: {team_red.rating}")
 
         game.players = game.blue_team + game.red_team
+        
         self.game = game
         make_image(game)
         return game

@@ -5,6 +5,7 @@ class Game:
     def __init__(self, blue_team: Team, red_team: Team, winner: Team):
         self.id = int
         self.teams = [blue_team, red_team]
+        self.players = []
         self.blue_team = blue_team
         self.red_team = red_team
 
