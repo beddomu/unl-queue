@@ -293,7 +293,7 @@ class Queue:
         print(f"Final Team blue rating: {team_blue.rating}")
         print(f"Final Team red rating: {team_red.rating}")
 
-        game.players = game.blue_team + game.red_team
+        game.players = game.blue_team.players + game.red_team.players
         
         self.game = game
         make_image(game)
