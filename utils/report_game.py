@@ -36,8 +36,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                     game_file.close()
                 with open(f'..\\unlqueue.xyz\\games\\{str(game_id)}.json', 'w') as web_game_file:
                     json.dump(game, web_game_file)
-                    web_game_file.close()
-                
+                    
                 # bets
                 if game['info']['teams'][0]['win'] == True:
                     for player in unlq_json['players'].keys():
@@ -70,9 +69,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                         for player in unlq_json['players'].keys():
                             if unlq_json['players'][player]['puuid'] == p['puuid']:
                                 unlq_json['players'][player]['unp'] += 200
-                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
-                        json.dump(unlq_json, unlq_file)
-                        unlq_file.close()
+                        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                            json.dump(unlq_json, unlq_file)
+                            unlq_file.close()
 
                                                 
                         if p['win'] == True:
