@@ -258,11 +258,6 @@ class UNLQueue(commands.Cog):
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
     
-    @commands.command(name="ban", aliases=["b"])
-    @commands.has_permissions(manage_messages=True)
-    async def ban_player(ctx, member: discord.Member, seconds):
-        ban(member.id, seconds)
-    
     @commands.command(name="unban", aliases=["ub"])
     @commands.has_permissions(manage_messages=True)
     async def unban_player(ctx, member: discord.Member):
