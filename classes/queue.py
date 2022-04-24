@@ -182,15 +182,18 @@ class Queue:
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         player_string_list = []
         for player in self.game.players:
+            print(player.name)
             if player.ready == True:
                 string = f"✅ `{player.name}`"
             else:
                 string = f"       `{player.name}`"
             player_string_list.append(string)
         if player_string_list:
-            player_string = "\n" + "\n".join(player_string_list)    
+            player_string = "\n" + "\n".join(player_string_list)
             self.pop_message = await channel.send(" ".join(self.player_mentions) + "\n**MATCH FOUND**\n*You have 60 seconds to accept.*" + player_string, view=view)
-
+        else:
+            print("NOPE")
+            
     def make_teams(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
