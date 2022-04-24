@@ -11,9 +11,8 @@ class Game:
 
     def get_player_mentions(self):
         list = []
-        for team in self.teams:
-            for player in team.players:
-                list.append(player.user.mention)
+        for player in self.players:
+            list.append(player.user.mention)
         return list
 
     def get_players(self):
