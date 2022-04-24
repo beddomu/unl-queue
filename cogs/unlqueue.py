@@ -15,8 +15,10 @@ from classes.views.role_select import RoleSelectView
 from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
+from utils.ban import ban
 from utils.get_stats import get_stats
 from utils.is_player_gold_plus import is_player_gold_plus
+from utils.unban import unban
 from utils.update_games import update_games
 from utils.update_leaderboard import update_leaderboard
 
@@ -223,6 +225,62 @@ class UNLQueue(commands.Cog):
     async def newlobbymessage(self, ctx: commands.context.Context):
         self.queue.locked = False
         await self.queue.reset_lobby()
+
+    @commands.command(name="delete", aliases=["d"])
+    @commands.has_permissions(manage_messages=True)
+    async def delete_lobby(ctx: commands.context.Context, lobby_id):
+        guild = ctx.guild
+        with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
+            unlq_json = json.load(unlq_file)
+        try:
+            game_category = discord.utils.get(
+                guild.categories, name=lobby_id)
+        except:
+            print("Game category doesn't exist")
+        queue_voice = discord.utils.get(guild.voice_channels, id=959880784116854794)
+        for channel in game_category.voice_channels:
+            for member in channel.members:
+                try:
+                    await member.move_to(queue_voice)
+                except:
+                    print(
+                        f'{member.name} is not in the queue voice channel.')
+            try:
+                await channel.delete()
+            except:
+                print("Voice channel doesn't exist")
+        try:
+            await game_category.delete()
+        except:
+            print("Game category doesn't exist")
+        del unlq_json['lobbies'][str(lobby_id)]
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq_json, unlq_file)
+            unlq_file.close()
+    
+    @commands.command(name="ban", aliases=["b"])
+    @commands.has_permissions(manage_messages=True)
+    async def ban_player(ctx, member: discord.Member, seconds):
+        ban(member.id, seconds)
+    
+    @commands.command(name="unban", aliases=["ub"])
+    @commands.has_permissions(manage_messages=True)
+    async def unban_player(ctx, member: discord.Member):
+        unban(member.id)
+    
+    @commands.command(name="unban all", aliases=["uba"])
+    @commands.has_permissions(manage_messages=True)
+    async def unban_all(ctx):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+            
+        for p in unlq['players']:
+            unlq['players'][p]['banned_until'] = 0
+                
+
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
+    
         
 
 

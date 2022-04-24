@@ -17,20 +17,20 @@ class MatchFoundView(discord.ui.View):
         
         await interaction.response.defer()
         if self.queue.check_player(interaction.user) and self.queue.locked == True:
-            for player in self.queue.players:
+            for player in self.queue.game.players:
                 if player.user == interaction.user and player:
                     player.ready = True
 
             await self.queue.update_queue_pop()
             await self.queue.update_lobby()
-            if self.queue.players_ready_check() and self.queue.initiated == False:
+            if self.queue.game.players_ready_check() and self.queue.initiated == False:
                 self.stop()
                 if self.queue.devmode == False:
                     await self.queue.initiate_game()
                 else:
                     print("[DEV] Initiating game...")
                 last_game_players = self.queue.game.get_players()
-                last_queue_players = self.queue.players
+                last_queue_players = self.queue.game.players
                 players = []
                 for player in last_queue_players:
                     if player not in last_game_players:
@@ -43,7 +43,7 @@ class MatchFoundView(discord.ui.View):
             await self.queue.pop_message.edit(view=None, content=f'{interaction.user.mention} declined the queue. The remaining players have been put back in queue', delete_after=5)
             self.queue.locked = False
             self.queue.full = False
-            list = self.queue.players
+            list = self.queue.game.players
             for player in list:
                 if interaction.user.id == player.user.id:
                     print(player.name + " declined the queue")

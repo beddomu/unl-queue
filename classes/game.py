@@ -7,6 +7,7 @@ class Game:
         self.teams = [blue_team, red_team]
         self.blue_team = blue_team
         self.red_team = red_team
+        self.players = blue_team.players + red_team.players
 
     def get_player_mentions(self):
         list = []
@@ -21,3 +22,9 @@ class Game:
             for player in team.players:
                 list.append(player)
         return list
+
+    def players_ready_check(self):
+        for player in self.players:
+            if player.ready != True:
+                return False
+        return True

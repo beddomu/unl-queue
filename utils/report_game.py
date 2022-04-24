@@ -70,6 +70,9 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                         for player in unlq_json['players'].keys():
                             if unlq_json['players'][player]['puuid'] == p['puuid']:
                                 unlq_json['players'][player]['unp'] += 200
+                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                        json.dump(unlq_json, unlq_file)
+                        unlq_file.close()
 
                                                 
                         if p['win'] == True:
