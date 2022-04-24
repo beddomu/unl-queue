@@ -228,7 +228,7 @@ class UNLQueue(commands.Cog):
 
     @commands.command(name="delete", aliases=["d"])
     @commands.has_permissions(manage_messages=True)
-    async def delete_lobby(ctx: commands.context.Context, lobby_id):
+    async def delete_lobby(self, ctx: commands.context.Context, lobby_id):
         guild = ctx.guild
         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
             unlq_json = json.load(unlq_file)
@@ -258,14 +258,19 @@ class UNLQueue(commands.Cog):
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
     
+    @commands.command(name="ban", aliases=["b"])
+    @commands.has_permissions(manage_messages=True)
+    async def ban_player(self, ctx, member: discord.Member, seconds):
+        ban(member.id, seconds)
+    
     @commands.command(name="unban", aliases=["ub"])
     @commands.has_permissions(manage_messages=True)
-    async def unban_player(ctx, member: discord.Member):
+    async def unban_player(self, ctx, member: discord.Member):
         unban(member.id)
     
     @commands.command(name="unban all", aliases=["uba"])
     @commands.has_permissions(manage_messages=True)
-    async def unban_all(ctx):
+    async def unban_all(self, ctx):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
             
