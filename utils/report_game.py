@@ -17,7 +17,8 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
         unlq_json = json.load(unlq_file)
 
     if int(game_id) not in unlq_json['games']:
-        print(0)
+        print(game_id)
+        print(os.getenv("RIOT_API_KEY"))
         with urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
             game = json.loads(game_json.read().decode())
             pp(game)
