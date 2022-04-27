@@ -1,10 +1,11 @@
 import json
 import os
+from urllib.request import urlopen
 import discord
 from discord.ext import commands
 from pprint import pp
 import dotenv
-import urllib
+from urllib3.request import urlopen
 from utils.find_summoner import find_summoner
 from utils.update_games import update_games
 
@@ -17,7 +18,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
 
     if int(game_id) not in unlq_json['games']:
         print(0)
-        with urllib.request.urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
+        with urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
             game = json.loads(game_json.read().decode())
         lobby_id = game['info']['gameName']
         pp(unlq_json['lobbies'].keys())
