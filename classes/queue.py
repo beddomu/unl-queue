@@ -137,7 +137,7 @@ class Queue:
         
     async def update_queue_pop(self):
         player_string_list = []
-        for player in self.game.players:
+        for player in self.game_players:
             if player.ready == True:
                 string = f"✅ `{player.name}`"
             else:
@@ -181,7 +181,9 @@ class Queue:
         view = MatchFoundView(self)
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         player_string_list = []
-        for player in self.game.players:
+        self.game_players = self.game.players
+        random.shuffle(self.game_players)
+        for player in self.game_players:
             print(player.name)
             if player.ready == True:
                 string = f"✅ `{player.name}`"
