@@ -27,10 +27,9 @@ class MyBot(commands.Bot):
             
     @tasks.loop(minutes=1)
     async def background_task(self):
-        with open('C:\\DATA\\unlq.json', 'r') as file:
-            unlq = json.load(file)
-            
         print("Running background tasks")
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)        
             
         for lobby in unlq['lobbies'].keys():
             print(lobby)

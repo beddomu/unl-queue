@@ -20,6 +20,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
         print(0)
         with urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
             game = json.loads(game_json.read().decode())
+            pp(game)
         lobby_id = game['info']['gameName']
         pp(unlq_json['lobbies'].keys())
         print("=============================")
