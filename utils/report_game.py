@@ -17,14 +17,14 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
         unlq_json = json.load(unlq_file)
 
     if int(game_id) not in unlq_json['games']:
-        print(game_id)
-        print(os.getenv("RIOT_API_KEY"))
         with urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/EUW1_{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
             game = json.loads(game_json.read().decode())
         lobby_id = game['info']['gameName']
-        pp(unlq_json['lobbies'].keys())
         print("=============================")
+        pp(unlq_json['lobbies'].keys())
+        print("-----------------------------")
         print(f"lobby id: {lobby_id}")
+        print("=============================")
         if lobby_id[9:] in unlq_json['lobbies'].keys():
             print(1)
             channel = await bot.fetch_channel(int(os.getenv("LIVE")))
