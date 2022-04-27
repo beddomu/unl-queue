@@ -34,6 +34,7 @@ class UNLQueue(commands.Cog):
         
     @tasks.loop(minutes=0.25)
     async def background_task(self):
+        print("Starting background tasks")
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
             
