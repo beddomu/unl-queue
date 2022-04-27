@@ -20,10 +20,10 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
         with urllib.request.urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
             game = json.loads(game_json.read().decode())
             lobby_id = game['info']['gameName']
+            pp(unlq_json['lobbies'].keys())
+            print("=============================")
             print(lobby_id)
             if lobby_id[9:] in unlq_json['lobbies'].keys():
-                pp(unlq_json['lobbies'].keys())
-                print("=============================")
                 print(1)
                 channel = await bot.fetch_channel(int(os.getenv("LIVE")))
                 try:
