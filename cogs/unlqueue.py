@@ -51,6 +51,22 @@ class UNLQueue(commands.Cog):
                     await channel.set_permissions(role, read_messages=True)
                     self.queue.devmode = False
                     await self.queue.new_lobby()
+            else:
+                if datetime.time(19) <= now.time() <= datetime.time(2):
+                    print("Opening queue with weekend UNL Queue schedule")
+                        
+                    unlq['dev_mode'] = False
+
+                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                        json.dump(unlq, unlq_file)
+                    guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
+                    role = discord.utils.get(guild.roles, id = 676740137815900160)
+                    channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
+                    await channel.set_permissions(role, read_messages=True)
+                    channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
+                    await channel.set_permissions(role, read_messages=True)
+                    self.queue.devmode = False
+                    await self.queue.new_lobby()
                     
     async def cog_load(self):
         self.queue = Queue(5)

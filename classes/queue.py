@@ -304,7 +304,7 @@ class Queue:
         self.game = None
         ready_list = []
         not_ready_list = []
-        for p in self.players:
+        for p in self.game.players:
             if p.ready != True:
                 not_ready_list.append(p)
             elif p.ready == True:
