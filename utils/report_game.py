@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from pprint import pp
 import dotenv
-from urllib3.request import urlopen
+from urllib.request import urlopen
 from utils.find_summoner import find_summoner
 from utils.update_games import update_games
 
