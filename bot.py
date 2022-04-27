@@ -30,7 +30,10 @@ class MyBot(commands.Bot):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
             
+        print("Running background tasks")
+            
         for lobby in unlq['lobbies'].keys():
+            print(lobby)
             random_ign = unlq['lobbies'][lobby]['players'][random.randint(0, len(unlq['lobbies'][lobby]['players'])-1)]
             account = find_summoner(random_ign)
             if account:
