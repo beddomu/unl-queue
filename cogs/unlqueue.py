@@ -4,9 +4,10 @@ import json
 import os
 import random
 import time
+import datetime
 import discord
 import pytz
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
@@ -27,14 +28,41 @@ from utils.update_leaderboard import update_leaderboard
 class UNLQueue(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
+        
+    @tasks.loop(minutes=0.25)
+    async def background_task(self):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        if unlq['dev_mode'] == True:
+            now = datetime.datetime.fromtimestamp(datetime.datetime.now().timestamp(), pytz.timezone('Europe/London'))
+            if 0 <= now.weekday() <= 4:
+                if datetime.time(19) <= now.time() <= datetime.time(22):
+                    print("Opening queue with weekday UNL Queue schedule")
+                        
+                    unlq['dev_mode'] = False
 
+                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                        json.dump(unlq, unlq_file)
+                    guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
+                    role = discord.utils.get(guild.roles, id = 676740137815900160)
+                    channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
+                    await channel.set_permissions(role, read_messages=True)
+                    channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
+                    await channel.set_permissions(role, read_messages=True)
+                    self.queue.devmode = False
+                    await self.queue.new_lobby()
+                    
     async def cog_load(self):
         self.queue = Queue(5)
         channel = await self._bot.fetch_channel(os.getenv("QUEUE"))
         message = await channel.send("**Initializing...**")
         self.queue.message = message
         await self.queue.new_lobby()
+        self.background_task.start()
         print("Queue initialized")
+        
+
+            
     
     @app_commands.command(name="queue", description="Enter this command to view the queue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
@@ -268,7 +296,7 @@ class UNLQueue(commands.Cog):
     async def unban_player(self, ctx, member: discord.Member):
         unban(member.id)
     
-    @commands.command(name="unban all", aliases=["uba"])
+    @commands.command(name="unban_all", aliases=["uba"])
     @commands.has_permissions(manage_messages=True)
     async def unban_all(self, ctx):
         with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -277,9 +305,28 @@ class UNLQueue(commands.Cog):
         for p in unlq['players']:
             unlq['players'][p]['banned_until'] = 0
                 
-
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
+            
+    @commands.command(name="add_points", aliases=["ap"])
+    @commands.has_permissions(manage_messages=True)
+    async def unban_player(self, ctx, member: discord.Member, points):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        unlq['players'][str(member.id)]['unp'] += int(points)
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
+            
+    @commands.command(name="remove_points", aliases=["subtract_points, rp, sp"])
+    @commands.has_permissions(manage_messages=True)
+    async def unban_player(self, ctx, member: discord.Member, points):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        unlq['players'][str(member.id)]['unp'] -= int(points)
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)   
+            
+            
     
         
 

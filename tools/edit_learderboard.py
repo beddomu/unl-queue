@@ -4,7 +4,7 @@ with open('C:\\DATA\\unlq.json', 'r') as file:
     unlq = json.load(file)
     
 for p in unlq['players']:
-    unlq['players'][p]['banned_until'] = 0
+    unlq['players'][p]['games'] = []
         
 
 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
