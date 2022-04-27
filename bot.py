@@ -36,7 +36,7 @@ class MyBot(commands.Bot):
             random_ign = unlq['lobbies'][lobby]['players'][random.randint(0, len(unlq['lobbies'][lobby]['players'])-1)]
             account = find_summoner(random_ign)
             if account:
-                history = get_match_history(account['puuid'])
+                history = get_match_history("lhgvW6XOoXQXtZDpAGgabkBwfZnxHVztNcF4zLlt81H-N4xyY3QBbKnNQIwnDoIrv7jcGEQFO8dOIA")
                 if history:
                     for game in history[:3]:
                         print(game)
