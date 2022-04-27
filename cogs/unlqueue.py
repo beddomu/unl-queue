@@ -17,8 +17,11 @@ from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.ban import ban
+from utils.find_summoner import find_summoner
+from utils.get_match_history import get_match_history
 from utils.get_stats import get_stats
 from utils.is_player_gold_plus import is_player_gold_plus
+from utils.report_game import report_game
 from utils.unban import unban
 from utils.update_games import update_games
 from utils.update_leaderboard import update_leaderboard
@@ -33,6 +36,16 @@ class UNLQueue(commands.Cog):
     async def background_task(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
+            
+        for lobby in unlq['lobbies'].keys():
+            random_ign = unlq['lobbies'][lobby]['players'][random.randint(0, len(unlq['lobbies'][lobby]['players'])-1)]
+            account = find_summoner(random_ign)
+            if account:
+                history = get_match_history(account['puuid'])
+                if history:
+                    for game in history[:3]:
+                        await report_game(self, game[5:], self._bot.get_guild(603515060119404584))
+                        
         if unlq['dev_mode'] == True:
             now = datetime.datetime.fromtimestamp(datetime.datetime.now().timestamp(), pytz.timezone('Europe/London'))
             if 0 <= now.weekday() <= 4:
