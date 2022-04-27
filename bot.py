@@ -25,7 +25,7 @@ class MyBot(commands.Bot):
     async def setup_hook(self):
         pass
             
-    @tasks.loop(minutes=1)
+    @tasks.loop(minutes=0.25)
     async def background_task(self):
         print("Running background tasks")
         with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -37,7 +37,7 @@ class MyBot(commands.Bot):
             if account:
                 history = get_match_history("lhgvW6XOoXQXtZDpAGgabkBwfZnxHVztNcF4zLlt81H-N4xyY3QBbKnNQIwnDoIrv7jcGEQFO8dOIA")
                 if history:
-                    for game in history[:10]:
+                    for game in history:
                         await report_game(self, game[5:], bot.get_guild(603515060119404584))
         
     async def on_ready(self):
