@@ -40,6 +40,7 @@ class MyBot(commands.Bot):
                 history = get_match_history(account['puuid'])
                 if history:
                     for game in history[:3]:
+                        print(game)
                         await report_game(self, game[5:], bot.get_guild(603515060119404584))
         
     async def on_ready(self):

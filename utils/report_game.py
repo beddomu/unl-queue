@@ -16,11 +16,13 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
         unlq_json = json.load(unlq_file)
 
     if int(game_id) not in unlq_json['games']:
+        print(0)
 
         with urllib.request.urlopen("https://europe.api.riotgames.com/lol/match/v5/matches/EUW1_{}?api_key={}".format(game_id, os.getenv("RIOT_API_KEY"))) as game_json:
             game = json.loads(game_json.read().decode())
             lobby_id = game['info']['gameName']
             if lobby_id[9:] in unlq_json['lobbies'].keys():
+                print(1)
                 channel = await bot.fetch_channel(int(os.getenv("LIVE")))
                 try:
                     message = await channel.fetch_message(unlq_json['lobbies'][str(lobby_id[9:])]['game_id'])
@@ -63,6 +65,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
 
                 # lp
                 if game['info']:
+                    print(2)
                     for p in game['info']['participants']:
                         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
                             unlq_json = json.load(unlq_file)
