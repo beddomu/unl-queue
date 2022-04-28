@@ -78,8 +78,14 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="result", description="Enter this command to report a game result")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def game_result(self, interaction: discord.Interaction):
-        view = GameResultView(interaction.user.id, self._bot)
-        await interaction.response.send_message(content = "test", view=view, ephemeral=True)
+        with open('C:\\DATA\\unlq.json', 'r') as json_file:
+            self.unlq =  json.load(json_file)
+        # Set the options that will be presented inside the dropdown
+        if len(self.unlq['lobbies'].keys()) > 0:
+            view = GameResultView(interaction.user.id, self._bot)
+            await interaction.response.send_message(view=view, ephemeral=True)
+        else:
+            await interaction.response.send_message("There are no live games at the moment.")
         
     @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
