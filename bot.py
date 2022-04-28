@@ -27,17 +27,17 @@ class MyBot(commands.Bot):
             
     @tasks.loop(minutes=0.25)
     async def background_task(self):
-        print("Running background tasks")
         with open('C:\\DATA\\unlq.json', 'r') as file:
-            unlq = json.load(file)        
+            unlq = json.load(file)
             
         for lobby in unlq['lobbies'].keys():
             random_ign = unlq['lobbies'][lobby]['players'][random.randint(0, len(unlq['lobbies'][lobby]['players'])-1)]
             account = find_summoner(random_ign)
             if account:
-                history = get_match_history("lhgvW6XOoXQXtZDpAGgabkBwfZnxHVztNcF4zLlt81H-N4xyY3QBbKnNQIwnDoIrv7jcGEQFO8dOIA")
+                history = get_match_history(account['puuid'])
                 if history:
-                    for game in history:
+                    for game in history[:5]:
+                        print(game)
                         await report_game(self, game[5:], bot.get_guild(603515060119404584))
         
     async def on_ready(self):
