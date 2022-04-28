@@ -85,7 +85,7 @@ class UNLQueue(commands.Cog):
             view = GameResultView(interaction.user.id, self._bot)
             await interaction.response.send_message(view=view, ephemeral=True)
         else:
-            await interaction.response.send_message("There are no live games at the moment.")
+            await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)
         
     @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
