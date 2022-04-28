@@ -22,6 +22,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
             game = json.loads(game_json.read().decode())
         lobby_id = game['info']['gameName']
         print(game['info']['gameName'])
+        print(lobby_id[:8])
         if str(lobby_id[9:]) in unlq_json['lobbies'].keys():
             print(1)
             channel = await bot.fetch_channel(int(os.getenv("LIVE")))
