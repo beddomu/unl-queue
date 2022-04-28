@@ -77,9 +77,9 @@ class UNLQueue(commands.Cog):
         
     @app_commands.command(name="result", description="Enter this command to report a game result")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def report_player(self, interaction: discord.Interaction):
-        view = GameResultView(interaction.user.id, self._bot, interaction.guild)
-        await interaction.response.send_message(view=view)
+    async def game_result(self, interaction: discord.Interaction):
+        view = GameResultView(interaction.user.id, self._bot)
+        await interaction.response.send_message(content = "test", view=view, ephemeral=True)
         
     @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))

@@ -1,4 +1,5 @@
 import json
+import os
 from pprint import pp
 import queue
 import sys
@@ -15,6 +16,7 @@ from utils.update_leaderboard import update_leaderboard
 # Defines a custom Select containing colour options
 # that the user can choose. The callback function
 # of this class is called when the user changes their choice
+
 class GameResult(discord.ui.Select):
     def __init__(self, id, bot):
         self.queue = queue
@@ -24,9 +26,16 @@ class GameResult(discord.ui.Select):
         # Set the options that will be presented inside the dropdown
         options = []
         for lobby in self.unlq['lobbies'].keys():
-            if id in self.unlq['lobbies'][lobby]['player_ids']:
-                option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby))
+            pp(lobby)
+            if id in self.unlq['lobbies'][lobby]['player_ids']['Blue']:
+                option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby), emoji=None)
                 options.append(option)
+        for lobby in self.unlq['lobbies'].keys():
+            pp(lobby)
+            if id in self.unlq['lobbies'][lobby]['player_ids']['Red']:
+                option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby), emoji=None)
+                options.append(option)
+        pp(options)
         super().__init__(placeholder='Select lobby ID...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
@@ -52,6 +61,7 @@ class GameResultSide(discord.ui.View):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             self.unlq = json.load(json_file)
         if self.unlq['lobbies'][self.lobby]:
+            await interaction.response.edit_message(content="Game result reported successfully", view=None)
             #bets
             for player in self.unlq['players'].keys():
                 if str(self.lobby) in self.unlq['players'][player]['bets'].keys():
@@ -134,6 +144,13 @@ class GameResultSide(discord.ui.View):
                     except:
                         print(
                             f"Cannot send dm to: {user.name}")
+            channel = await self.bot.fetch_channel(int(os.getenv("LIVE")))
+            try:
+                message = await channel.fetch_message(self.unlq['lobbies'][str(self.lobby)]['game_id'])
+                await message.delete()
+            except:
+                pass
+
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                         
@@ -163,12 +180,16 @@ class GameResultSide(discord.ui.View):
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                 unlq_file.close()
+        else:
+            await interaction.response.edit_message(content="This game was already reported.", view=None)
 
     @discord.ui.button(label='Red team', style=discord.ButtonStyle.red)
     async def bet_on_red(self, interaction: discord.Interaction, button: discord.ui.Button):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             self.unlq = json.load(json_file)
         if self.unlq['lobbies'][self.lobby]:
+            await interaction.response.edit_message(content="Game result reported successfully", view=None)
+            
             #bets
             for player in self.unlq['players'].keys():
                 if str(self.lobby) in self.unlq['players'][player]['bets'].keys():
@@ -197,7 +218,7 @@ class GameResultSide(discord.ui.View):
                 embed.set_footer(text=f'Lobby ID: {self.lobby}')
                 embed.color = discord.colour.Color.green()
                 embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
-                user = await self.bot.fetch_user(int(player))
+                user = await self.bot.fetch_user(int(p))
                 embed.description = "{}'s current LP: {}".format(
                     self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
                 try:
@@ -253,6 +274,13 @@ class GameResultSide(discord.ui.View):
                     except:
                         print(
                             f"Cannot send dm to: {user.name}")
+                        
+            channel = await self.bot.fetch_channel(int(os.getenv("LIVE")))
+            try:
+                message = await channel.fetch_message(self.unlq['lobbies'][str(self.lobby)]['game_id'])
+                await message.delete()
+            except:
+                pass
 
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
@@ -265,16 +293,17 @@ class GameResultSide(discord.ui.View):
             except:
                 print("Game category doesn't exist")
             queue_voice = discord.utils.get(guild.voice_channels, id=959880784116854794)
-            for channel in game_category.voice_channels:
-                for member in channel.members:
-                    try:
-                        await member.move_to(queue_voice)
-                    except:
-                        print(f'{self.unlq["players"][player]["discord_name"]} is not in the queue voice channel.')
-                try:
+            try:
+                for channel in game_category.voice_channels:
+                    for member in channel.members:
+                        try:
+                            await member.move_to(queue_voice)
+                        except:
+                            print(f'{self.unlq["players"][player]["discord_name"]} is not in the queue voice channel.')
+                
                     await channel.delete()
-                except:
-                    print("Voice channel doesn't exist")
+            except:
+                print("Voice channel doesn't exist")
             try:
                 await game_category.delete()
             except:
@@ -283,3 +312,5 @@ class GameResultSide(discord.ui.View):
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                 unlq_file.close()
+        else:
+            await interaction.response.edit_message(content="This game was already reported.", view=None)
