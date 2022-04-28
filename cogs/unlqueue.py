@@ -11,6 +11,7 @@ from discord.ext import commands, tasks
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
+from classes.views.game_result import GameResultView
 from classes.views.matchmaking import MatchmakingView
 from classes.views.role_select import RoleSelectView
 from classes.role import fill
@@ -74,6 +75,12 @@ class UNLQueue(commands.Cog):
     async def report_player(self, interaction: discord.Interaction):
         await interaction.response.send_modal(Report(self._bot))
         
+    @app_commands.command(name="result", description="Enter this command to report a game result")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def report_player(self, interaction: discord.Interaction):
+        view = GameResultView(interaction.user.id, self._bot, interaction.guild)
+        await interaction.response.send_message(view=view)
+        
     @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def me_command(self, interaction: discord.Interaction):
@@ -110,18 +117,6 @@ class UNLQueue(commands.Cog):
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def link_account(self, interaction: discord.Interaction):
         await interaction.response.send_modal(LinkAccount())
-        
-    @app_commands.command(name="stats", description="Enter this command to see your UNL Queue stats")
-    @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def stats(self, interaction: discord.Interaction):
-        with open('C:\\DATA\\unlq.json', 'r') as json_file:
-            unlq = json.load(json_file)
-        for p in unlq['players']:
-            if interaction.user.id == int(p):
-                await interaction.response.send_message(content=get_stats(unlq['players'][p]['puuid']), ephemeral=True)
-                break
-        else:
-            await interaction.response.send_message(content="Couldn't find your stats, sorry <:Sadge:798976650926096395>", ephemeral=True)
 
     @commands.command(name="addfillrandom", aliases=["r"])
     @commands.has_permissions(manage_messages=True)

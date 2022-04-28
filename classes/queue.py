@@ -415,16 +415,18 @@ class Queue:
                              ]['blue_team'] = self.game.blue_team.rating
         unlq_json['lobbies'][int(str(self.message.id)[:-8])
                              ]['red_team'] = self.game.red_team.rating
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'] = []
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = {}
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'] = {}
         unlq_json['lobbies'][int(str(self.message.id)[:-8])
                              ]['time_created'] = int(time.time())
         for team in self.game.teams:
             for player in team.players:
-                unlq_json['lobbies'][int(str(self.message.id)[
-                                         :-8])]['players'].append(player.ign)
-                unlq_json['lobbies'][int(str(self.message.id)[
-                                         :-8])]['player_ids'].append(player.user.id)
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Blue'] = []
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Red'] = []
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Blue'] = []
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Red'] = []
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'][team.side].append(player.ign)
+                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'][team.side].append(player.user.id)
 
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)
