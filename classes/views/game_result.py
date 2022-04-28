@@ -26,7 +26,6 @@ class GameResult(discord.ui.Select):
         # Set the options that will be presented inside the dropdown
         options = []
         for lobby in self.unlq['lobbies'].keys():
-            pp(lobby)
             if id in self.unlq['lobbies'][lobby]['player_ids']['Blue']:
                 option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby), emoji=None)
                 options.append(option)
@@ -35,7 +34,6 @@ class GameResult(discord.ui.Select):
             if id in self.unlq['lobbies'][lobby]['player_ids']['Red']:
                 option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby), emoji=None)
                 options.append(option)
-        pp(options)
         super().__init__(placeholder='Select lobby ID...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
