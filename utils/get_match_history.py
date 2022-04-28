@@ -10,5 +10,5 @@ def get_match_history(puuid):
             pp(match_history[:5])
             return match_history
     except Exception as e:
-        print('error trying to find puuid')
+        print(f'error trying to find puuid')
     
