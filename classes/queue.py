@@ -419,12 +419,12 @@ class Queue:
         unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'] = {}
         unlq_json['lobbies'][int(str(self.message.id)[:-8])
                              ]['time_created'] = int(time.time())
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Blue'] = []
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Red'] = []
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Blue'] = []
+        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Red'] = []
         for team in self.game.teams:
             for player in team.players:
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Blue'] = []
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Red'] = []
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Blue'] = []
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Red'] = []
                 unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'][team.side].append(player.ign)
                 unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'][team.side].append(player.user.id)
 

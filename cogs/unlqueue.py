@@ -292,7 +292,7 @@ class UNLQueue(commands.Cog):
             
     @commands.command(name="add_points", aliases=["ap"])
     @commands.has_permissions(manage_messages=True)
-    async def unban_player(self, ctx, member: discord.Member, points):
+    async def add_points(self, ctx, member: discord.Member, points):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         unlq['players'][str(member.id)]['unp'] += int(points)
@@ -301,12 +301,12 @@ class UNLQueue(commands.Cog):
             
     @commands.command(name="remove_points", aliases=["subtract_points, rp, sp"])
     @commands.has_permissions(manage_messages=True)
-    async def unban_player(self, ctx, member: discord.Member, points):
+    async def remove_points(self, ctx, member: discord.Member, points):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         unlq['players'][str(member.id)]['unp'] -= int(points)
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
-            json.dump(unlq, unlq_file)   
+            json.dump(unlq, unlq_file)
             
             
     
