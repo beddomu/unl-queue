@@ -307,6 +307,26 @@ class UNLQueue(commands.Cog):
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
             
+    @app_commands.command(name="pay", description="Enter this command to send someone UN Points")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def pay(self, interaction: discord.Interaction, member: discord.Member, points):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+            
+        if unlq['players'][str(interaction.user.id)]['unp'] >= int(points):
+            unlq['players'][str(interaction.user.id)]['unp'] -= int(points)
+            
+            try:
+                unlq['players'][str(member.id)]['unp'] += int(points)
+                
+                interaction.response.send_message(f"You sent {member.mention} {points} UN Points.")
+            except:
+                interaction.response.send_message(f"This operation requires both parties to have an account. {member.mention} doesn't have an account linked.")
+        else:
+            interaction.response.send_message("You don't have that many UN Points.")
+            
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
             
     
         
