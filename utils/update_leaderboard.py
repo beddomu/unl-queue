@@ -17,7 +17,7 @@ async def update_leaderboard():
     for player in unlq['players']:
         dict[player] = {}
         dict[player]['summonerIconId'] = unlq['players'][player]['summonerIconId']
-        dict[player]['name'] = unlq['players'][player]['name']
+        dict[player]['name'] = unlq['players'][player]['discord_name']
         dict[player]['lp'] = unlq['players'][player]['points']
         dict[player]['wins'] = unlq['players'][player]['wins']
         dict[player]['losses'] = unlq['players'][player]['losses']
