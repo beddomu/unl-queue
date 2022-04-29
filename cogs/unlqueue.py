@@ -33,6 +33,29 @@ class UNLQueue(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
         
+    @tasks.loop(minutes=1)
+    async def background_task(self):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        if unlq['dev_mode'] == True:
+            now = datetime.datetime.fromtimestamp(datetime.datetime.now().timestamp(), pytz.timezone('Europe/London'))
+            if 0 <= now.weekday() <= 4:
+                if datetime.time(19) <= now.time() <= datetime.time(22):
+                    print("Opening queue...")
+
+                    unlq['dev_mode'] = False
+
+                    with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                        json.dump(unlq, unlq_file)
+                    guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
+                    role = discord.utils.get(guild.roles, id = 676740137815900160)
+                    channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
+                    await channel.set_permissions(role, read_messages=True)
+                    channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
+                    await channel.set_permissions(role, read_messages=True)
+                    self.queue.devmode = False
+                    await self.queue.new_lobby()
+        
 
                     
     async def cog_load(self):
@@ -41,6 +64,7 @@ class UNLQueue(commands.Cog):
         message = await channel.send("**Initializing...**")
         self.queue.message = message
         await self.queue.new_lobby()
+        await self.background_task.start()
         print("Queue initialized")
         
 
