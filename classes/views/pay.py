@@ -40,10 +40,7 @@ class Pay(discord.ui.Modal):
                 unlq = json.load(file)
                 
             if unlq['players'][str(self.sender.id)]['unp'] >= amount:
-                pp(unlq['players'][str(self.sender.id)]['unp'])
-                pp(amount)
                 unlq['players'][str(self.sender.id)]['unp'] -= amount
-                pp(unlq['players'][str(self.sender.id)]['unp'])
                 
                 try:
                     unlq['players'][str(self.receiver.id)]['unp'] += amount
