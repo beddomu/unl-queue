@@ -309,7 +309,7 @@ class UNLQueue(commands.Cog):
             
     @app_commands.command(name="pay", description="Enter this command to send someone UN Points")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def pay(self, interaction: discord.Interaction, member: discord.Member, points):
+    async def send_points(self, interaction: discord.Interaction, member: discord.Member, points):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
             
