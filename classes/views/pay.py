@@ -40,15 +40,19 @@ class Pay(discord.ui.Modal):
                 unlq = json.load(file)
                 
             if unlq['players'][str(self.sender.id)]['unp'] >= amount:
-                unlq['players'][str(self.sender.id)]['unp'] -= amount
                 
-                try:
-                    unlq['players'][str(self.receiver.id)]['unp'] += amount
+                if amount > 0:
+                    unlq['players'][str(self.sender.id)]['unp'] -= amount
                     
-                    await interaction.response.send_message(f"You sent {self.receiver.mention} {amount} UN Points.", ephemeral=True)
-                    await self.receiver.send(f"{self.sender.name} sent you {amount} UN Points\nMessage: *{self.message.value}*")
-                except:
-                    await interaction.response.send_message(f"This operation requires both parties to have an account. {self.receiver.mention} doesn't have an account linked.", ephemeral=True)
+                    try:
+                        unlq['players'][str(self.receiver.id)]['unp'] += amount
+                        
+                        await interaction.response.send_message(f"You sent {self.receiver.mention} {amount} UN Points.", ephemeral=True)
+                        await self.receiver.send(f"{self.sender.name} sent you {amount} UN Points\nMessage: *{self.message.value}*")
+                    except:
+                        await interaction.response.send_message(f"This operation requires both parties to have an account. {self.receiver.mention} doesn't have an account linked.", ephemeral=True)
+                else:
+                    await interaction.response.send_message("The amount needs to be greater than 0.", ephemeral=True)
             else:
                 await interaction.response.send_message("You don't have that many UN Points.", ephemeral=True)
                 

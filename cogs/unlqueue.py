@@ -312,8 +312,11 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="pay", description="Enter this command to send someone UN Points")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def send_points(self, interaction: discord.Interaction, member: discord.Member):
-        modal = Pay(interaction.user, member)
-        await interaction.response.send_modal(modal)
+        if interaction.user.id != member.id:
+            modal = Pay(interaction.user, member)
+            await interaction.response.send_modal(modal)
+        else:
+            await interaction.response.send_message("You can't send yourself UN Points.", ephemeral=True)
             
     
         
