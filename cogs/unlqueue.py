@@ -319,11 +319,12 @@ class UNLQueue(commands.Cog):
             try:
                 unlq['players'][str(member.id)]['unp'] += int(points)
                 
-                interaction.response.send_message(f"You sent {member.mention} {points} UN Points.")
+                await interaction.response.send_message(f"You sent {member.mention} {int(points)} UN Points.")
+                await member.send(f"{interaction.user.name} sent you {int(points)} UN Points")
             except:
-                interaction.response.send_message(f"This operation requires both parties to have an account. {member.mention} doesn't have an account linked.")
+                await interaction.response.send_message(f"This operation requires both parties to have an account. {member.mention} doesn't have an account linked.")
         else:
-            interaction.response.send_message("You don't have that many UN Points.")
+            await interaction.response.send_message("You don't have that many UN Points.")
             
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
