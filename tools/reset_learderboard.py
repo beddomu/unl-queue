@@ -9,7 +9,7 @@ for player in unlq['players']:
     unlq['players'][player]['losses'] = 0
     unlq['players'][player]['mmr'] = 0
     unlq['players'][player]['lp_history'] = []
-    unlq['players'][player]['bets'] = []
+    unlq['players'][player]['bets'] = {}
     
 del unlq['games']
 
