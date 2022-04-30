@@ -15,12 +15,20 @@ class Pay(discord.ui.Modal):
             self.receiver = receiver
 
         self.pay = discord.ui.TextInput(
-            label=f"Pay {self.receiver.name}",
+            label=f"Amount",
             placeholder= f"Your UN Points: {self.unlq['players'][str(sender.id)]['unp']}",
             min_length=1,
             max_length=10
         )
         self.add_item(self.pay)
+        
+        self.message = discord.ui.TextInput(
+            label='Message',
+            style=discord.TextStyle.long,
+            placeholder='Optional message',
+            required=False,
+            max_length=300,
+        )
         
     async def on_submit(self, interaction: discord.Interaction):
         if self.pay.value.isnumeric():
@@ -35,7 +43,7 @@ class Pay(discord.ui.Modal):
                     unlq['players'][str(self.receiver.id)]['unp'] += amount
                     
                     await interaction.response.send_message(f"You sent {self.receiver.mention} {amount} UN Points.", ephemeral=True)
-                    await self.receiver.send(f"{self.sender.name} sent you {amount} UN Points")
+                    await self.receiver.send(f"{self.sender.name} sent you {amount} UN Points\nMessage: *{self.message.value}*")
                 except:
                     await interaction.response.send_message(f"This operation requires both parties to have an account. {self.receiver.mention} doesn't have an account linked.", ephemeral=True)
             else:
