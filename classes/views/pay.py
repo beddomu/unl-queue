@@ -56,7 +56,7 @@ class Pay(discord.ui.Modal):
                 await interaction.response.send_message("You don't have that many UN Points.", ephemeral=True)
                 
             with open('C:\\DATA\\unlq.json', 'w') as json_file:
-                json.dump(self.unlq, json_file, ensure_ascii=False)
+                json.dump(unlq, json_file, ensure_ascii=False)
         else:
             await interaction.response.send_message("That needs to be a number!", ephemeral=True)
                     
