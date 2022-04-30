@@ -11,8 +11,10 @@ from discord.ext import commands, tasks
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
+from classes.views.betting import BetModal
 from classes.views.game_result import GameResultView
 from classes.views.matchmaking import MatchmakingView
+from classes.views.pay import Pay
 from classes.views.role_select import RoleSelectView
 from classes.role import fill
 from classes.views.report import Report
@@ -309,25 +311,9 @@ class UNLQueue(commands.Cog):
             
     @app_commands.command(name="pay", description="Enter this command to send someone UN Points")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def send_points(self, interaction: discord.Interaction, member: discord.Member, points):
-        with open('C:\\DATA\\unlq.json', 'r') as file:
-            unlq = json.load(file)
-            
-        if unlq['players'][str(interaction.user.id)]['unp'] >= int(points):
-            unlq['players'][str(interaction.user.id)]['unp'] -= int(points)
-            
-            try:
-                unlq['players'][str(member.id)]['unp'] += int(points)
-                
-                await interaction.response.send_message(f"You sent {member.mention} {int(points)} UN Points.")
-                await member.send(f"{interaction.user.name} sent you {int(points)} UN Points")
-            except:
-                await interaction.response.send_message(f"This operation requires both parties to have an account. {member.mention} doesn't have an account linked.")
-        else:
-            await interaction.response.send_message("You don't have that many UN Points.")
-            
-        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
-            json.dump(unlq, unlq_file)
+    async def send_points(self, interaction: discord.Interaction, member: discord.Member):
+        modal = Pay(interaction.user, member)
+        await interaction.response.send_modal(modal)
             
     
         
