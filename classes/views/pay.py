@@ -20,7 +20,7 @@ class Pay(discord.ui.Modal):
             min_length=1,
             max_length=10
         )
-        self.add_item(self.pay)
+        
         
         self.message = discord.ui.TextInput(
             label='Message',
@@ -29,6 +29,9 @@ class Pay(discord.ui.Modal):
             required=False,
             max_length=300,
         )
+        
+        self.add_item(self.pay)
+        self.add_item(self.message)
         
     async def on_submit(self, interaction: discord.Interaction):
         if self.pay.value.isnumeric():
