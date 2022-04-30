@@ -11,7 +11,7 @@ for player in unlq['players']:
     unlq['players'][player]['lp_history'] = []
     unlq['players'][player]['bets'] = {}
     
-del unlq['games']
+
 
 with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
     json.dump(unlq, unlq_file)
