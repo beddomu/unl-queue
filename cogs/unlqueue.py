@@ -103,7 +103,7 @@ class UNLQueue(commands.Cog):
                 un_points = unlq['players'][p]['unp']
                 break
         else:
-            await interaction.response.send_message(content="Couldn't find your info, sorry <:Sadge:798976650926096395>", ephemeral=True)
+            await interaction.response.send_message(content="Couldn't find your info, sorry Sadge:798976650926096395>", ephemeral=True)
         
         for p in leaderboard.keys():
             index += 1
@@ -220,7 +220,7 @@ class UNLQueue(commands.Cog):
                 else:
                     await interaction.response.send_message("You don't have enough UN Points to exchange. Minimum required: 500")
         else:
-            await interaction.response.send_message(content="Couldn't find your profile, sorry <:Sadge:798976650926096395>. Have you linked your account?", ephemeral=True)
+            await interaction.response.send_message(content="Couldn't find your profile, sorry <:Sadge:713704197526388746>. Have you linked your account?", ephemeral=True)
 
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)

@@ -35,7 +35,7 @@ class LiveGame(discord.ui.View):
         else:
             await interaction.response.send_message("You're not allowed to do that.", ephemeral = True)
             
-    @discord.ui.button(label='Bet on this game', emoji="<:xqcM:828492833462943755>", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label='Bet on this game', emoji="<:xqcM:603523946591158272>", style=discord.ButtonStyle.blurple)
     async def bet(self, interaction: discord.Interaction, button: discord.ui.Button):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)

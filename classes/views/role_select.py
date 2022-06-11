@@ -18,11 +18,11 @@ class RoleSelect(discord.ui.Select):
         self.queue = queue
         # Set the options that will be presented inside the dropdown
         options = [
-            discord.SelectOption(label='Top', value='Top', emoji='<:top:949215554441465866>'),
-            discord.SelectOption(label='Jungle', value='Jungle', emoji='<:jungle:949215552591765544>'),
-            discord.SelectOption(label='Middle', value='Middle', emoji='<:mid:949215552621129728>'),
-            discord.SelectOption(label='Bottom', value='Bottom', emoji='<:bot:949215552507883560>'),
-            discord.SelectOption(label='Support', value='Support', emoji='<:support:949215552180719617>')
+            discord.SelectOption(label='Top', value='Top', emoji='<:top:985153368563539988>'),
+            discord.SelectOption(label='Jungle', value='Jungle', emoji='<:jungle:985153365212295249>'),
+            discord.SelectOption(label='Middle', value='Middle', emoji='<:mid:985153366801915924>'),
+            discord.SelectOption(label='Bottom', value='Bottom', emoji='<:bot:985153363274522694>'),
+            discord.SelectOption(label='Support', value='Support', emoji='<:support:985153369779896391>')
         ]
         super().__init__(placeholder='Select your role...', min_values=1, max_values=1, options=options)
 
@@ -52,7 +52,7 @@ class RoleSelectView(discord.ui.View):
         self.queue = queue
         self.add_item(RoleSelect(queue))
         
-    @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:949215552671469578>")
+    @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:985153779148140584>")
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
             await interaction.response.edit_message(content="Game is about to begin...", view=None)

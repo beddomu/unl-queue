@@ -128,7 +128,7 @@ class Queue:
         else:
             player_string = "       `none`"
 
-        role_list = f"\nTop        <:top:949215554441465866>: {len(top_list)}/2\nJungle   <:jungle:949215552591765544>: {len(jungle_list)}/2\nMiddle   <:mid:949215552621129728>: {len(mid_list)}/2\nBottom  <:bot:949215552507883560>: {len(bot_list)}/2\nSupport <:support:949215552180719617>: {len(supp_list)}/2\nFill           <:fill:949215552671469578>: {len(fill_list)}"
+        role_list = f"\nTop        <:top:985153368563539988>: {len(top_list)}/2\nJungle   <:jungle:985153365212295249>: {len(jungle_list)}/2\nMiddle   <:mid:985153366801915924> : {len(mid_list)}/2\nBottom  <:bot:985153363274522694>: {len(bot_list)}/2\nSupport <:support:985153369779896391>: {len(supp_list)}/2\nFill           <:fill:985153779148140584>: {len(fill_list)}"
 
         divider = "\n---------------------------------------------"
         lobby_id_string = f"\n`Lobby id: {int(str(self.message.id)[:-8])}`"

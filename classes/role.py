@@ -8,9 +8,9 @@ class Role:
         rep = self.name
         return rep
 
-top = Role("Top", 0, "<:top:949215554441465866>")
-jungle = Role("Jungle", 1, "<:jungle:949215552591765544>")
-middle = Role("Middle", 2, "<:mid:949215552621129728>")
-bottom = Role("Bottom", 3, "<:bot:949215552507883560>")
-support = Role("Support", 4, "<:support:949215552180719617>")
-fill = Role("Fill", 5, "<:fill:949215552671469578>")
+top = Role("Top", 0, "<:top:985153368563539988>")
+jungle = Role("Jungle", 1, "<:jungle:985153365212295249>")
+middle = Role("Middle", 2, "<:mid:985153366801915924>")
+bottom = Role("Bottom", 3, "<:bot:985153363274522694>")
+support = Role("Support", 4, "<:support:985153369779896391>")
+fill = Role("Fill", 5, "<:fill:985153779148140584>")
