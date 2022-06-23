@@ -392,15 +392,13 @@ class Queue:
             multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
                 ",".join(ign_list))
             try:
-                short_multiopgg = "\nMulti opgg: {}".format(
-                    shorten_url(multiopgg))
+                short_multiopgg = "\nMulti opgg: {}".format(shorten_url(multiopgg))
+                team_players_string = "\n".join(team_players_list)
+                if short_multiopgg:
+                    team_players_string += short_multiopgg
             except:
                 pass
-            team_players_string = "\n".join(team_players_list)
-            if short_multiopgg:
-                team_players_string += short_multiopgg
-            embed.add_field(
-                name=f'Team {team.side} ({team.rating})', value=team_players_string)
+            embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
         
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
