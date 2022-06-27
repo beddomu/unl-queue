@@ -392,12 +392,6 @@ class Queue:
             multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
                 ",".join(ign_list))
             team_players_string = "\n".join(team_players_list)
-            try:
-                short_multiopgg = "\nMulti opgg: {}".format(shorten_url(multiopgg))
-                if short_multiopgg:
-                    team_players_string += short_multiopgg
-            except:
-                pass
             embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
         leave_lobby()
         

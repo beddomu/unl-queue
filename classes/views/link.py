@@ -77,6 +77,7 @@ class LinkAccount(discord.ui.Modal):
                     unlq_json['players'][str(interaction.user.id)]['rating'] = 60
                     unlq_json['players'][str(interaction.user.id)]['wins'] = 0
                     unlq_json['players'][str(interaction.user.id)]['losses'] = 0
+                    unlq_json['players'][str(interaction.user.id)]['bets'] = {}
                     unlq_json['players'][str(interaction.user.id)]['mmr'] = 0
                     unlq_json['players'][str(interaction.user.id)]['lp_history'] = []
                     unlq_json['players'][str(interaction.user.id)]['banned_until'] = 0
