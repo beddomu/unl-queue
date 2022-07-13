@@ -82,7 +82,7 @@ class GameResultSide(discord.ui.View):
                     self.unlq['players'][str(p)]['wins'] = 1
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
-                mmr = int(self.unlq['players'][str(p)]['mmr']/200)
+                mmr = int(self.unlq['players'][str(p)]['mmr']/400)
                 self.unlq['players'][str(p)]['points'] += int(15+mmr + (red-blue)*0.06)
                 self.unlq['players'][str(p)]['lp_history'].append(f'+{int(15+mmr + (red-blue)*0.06)}')
                 embed = discord.Embed(
@@ -110,7 +110,7 @@ class GameResultSide(discord.ui.View):
                     self.unlq['players'][str(p)]['losses'] = 1
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
-                mmr = int(self.unlq['players'][str(p)]['mmr']/200)
+                mmr = int(self.unlq['players'][str(p)]['mmr']/400)
                 if self.unlq['players'][str(p)]['points'] >= int(15-mmr-(red-blue)*0.06):
                     self.unlq['players'][str(p)]['points'] -= int(15-mmr-(red-blue)*0.06)
                     self.unlq['players'][str(p)]['lp_history'].append(f'-{int(15-mmr-(red-blue)*0.06)}')
@@ -209,7 +209,7 @@ class GameResultSide(discord.ui.View):
                     self.unlq['players'][str(p)]['wins'] = 1
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
-                mmr = int(self.unlq['players'][str(p)]['mmr']/200)
+                mmr = int(self.unlq['players'][str(p)]['mmr']/400)
                 self.unlq['players'][str(p)]['points'] += int(15+mmr+(blue-red)*0.06)
                 self.unlq['players'][str(p)]['lp_history'].append(f'+{int(15+mmr+(blue-red)*0.06)}')
                 embed = discord.Embed(title=f'+{int(15+mmr+(blue-red)*0.06)}')
@@ -238,7 +238,7 @@ class GameResultSide(discord.ui.View):
                     self.unlq['players'][str(p)]['losses'] = 1
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
-                mmr = int(self.unlq['players'][str(p)]['mmr']/200)
+                mmr = int(self.unlq['players'][str(p)]['mmr']/400)
                 if self.unlq['players'][str(p)]['points'] >= int(15-mmr-(red-blue)*0.06):
                     self.unlq['players'][str(p)]['points'] -= int(15-mmr-(red-blue)*0.06)
                     self.unlq['players'][str(p)]['lp_history'].append(f'-{int(15-mmr-(red-blue)*0.06)}')
