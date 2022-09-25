@@ -5,7 +5,7 @@ from lcu import lockfile
 
 
 class Lobby:
-    def __init__(self, name: str, password=None, team_size: int = 5, map_id: int = 11, mutator_id: int = 6):
+    def __init__(self, name: str, password=None, team_size: int = 5, map_id: int = 11, mutator_id: int = 2):
         self.auth = lockfile.auth
         self.port = lockfile.port
         self.name = name

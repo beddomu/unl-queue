@@ -347,7 +347,7 @@ class Queue:
 
     async def initiate_game(self):
         self.initiated = True
-        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5)
+        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=2)
         lobby.create()
         time.sleep(1)
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
