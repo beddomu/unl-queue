@@ -41,5 +41,5 @@ class Lobby:
         else:
             pp(r.json())
 
-lobby = Lobby('test', None, 5, 11, 13)
+lobby = Lobby('test', None, 5, 11, 1)
 lobby.create()
