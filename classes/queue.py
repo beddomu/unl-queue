@@ -302,10 +302,9 @@ class Queue:
         return game
 
     async def on_queue_timeout(self):
-        self.locked = False
-        self.game = None
         ready_list = []
         not_ready_list = []
+        self.locked = False
         for p in self.game.players:
             if p.ready != True:
                 not_ready_list.append(p)
@@ -325,6 +324,8 @@ class Queue:
             await self.pop_message.edit(view=None, content="{} missed ready check. All the remaining players have been put back in queue".format(", ".join(not_ready_mentions)), delete_after=10)
         else:
             await self.pop_message.edit(view=None, content="Queue expired", delete_after=10)
+        
+        self.game = None
         self.unready_all_players()
         await self.update_lobby()
         self.full = False
@@ -347,7 +348,7 @@ class Queue:
 
     async def initiate_game(self):
         self.initiated = True
-        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=2)
+        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=6)
         lobby.create()
         time.sleep(1)
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
