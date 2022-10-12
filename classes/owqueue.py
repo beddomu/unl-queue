@@ -10,7 +10,7 @@ from discord.ext import commands
 import urllib
 from classes.game import Game
 from classes.image.image import make_image
-from classes.role import Role, top, jungle, middle, bottom, support, fill
+from classes.owrole import Role, dps, tank, support, fill
 from classes.team import Team
 from classes.views.live_game import LiveGame
 from classes.views.match_found import MatchFoundView
@@ -26,7 +26,7 @@ class Queue:
         self.team_size = team_size
         self.message: discord.Message = None
         self.players = []
-        self.roles = [top, jungle, middle, bottom, support]
+        self.roles = [dps, tank, support]
         self.full = bool
         self.locked = False
         self.initiated = False
@@ -38,7 +38,6 @@ class Queue:
 
     async def reset_lobby(self):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
-        await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
         print(f"New lobby has been created with the id: {message.id}")
         self.locked = False
@@ -48,15 +47,12 @@ class Queue:
         self.pop_message = None
         self.message = message
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
-        if self.devmode == False:
-            await channel.send(f"{' '.join(self.get_player_mentions())}\nThe lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
         self.players.clear()
         self.spots_open = 10
         await self.update_lobby()
 
     async def new_lobby(self, players=None):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
-        await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
         print(f"New lobby has been created with the id: {message.id}")
         self.locked = False
@@ -69,8 +65,6 @@ class Queue:
             self.players = players
         self.unready_all_players()
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
-        if self.devmode == False:
-            await channel.send("Queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
@@ -93,28 +87,22 @@ class Queue:
 
     async def update_lobby(self):
         self.ready_check()
-        initial_string = f"**League Of Legends**\n`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------"
+        initial_string = f"**Overwatch**\n`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------"
         player_string_list = []
 
-        top_list = []
-        jungle_list = []
-        mid_list = []
-        bot_list = []
+        dps_list = []
+        tank_list = []
         supp_list = []
         fill_list = []
 
         for player in self.players:
-            if player.role == top:
-                top_list.append(player)
-            elif player.role == jungle:
-                jungle_list.append(player)
-            elif player.role == middle:
-                mid_list.append(player)
-            elif player.role == bottom:
-                bot_list.append(player)
+            if player.role == dps:
+                dps_list.append(player)
+            elif player.role == tank:
+                tank_list.append(player)
             elif player.role == support:
                 supp_list.append(player)
-            else:
+            elif player.role == fill:
                 fill_list.append(player)
 
         for player in self.players:
@@ -128,7 +116,7 @@ class Queue:
         else:
             player_string = "       `none`"
 
-        role_list = f"\nTop        <:top:985153368563539988>: {len(top_list)}/2\nJungle   <:jungle:985153365212295249>: {len(jungle_list)}/2\nMiddle   <:mid:985153366801915924> : {len(mid_list)}/2\nBottom  <:bot:985153363274522694>: {len(bot_list)}/2\nSupport <:support:985153369779896391>: {len(supp_list)}/2\nFill           <:fill:985153779148140584>: {len(fill_list)}"
+        role_list = f"\nDPS        <:OW2dps:1029808066058797157>: {len(dps_list)}/4\nTank       <:OW2tank:1029808067673587722>: {len(tank_list)}/2\nSupport <:OW2support:1029808069330346124> : {len(supp_list)}/4\nFill           <:OW2:1029808843338821632>: {len(fill_list)}"
 
         divider = "\n---------------------------------------------"
         lobby_id_string = f"\n`Lobby id: {int(str(self.message.id)[:-8])}`"
@@ -202,29 +190,21 @@ class Queue:
         team_blue = Team(5, "Blue")
         team_red = Team(5, "Red")
         game = Game(team_blue, team_red, None)
-        self.top_list = []
-        self.jungle_list = []
-        self.mid_list = []
-        self.bot_list = []
+        self.dps_list = []
+        self.tank_list = []
         self.supp_list = []
         self.fill_list = []
         role_lists = [
-            self.top_list,
-            self.jungle_list,
-            self.mid_list,
-            self.bot_list,
+            self.dps_list,
+            self.tank_list,
             self.supp_list
         ]
 
         for player in self.players:
-            if player.role == top:
-                self.top_list.append(player)
-            elif player.role == jungle:
-                self.jungle_list.append(player)
-            elif player.role == middle:
-                self.mid_list.append(player)
-            elif player.role == bottom:
-                self.bot_list.append(player)
+            if player.role == dps:
+                self.dps_list.append(player)
+            elif player.role == tank:
+                self.tank_list.append(player)
             elif player.role == support:
                 self.supp_list.append(player)
             else:
@@ -236,13 +216,13 @@ class Queue:
 
         print("balancing teams...")
 
-        topq = [self.top_list[0], self.top_list[1]]
-        team_blue.add_player(topq.pop(random.randint(0, 1)))
-        team_red.add_player(topq[0])
+        dpsq = [self.dps_list[0], self.dps_list[1]]
+        team_blue.add_player(dpsq.pop(random.randint(0, 1)))
+        team_red.add_player(dpsq[0])
 
-        jgq = [self.jungle_list[0], self.jungle_list[1]]
-        better_player = jgq.index(max(jgq))
-        options = [jgq.pop(better_player), jgq[0]]
+        tankq = [self.tank_list[0], self.tank_list[1]]
+        better_player = tankq.index(max(tankq))
+        options = [tankq.pop(better_player), tankq[0]]
         if game.blue_team > game.red_team:
             game.red_team.add_player(options[0])
             game.blue_team.add_player(options[1])
@@ -250,34 +230,8 @@ class Queue:
             game.red_team.add_player(options[1])
             game.blue_team.add_player(options[0])
         else:
-            game.blue_team.add_player(self.jungle_list[0])
-            game.red_team.add_player(self.jungle_list[1])
-
-        midq = [self.mid_list[0], self.mid_list[1]]
-        better_player = midq.index(max(midq))
-        options = [midq.pop(better_player), midq[0]]
-        if game.blue_team > game.red_team:
-            game.red_team.add_player(options[0])
-            game.blue_team.add_player(options[1])
-        elif game.red_team > game.blue_team:
-            game.red_team.add_player(options[1])
-            game.blue_team.add_player(options[0])
-        else:
-            game.blue_team.add_player(self.mid_list[0])
-            game.red_team.add_player(self.mid_list[1])
-
-        adcq = [self.bot_list[0], self.bot_list[1]]
-        better_player = adcq.index(max(adcq))
-        options = [adcq.pop(better_player), adcq[0]]
-        if game.blue_team > game.red_team:
-            game.red_team.add_player(options[0])
-            game.blue_team.add_player(options[1])
-        elif game.red_team > game.blue_team:
-            game.red_team.add_player(options[1])
-            game.blue_team.add_player(options[0])
-        else:
-            game.blue_team.add_player(self.bot_list[0])
-            game.red_team.add_player(self.bot_list[1])
+            game.blue_team.add_player(self.tank_list[0])
+            game.red_team.add_player(self.tank_list[1])
 
         suppq = [self.supp_list[0], self.supp_list[1]]
         better_player = suppq.index(max(suppq))

@@ -11,11 +11,13 @@ from discord.ext import commands, tasks
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
+from classes.owqueue import Queue as OWQueue
 from classes.views.betting import BetModal
 from classes.views.game_result import GameResultView
 from classes.views.matchmaking import MatchmakingView
 from classes.views.pay import Pay
 from classes.views.role_select import RoleSelectView
+from classes.views.ow_role_select import RoleSelectView as OWRoleSelectView
 from classes.role import fill
 from classes.views.report import Report
 from classes.views.link import LinkAccount
@@ -38,10 +40,13 @@ class UNLQueue(commands.Cog):
                     
     async def cog_load(self):
         self.queue = Queue(5)
+        self.owqueue = OWQueue(5)
         channel = await self._bot.fetch_channel(os.getenv("QUEUE"))
         message = await channel.send("**Initializing...**")
         self.queue.message = message
+        self.owqueue.message = message
         await self.queue.new_lobby()
+        await self.owqueue.new_lobby()
         print("Queue initialized")
         
 
@@ -67,6 +72,26 @@ class UNLQueue(commands.Cog):
                     await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
             else:
                 await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
+        else:
+            await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
+
+
+    @app_commands.command(name="owqueue", description="Enter this command to view the owqueue options")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def queue_command(self, interaction: discord.Interaction):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        if str(interaction.user.id) in unlq['players']:
+            if interaction.user.id not in self.owqueue.get_all_ids():
+                if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
+                    await interaction.response.send_message(view=OWRoleSelectView(self.owqueue), ephemeral=True)
+                else:
+                    banned_until = unlq['players'][str(interaction.user.id)]['banned_until']
+                    value = datetime.datetime.fromtimestamp(banned_until, pytz.timezone('Europe/London'))
+                    res = value.strftime('%d %B %I:%M %p')
+                    await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
+            else:
+                await interaction.response.send_message(view=MatchmakingView(self.owqueue), ephemeral=True)
         else:
             await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
 
