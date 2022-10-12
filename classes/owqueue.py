@@ -8,10 +8,10 @@ import time
 import discord
 from discord.ext import commands
 import urllib
-from classes.game import Game
+from classes.owgame import Game
 from classes.image.image import make_image
 from classes.owrole import Role, dps, tank, support, fill
-from classes.team import Team
+from classes.owteam import Team
 from classes.views.live_game import LiveGame
 from classes.views.match_found import MatchFoundView
 from lcu.create_lobby import Lobby
@@ -151,11 +151,18 @@ class Queue:
                     fill_list.append(player)
             if role_list:
                 for r in roles_in_queue.values():
-                    if r >= 2:
-                        index += 1
-                        i += 2
-                    elif r == 1:
-                        i += 1
+                    if role_list[r-1] == "Tank":
+                        if r >= 2:
+                            index += 1
+                            i += 2
+                        elif r == 1:
+                            i += 1
+                    else:
+                        if r >= 4:
+                            index += 1
+                            i += 4
+                        elif r == 1:
+                            i += 1
             self.spots_open = 10 - i - len(fill_list)
             if self.spots_open == 0:
                 self.full = True
@@ -210,46 +217,64 @@ class Queue:
             else:
                 self.fill_list.append(player)
         for role in role_lists:
-            while len(role) < 2 and len(self.fill_list) >= 0:
-                role.append(self.fill_list.pop(
-                    random.randint(0, (len(self.fill_list)-1))))
+            if role != self.tank_list:
+                while len(role) < 4 and len(self.fill_list) >= 0:
+                    role.append(self.fill_list.pop(
+                        random.randint(0, (len(self.fill_list)-1))))
+            else:
+                while len(role) < 2 and len(self.fill_list) >= 0:
+                    role.append(self.fill_list.pop(
+                        random.randint(0, (len(self.fill_list)-1))))
 
         print("balancing teams...")
 
-        dpsq = [self.dps_list[0], self.dps_list[1]]
-        team_blue.add_player(dpsq.pop(random.randint(0, 1)))
+        dpsq = [self.dps_list[0], self.dps_list[1], self.dps_list[2], self.dps_list[3]]
+        team_blue.add_player(dpsq.pop(random.randint(0, 3)))
+        team_blue.add_player(dpsq.pop(random.randint(0, 2)))
+        team_red.add_player(dpsq.pop(random.randint(0, 1)))
         team_red.add_player(dpsq[0])
 
         tankq = [self.tank_list[0], self.tank_list[1]]
         better_player = tankq.index(max(tankq))
         options = [tankq.pop(better_player), tankq[0]]
-        if game.blue_team > game.red_team:
-            game.red_team.add_player(options[0])
-            game.blue_team.add_player(options[1])
-        elif game.red_team > game.blue_team:
-            game.red_team.add_player(options[1])
-            game.blue_team.add_player(options[0])
+        if game.team1 > game.team2:
+            game.team2.add_player(options[0])
+            game.team1.add_player(options[1])
+        elif game.team2 > game.team1:
+            game.team2.add_player(options[1])
+            game.team1.add_player(options[0])
         else:
-            game.blue_team.add_player(self.tank_list[0])
-            game.red_team.add_player(self.tank_list[1])
+            game.team1.add_player(self.tank_list[0])
+            game.team2.add_player(self.tank_list[1])
 
-        suppq = [self.supp_list[0], self.supp_list[1]]
+        suppq = [self.supp_list[0], self.supp_list[1], self.supp_list[2], self.supp_list[3]]
         better_player = suppq.index(max(suppq))
-        options = [suppq.pop(better_player), suppq[0]]
-        if game.blue_team > game.red_team:
-            game.red_team.add_player(options[0])
-            game.blue_team.add_player(options[1])
-        elif game.red_team > game.blue_team:
-            game.red_team.add_player(options[1])
-            game.blue_team.add_player(options[0])
+        options1 = [suppq.pop(better_player), suppq.pop(0)]
+        options2 = [suppq.pop(better_player), suppq[0]]
+        if game.team1 > game.team2:
+            game.team2.add_player(options1[0])
+            game.team1.add_player(options1[1])
+        elif game.team2 > game.team1:
+            game.team2.add_player(options1[1])
+            game.team1.add_player(options1[0])
         else:
-            game.blue_team.add_player(self.supp_list[0])
-            game.red_team.add_player(self.supp_list[1])
+            game.team1.add_player(self.supp_list[0])
+            game.team2.add_player(self.supp_list[1])
+
+        if game.team1 > game.team2:
+            game.team2.add_player(options2[0])
+            game.team1.add_player(options2[1])
+        elif game.team2 > game.team1:
+            game.team2.add_player(options2[1])
+            game.team1.add_player(options2[0])
+        else:
+            game.team1.add_player(self.supp_list[0])
+            game.team2.add_player(self.supp_list[1])
 
         print(f"Final Team blue rating: {team_blue.rating}")
         print(f"Final Team red rating: {team_red.rating}")
 
-        game.players = game.blue_team.players + game.red_team.players
+        game.players = game.team1.players + game.team2.players
         
         self.game = game
         make_image(game)

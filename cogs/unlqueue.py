@@ -18,7 +18,7 @@ from classes.views.matchmaking import MatchmakingView
 from classes.views.pay import Pay
 from classes.views.role_select import RoleSelectView
 from classes.views.ow_role_select import RoleSelectView as OWRoleSelectView
-from classes.role import fill
+from classes.owrole import fill, dps, tank, support
 from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.ban import ban
@@ -168,6 +168,63 @@ class UNLQueue(commands.Cog):
                     break
             else:
                 await self.queue.update_lobby()
+
+    @commands.command(name="owaddsupport", aliases=["ows"])
+    @commands.has_permissions(manage_messages=True)
+    async def ow_add_support(self, ctx: commands.context.Context, input: int):
+            n = 0
+            while n < input:
+                if len(self.owqueue.players) < 10:
+                    user = random.choice(self.owqueue.message.channel.guild.members)
+                    with open('C:\\DATA\\unlq.json', 'r') as json_file:
+                        unlq_json =  json.load(json_file)
+                    if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
+                        player = Player(user.id, user.name, support, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
+                        if player not in self.owqueue.players:
+                            self.owqueue.players.append(player)
+                            n += 1
+                else:
+                    break
+            else:
+                await self.owqueue.update_lobby()
+
+    @commands.command(name="owadddps", aliases=["owd"])
+    @commands.has_permissions(manage_messages=True)
+    async def ow_add_dps(self, ctx: commands.context.Context, input: int):
+            n = 0
+            while n < input:
+                if len(self.owqueue.players) < 10:
+                    user = random.choice(self.owqueue.message.channel.guild.members)
+                    with open('C:\\DATA\\unlq.json', 'r') as json_file:
+                        unlq_json =  json.load(json_file)
+                    if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
+                        player = Player(user.id, user.name, dps, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
+                        if player not in self.owqueue.players:
+                            self.owqueue.players.append(player)
+                            n += 1
+                else:
+                    break
+            else:
+                await self.owqueue.update_lobby()
+
+    @commands.command(name="owaddtank", aliases=["owt"])
+    @commands.has_permissions(manage_messages=True)
+    async def ow_add_tank(self, ctx: commands.context.Context, input: int):
+            n = 0
+            while n < input:
+                if len(self.owqueue.players) < 10:
+                    user = random.choice(self.owqueue.message.channel.guild.members)
+                    with open('C:\\DATA\\unlq.json', 'r') as json_file:
+                        unlq_json =  json.load(json_file)
+                    if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
+                        player = Player(user.id, user.name, tank, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
+                        if player not in self.owqueue.players:
+                            self.owqueue.players.append(player)
+                            n += 1
+                else:
+                    break
+            else:
+                await self.owqueue.update_lobby()
                     
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
