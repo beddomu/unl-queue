@@ -14,6 +14,7 @@ from classes.queue import Queue
 from classes.owqueue import Queue as OWQueue
 from classes.views.betting import BetModal
 from classes.views.game_result import GameResultView
+from classes.views.ow_game_result import GameResultView as OWGameResultView
 from classes.views.matchmaking import MatchmakingView
 from classes.views.pay import Pay
 from classes.views.role_select import RoleSelectView
@@ -78,7 +79,7 @@ class UNLQueue(commands.Cog):
 
     @app_commands.command(name="owqueue", description="Enter this command to view the owqueue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
-    async def queue_command(self, interaction: discord.Interaction):
+    async def ow_queue_command(self, interaction: discord.Interaction):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         if str(interaction.user.id) in unlq['players']:
@@ -109,6 +110,18 @@ class UNLQueue(commands.Cog):
         # Set the options that will be presented inside the dropdown
         if len(self.unlq['lobbies'].keys()) > 0:
             view = GameResultView(interaction.user.id, self._bot)
+            await interaction.response.send_message(view=view, ephemeral=True)
+        else:
+            await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)
+
+    @app_commands.command(name="owresult", description="Enter this command to report a game result")
+    @app_commands.guilds(int(os.getenv("SERVER_ID")))
+    async def ow_game_result(self, interaction: discord.Interaction):
+        with open('C:\\DATA\\unlq.json', 'r') as json_file:
+            self.unlq =  json.load(json_file)
+        # Set the options that will be presented inside the dropdown
+        if len(self.unlq['owlobbies'].keys()) > 0:
+            view = OWGameResultView(interaction.user.id, self._bot)
             await interaction.response.send_message(view=view, ephemeral=True)
         else:
             await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)
@@ -267,6 +280,7 @@ class UNLQueue(commands.Cog):
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
         await channel.set_permissions(role, read_messages=False)
         self.queue.devmode = True
+        self.owqueue.devmode = True
         
     @commands.command(name="public", aliases=["p"])
     @commands.has_permissions(manage_messages=True)
@@ -286,6 +300,8 @@ class UNLQueue(commands.Cog):
         await channel.set_permissions(role, read_messages=True)
         self.queue.devmode = False
         await self.queue.new_lobby()
+        self.owqueue.devmode = False
+        await self.owqueue.new_lobby()
         
     @app_commands.command(name="cash_out", description="Enter this command to convert all your UN points into LP")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))

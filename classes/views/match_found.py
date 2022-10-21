@@ -29,13 +29,14 @@ class MatchFoundView(discord.ui.View):
                     await self.queue.initiate_game()
                 else:
                     print("[DEV] Initiating game...")
-                last_game_players = self.queue.game.get_players()
+                    await self.queue.initiate_game()
+                '''last_game_players = self.queue.game.get_players()
                 last_queue_players = self.queue.game.players
                 players = []
                 for player in last_queue_players:
                     if player not in last_game_players:
                         players.append(player)
-                await self.queue.new_lobby(players)
+                await self.queue.new_lobby(players)'''
 
     @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger)
     async def decline_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):

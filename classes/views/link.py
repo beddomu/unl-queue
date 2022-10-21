@@ -79,6 +79,7 @@ class LinkAccount(discord.ui.Modal):
                     unlq_json['players'][str(interaction.user.id)]['losses'] = 0
                     unlq_json['players'][str(interaction.user.id)]['bets'] = {}
                     unlq_json['players'][str(interaction.user.id)]['mmr'] = 0
+                    unlq_json['players'][str(interaction.user.id)]['owrating'] = 30
                     unlq_json['players'][str(interaction.user.id)]['lp_history'] = []
                     unlq_json['players'][str(interaction.user.id)]['banned_until'] = 0
                     pp("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))

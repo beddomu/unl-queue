@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands
 import urllib
 from classes.owgame import Game
-from classes.image.image import make_image
+from classes.image.owimage import make_image
 from classes.owrole import Role, dps, tank, support, fill
 from classes.owteam import Team
 from classes.views.live_game import LiveGame
@@ -39,7 +39,7 @@ class Queue:
     async def reset_lobby(self):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         message = await channel.send("**Initializing...**")
-        print(f"New lobby has been created with the id: {message.id}")
+        print(f"New Overwatch lobby has been created with the id: {message.id}")
         self.locked = False
         self.full = False
         self.game = None
@@ -53,8 +53,12 @@ class Queue:
 
     async def new_lobby(self, players=None):
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
+        try:
+            await self.message.delete()
+        except:
+            pass
         message = await channel.send("**Initializing...**")
-        print(f"New lobby has been created with the id: {message.id}")
+        print(f"New Overwatch lobby has been created with the id: {message.id}")
         self.locked = False
         self.full = False
         self.game = None
@@ -65,6 +69,8 @@ class Queue:
             self.players = players
         self.unready_all_players()
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
+        if self.devmode == False:
+            await channel.send("Overwatch queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
@@ -138,31 +144,38 @@ class Queue:
         
 
     def ready_check(self):
-        role_list = []
+        dps_list = []
+        tank_list = []
+        support_list = []
         fill_list = []
         if self.full != True:
             index = 0
             i = 0
             for player in self.players:
-                if player.role != fill:
-                    role_list.append(player.role.name)
-                    roles_in_queue = Counter(role_list)
-                else:
+                if player.role == fill:
                     fill_list.append(player)
-            if role_list:
-                for r in roles_in_queue.values():
-                    if role_list[r-1] == "Tank":
-                        if r >= 2:
-                            index += 1
-                            i += 2
-                        elif r == 1:
-                            i += 1
-                    else:
-                        if r >= 4:
-                            index += 1
-                            i += 4
-                        elif r == 1:
-                            i += 1
+                elif player.role == dps:
+                    dps_list.append(player)
+                elif player.role == tank:
+                    tank_list.append(player)
+                elif player.role == support:
+                    support_list.append(player)
+            
+            if len(dps_list) > 4:
+                i += 4
+            else:
+                i += len(dps_list)
+
+            if len(tank_list) > 2:
+                i += 2
+            else:
+                i += len(tank_list)
+
+            if len(support_list) > 4:
+                i += 4
+            else:
+                i += len(support_list)
+
             self.spots_open = 10 - i - len(fill_list)
             if self.spots_open == 0:
                 self.full = True
@@ -194,9 +207,9 @@ class Queue:
     def make_teams(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
-        team_blue = Team(5, "Blue")
-        team_red = Team(5, "Red")
-        game = Game(team_blue, team_red, None)
+        team1 = Team(5, "1")
+        team2 = Team(5, "2")
+        game = Game(team1, team2, None)
         self.dps_list = []
         self.tank_list = []
         self.supp_list = []
@@ -229,10 +242,10 @@ class Queue:
         print("balancing teams...")
 
         dpsq = [self.dps_list[0], self.dps_list[1], self.dps_list[2], self.dps_list[3]]
-        team_blue.add_player(dpsq.pop(random.randint(0, 3)))
-        team_blue.add_player(dpsq.pop(random.randint(0, 2)))
-        team_red.add_player(dpsq.pop(random.randint(0, 1)))
-        team_red.add_player(dpsq[0])
+        team1.add_player(dpsq.pop(random.randint(0, 3)))
+        team1.add_player(dpsq.pop(random.randint(0, 2)))
+        team2.add_player(dpsq.pop(random.randint(0, 1)))
+        team2.add_player(dpsq[0])
 
         tankq = [self.tank_list[0], self.tank_list[1]]
         better_player = tankq.index(max(tankq))
@@ -250,6 +263,7 @@ class Queue:
         suppq = [self.supp_list[0], self.supp_list[1], self.supp_list[2], self.supp_list[3]]
         better_player = suppq.index(max(suppq))
         options1 = [suppq.pop(better_player), suppq.pop(0)]
+        better_player = suppq.index(max(suppq))
         options2 = [suppq.pop(better_player), suppq[0]]
         if game.team1 > game.team2:
             game.team2.add_player(options1[0])
@@ -271,8 +285,8 @@ class Queue:
             game.team1.add_player(self.supp_list[0])
             game.team2.add_player(self.supp_list[1])
 
-        print(f"Final Team blue rating: {team_blue.rating}")
-        print(f"Final Team red rating: {team_red.rating}")
+        print(f"Final Team 1 rating: {team1.rating}")
+        print(f"Final Team 2 rating: {team2.rating}")
 
         game.players = game.team1.players + game.team2.players
         
@@ -327,9 +341,6 @@ class Queue:
 
     async def initiate_game(self):
         self.initiated = True
-        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=6)
-        lobby.create()
-        time.sleep(1)
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
         embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
@@ -347,58 +358,53 @@ class Queue:
         unlq_category = discord.utils.get(
             guild.categories, id=953292613115605012)
         category = await guild.create_category(name=f"{int(str(self.message.id)[:-8])}", position=(unlq_category.position - 1), overwrites=permissions)
-        await guild.create_voice_channel("Team Blue🔵", category=category, overwrites=permissions)
-        await guild.create_voice_channel("Team Red 🔴", category=category, overwrites=permissions)
+        await guild.create_voice_channel("Team 1", category=category, overwrites=permissions)
+        await guild.create_voice_channel("Team 2", category=category, overwrites=permissions)
         for team in self.game.teams:
             team_players_list = []
             ign_list = []
             for player in team.players:
                 member = guild.get_member(player.id)
-                if team.side == "Blue":
+                if team.side == "1":
                     voice = discord.utils.get(
-                        category.voice_channels, name="Team Blue🔵")
+                        category.voice_channels, name="Team 1️⃣")
                 else:
                     voice = discord.utils.get(
-                        category.voice_channels, name="Team Red 🔴")
+                        category.voice_channels, name="Team 2️⃣")
                 try:
                     await member.move_to(voice)
                 except:
                     print(f'{player.name} is not in a voice channel.')
-                invite_player(player.ign)
                 ign_list.append(player.ign.replace(" ", ""))
                 players.append(player)
                 team_players_list.append(
                     player.role.emoji + player.user.mention)
-            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
-                ",".join(ign_list))
             team_players_string = "\n".join(team_players_list)
             embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
-        leave_lobby()
         
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
         view = LiveGame(str(self.message.id)[:-8])
         live_game_messsage = await channel.send(view=view, embed=embed, file=file)
         with open('C:\\DATA\\unlq.json', 'r') as unlq_file:
             unlq_json = json.load(unlq_file)
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])] = {}
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['game_id'] = live_game_messsage.id
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['blue_team'] = self.game.blue_team.rating
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['red_team'] = self.game.red_team.rating
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'] = {}
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'] = {}
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])
-                             ]['time_created'] = int(time.time())
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Blue'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players']['Red'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Blue'] = []
-        unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids']['Red'] = []
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])] = {}
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['game_id'] = live_game_messsage.id
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['1'] = self.game.team1.rating
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['2'] = self.game.team2.rating
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['players'] = {}
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['player_ids'] = {}
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['time_created'] = int(time.time())
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['players']['1'] = []
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['players']['2'] = []
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['player_ids']['1'] = []
+        unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['player_ids']['2'] = []
         for team in self.game.teams:
             for player in team.players:
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'][team.side].append(player.ign)
-                unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'][team.side].append(player.user.id)
+                unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['players'][team.side].append(player.ign)
+                unlq_json['owlobbies'][int(str(self.message.id)[:-8])]['player_ids'][team.side].append(player.user.id)
+        
+        await self.pop_message.delete()
+        await self.new_lobby()
 
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)

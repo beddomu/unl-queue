@@ -40,7 +40,7 @@ class Queue:
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
-        print(f"New lobby has been created with the id: {message.id}")
+        print(f"New League Of Legends lobby has been created with the id: {message.id}")
         self.locked = False
         self.full = False
         self.game = None
@@ -58,7 +58,7 @@ class Queue:
         channel = await self.message.guild.fetch_channel(os.getenv("QUEUE"))
         await channel.purge(limit=100)
         message = await channel.send("**Initializing...**")
-        print(f"New lobby has been created with the id: {message.id}")
+        print(f"New League Of Legends lobby has been created with the id: {message.id}")
         self.locked = False
         self.full = False
         self.game = None
@@ -70,7 +70,7 @@ class Queue:
         self.unready_all_players()
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
         if self.devmode == False:
-            await channel.send("Queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
+            await channel.send("League Of Legends queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
@@ -421,6 +421,9 @@ class Queue:
                 unlq_json['lobbies'][int(str(self.message.id)[:-8])]['players'][team.side].append(player.ign)
                 unlq_json['lobbies'][int(str(self.message.id)[:-8])]['player_ids'][team.side].append(player.user.id)
 
+        await self.pop_message.delete()
+        await self.new_lobby()
+        
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)
             unlq_file.close()

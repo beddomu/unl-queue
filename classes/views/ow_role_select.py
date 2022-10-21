@@ -33,7 +33,7 @@ class RoleSelect(discord.ui.Select):
             for p in unlq_json['players'].keys():
                 if p == str(interaction.user.id):
                     ign = unlq_json['players'][p]['name']
-                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
+                    rating = int(unlq_json['players'][p]['owrating'] + (unlq_json['players'][p]['owmmr'] / 1000*30))
                     role = getattr(sys.modules[__name__], self.values[0].lower())
                     player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
                     await self.queue.add_player(player)
@@ -44,14 +44,14 @@ class RoleSelect(discord.ui.Select):
             await interaction.response.edit_message(content="Lobby is already full", view=None)
 
 class RoleSelectView(discord.ui.View):
-    def __init__(self, queue):
+    def __init__(self, owqueue):
         super().__init__()
-        self.queue = queue
-        self.add_item(RoleSelect(queue))
+        self.queue = owqueue
+        self.add_item(RoleSelect(owqueue))
         
     @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:OW2:1029808843338821632>")
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
+        if len(self.queue.players) == 10 and interaction.user.id not in self.queue.get_all_ids():
             await interaction.response.edit_message(content="Game is about to begin...", view=None)
             self.queue.full = True
         ign = None
@@ -61,7 +61,7 @@ class RoleSelectView(discord.ui.View):
             for p in unlq_json['players'].keys():
                 if p == str(interaction.user.id):
                     ign = unlq_json['players'][p]['name']
-                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
+                    rating = int(unlq_json['players'][p]['owrating'] + (unlq_json['players'][p]['owmmr'] / 1000*30))
                     role = fill
                     player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
                     await self.queue.add_player(player)
