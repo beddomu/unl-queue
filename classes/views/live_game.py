@@ -49,7 +49,12 @@ class LiveGame(discord.ui.View):
                 break
         
         if unlq['lobbies'][the_lobby]['time_created'] > time.time() - 60*5:
-            if interaction.user.id in unlq['lobbies'][the_lobby]['player_ids']:
+            player_ids = []
+            for p in unlq['lobbies'][the_lobby]["player_ids"]["Blue"]:
+                player_ids.append(p)
+            for p in unlq['lobbies'][the_lobby]["player_ids"]["Red"]:
+                player_ids.append(p)
+            if interaction.user.id in player_ids:
                 await interaction.response.send_message("You can't bet on a game you are in!", ephemeral=True)
             else:
                 if str(the_lobby) not in unlq['players'][str(interaction.user.id)]['bets'].keys():     

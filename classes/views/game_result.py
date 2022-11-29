@@ -1,7 +1,6 @@
 import json
 import os
 from pprint import pp
-import queue
 import sys
 import typing
 import discord
@@ -18,7 +17,7 @@ from utils.update_leaderboard import update_leaderboard
 # of this class is called when the user changes their choice
 
 class GameResult(discord.ui.Select):
-    def __init__(self, id, bot):
+    def __init__(self, id, bot, queue):
         self.queue = queue
         self.bot = bot
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
@@ -30,25 +29,25 @@ class GameResult(discord.ui.Select):
                 option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby), emoji=None)
                 options.append(option)
         for lobby in self.unlq['lobbies'].keys():
-            pp(lobby)
             if id in self.unlq['lobbies'][lobby]['player_ids']['Red']:
                 option = discord.SelectOption(label=f'Lobby ID: {lobby}', value=int(lobby), emoji=None)
                 options.append(option)
         super().__init__(placeholder='Select lobby ID...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        view = GameResultSide(self.values[0], self.bot)
+        view = GameResultSide(self.values[0], self.bot, self.queue)
         await interaction.response.edit_message(content=f"Who won this game?\n*Lobby ID: {self.values[0]}*", view=view)
 
 class GameResultView(discord.ui.View):
-    def __init__(self, id, bot):
+    def __init__(self, id, bot, queue):
         super().__init__()
-        self.add_item(GameResult(id, bot))
+        self.add_item(GameResult(id, bot, queue))
         
 class GameResultSide(discord.ui.View):
-    def __init__(self, lobby, bot):
+    def __init__(self, lobby, bot, queue):
         self.bot = bot
         self.lobby = lobby
+        self.queue = queue
         super().__init__()
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             self.unlq = json.load(json_file)
@@ -310,5 +309,6 @@ class GameResultSide(discord.ui.View):
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                 unlq_file.close()
+            self.queue.game_being_reported = False
         else:
             await interaction.response.edit_message(content="This game was already reported.", view=None)

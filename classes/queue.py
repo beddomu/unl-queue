@@ -30,6 +30,7 @@ class Queue:
         self.full = bool
         self.locked = False
         self.initiated = False
+        self.game_being_reported = False
         self.pop_message: discord.Message = None
         self.spots_open = 10
         with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -156,11 +157,12 @@ class Queue:
             index = 0
             i = 0
             for player in self.players:
-                if player.role != fill:
+                if player.role.name != "Fill":
                     role_list.append(player.role.name)
                     roles_in_queue = Counter(role_list)
                 else:
                     fill_list.append(player)
+                    
             if role_list:
                 for r in roles_in_queue.values():
                     if r >= 2:
@@ -348,53 +350,54 @@ class Queue:
 
     async def initiate_game(self):
         self.initiated = True
-        lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=6)
-        lobby.create()
-        time.sleep(1)
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
         embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
         embed.set_footer(text=f'Lobby ID: {int(str(self.message.id)[:-8])}')
         file = discord.File('classes\\image\\res.png', filename='res.png')
         embed.set_image(url=('attachment://res.png'))
-        players = []
-        guild = self.message.guild
-        role = discord.utils.get(guild.roles, id=676740137815900160)
-        member = guild.get_member(301821822502961152)
-        permissions = {
-            role: discord.PermissionOverwrite(view_channel=True),
-            member: discord.PermissionOverwrite(view_channel=True)
-        }
-        unlq_category = discord.utils.get(
-            guild.categories, id=953292613115605012)
-        category = await guild.create_category(name=f"{int(str(self.message.id)[:-8])}", position=(unlq_category.position - 1), overwrites=permissions)
-        await guild.create_voice_channel("Team Blue🔵", category=category, overwrites=permissions)
-        await guild.create_voice_channel("Team Red 🔴", category=category, overwrites=permissions)
-        for team in self.game.teams:
-            team_players_list = []
-            ign_list = []
-            for player in team.players:
-                member = guild.get_member(player.id)
-                if team.side == "Blue":
-                    voice = discord.utils.get(
-                        category.voice_channels, name="Team Blue🔵")
-                else:
-                    voice = discord.utils.get(
-                        category.voice_channels, name="Team Red 🔴")
-                try:
-                    await member.move_to(voice)
-                except:
-                    print(f'{player.name} is not in a voice channel.')
-                invite_player(player.ign)
-                ign_list.append(player.ign.replace(" ", ""))
-                players.append(player)
-                team_players_list.append(
-                    player.role.emoji + player.user.mention)
-            multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
-                ",".join(ign_list))
-            team_players_string = "\n".join(team_players_list)
-            embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
-        leave_lobby()
+        if self.devmode == False:
+            lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=6)
+            lobby.create()
+            time.sleep(1)
+            players = []
+            guild = self.message.guild
+            role = discord.utils.get(guild.roles, id=676740137815900160)
+            member = guild.get_member(301821822502961152)
+            permissions = {
+                role: discord.PermissionOverwrite(view_channel=True),
+                member: discord.PermissionOverwrite(view_channel=True)
+            }
+            unlq_category = discord.utils.get(
+                guild.categories, id=953292613115605012)
+            category = await guild.create_category(name=f"{int(str(self.message.id)[:-8])}", position=(unlq_category.position - 1), overwrites=permissions)
+            await guild.create_voice_channel("Team Blue🔵", category=category, overwrites=permissions)
+            await guild.create_voice_channel("Team Red 🔴", category=category, overwrites=permissions)
+            for team in self.game.teams:
+                team_players_list = []
+                ign_list = []
+                for player in team.players:
+                    member = guild.get_member(player.id)
+                    if team.side == "Blue":
+                        voice = discord.utils.get(
+                            category.voice_channels, name="Team Blue🔵")
+                    else:
+                        voice = discord.utils.get(
+                            category.voice_channels, name="Team Red 🔴")
+                    try:
+                        await member.move_to(voice)
+                    except:
+                        print(f'{player.name} is not in a voice channel.')
+                    invite_player(player.ign)
+                    ign_list.append(player.ign.replace(" ", ""))
+                    players.append(player)
+                    team_players_list.append(
+                        player.role.emoji + player.user.mention)
+                multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
+                    ",".join(ign_list))
+                team_players_string = "\n".join(team_players_list)
+                embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
+            leave_lobby()
         
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
         view = LiveGame(str(self.message.id)[:-8])

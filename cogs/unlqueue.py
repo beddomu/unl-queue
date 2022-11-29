@@ -41,13 +41,13 @@ class UNLQueue(commands.Cog):
                     
     async def cog_load(self):
         self.queue = Queue(5)
-        self.owqueue = OWQueue(5)
+        #self.owqueue = OWQueue(5)
         channel = await self._bot.fetch_channel(os.getenv("QUEUE"))
         message = await channel.send("**Initializing...**")
         self.queue.message = message
-        self.owqueue.message = message
+        #self.owqueue.message = message
         await self.queue.new_lobby()
-        await self.owqueue.new_lobby()
+        #await self.owqueue.new_lobby()
         print("Queue initialized")
         
 
@@ -105,14 +105,18 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="result", description="Enter this command to report a game result")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def game_result(self, interaction: discord.Interaction):
-        with open('C:\\DATA\\unlq.json', 'r') as json_file:
-            self.unlq =  json.load(json_file)
-        # Set the options that will be presented inside the dropdown
-        if len(self.unlq['lobbies'].keys()) > 0:
-            view = GameResultView(interaction.user.id, self._bot)
-            await interaction.response.send_message(view=view, ephemeral=True)
+        if self.queue.game_being_reported == False:
+            with open('C:\\DATA\\unlq.json', 'r') as json_file:
+                self.unlq =  json.load(json_file)
+            # Set the options that will be presented inside the dropdown
+            if len(self.unlq['lobbies'].keys()) > 0:
+                self.queue.game_being_reported = True
+                view = GameResultView(interaction.user.id, self._bot, self.queue)
+                await interaction.response.send_message(view=view, ephemeral=True)
+            else:
+                await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)
         else:
-            await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)
+            await interaction.response.send_message("Someone is already reporting a game, try again in a moment.", ephemeral=True)
 
     @app_commands.command(name="owresult", description="Enter this command to report a game result")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
@@ -406,6 +410,11 @@ class UNLQueue(commands.Cog):
         unlq['players'][str(member.id)]['unp'] -= int(points)
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
+
+    @commands.command(name="clear_result", aliases=["cr, res, unlock"])
+    @commands.has_permissions(manage_messages=True)
+    async def clear_result(self, ctx, member: discord.Member, points):
+        self.queue.game_being_reported = False
             
     @app_commands.command(name="pay", description="Enter this command to send someone UN Points")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
