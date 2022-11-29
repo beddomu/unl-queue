@@ -83,10 +83,10 @@ class GameResultSide(discord.ui.View):
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
                 mmr = int(self.unlq['players'][str(p)]['mmr']/400)
-                self.unlq['players'][str(p)]['points'] += int(15+mmr + (red-blue)*0.06)
-                self.unlq['players'][str(p)]['lp_history'].append(f'+{int(15+mmr + (red-blue)*0.06)}')
+                self.unlq['players'][str(p)]['points'] += int(17+mmr + (red-blue)*0.06)
+                self.unlq['players'][str(p)]['lp_history'].append(f'+{int(17+mmr + (red-blue)*0.06)}')
                 embed = discord.Embed(
-                    title=f'+{int(15+mmr+(red-blue)*0.06)}')
+                    title=f'+{int(17+mmr+(red-blue)*0.06)}')
                 embed.set_footer(text=f'Lobby ID: {self.lobby}')
                 embed.color = discord.colour.Color.green()
                 embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
@@ -96,7 +96,7 @@ class GameResultSide(discord.ui.View):
                     await user.send(embed=embed)
                 except:
                     print(f"Cannot send dm to: {user.name}")
-                pp('{} gained {} LP'.format(self.unlq['players'][str(p)]['name'], int(15+mmr+(red-blue)*0.06)))
+                pp('{} gained {} LP'.format(self.unlq['players'][str(p)]['name'], int(17+mmr+(red-blue)*0.06)))
                 
             for p in self.unlq['lobbies'][self.lobby]['player_ids']['Red']:
                 self.unlq['players'][str(p)]['unp'] += 200
@@ -111,10 +111,10 @@ class GameResultSide(discord.ui.View):
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
                 mmr = int(self.unlq['players'][str(p)]['mmr']/400)
-                if self.unlq['players'][str(p)]['points'] >= int(15-mmr+(red-blue)*0.06):
-                    self.unlq['players'][str(p)]['points'] -= int(15-mmr+(red-blue)*0.06)
-                    self.unlq['players'][str(p)]['lp_history'].append(f'-{int(15-mmr+(red-blue)*0.06)}')
-                    embed = discord.Embed(title=f'-{int(15-mmr+(red-blue)*0.06)}')
+                if self.unlq['players'][str(p)]['points'] >= int(17-mmr+(red-blue)*0.06):
+                    self.unlq['players'][str(p)]['points'] -= int(17-mmr+(red-blue)*0.06)
+                    self.unlq['players'][str(p)]['lp_history'].append(f'-{int(17-mmr+(red-blue)*0.06)}')
+                    embed = discord.Embed(title=f'-{int(17-mmr+(red-blue)*0.06)}')
                     embed.set_footer(text=f'Lobby ID: {self.lobby}')
                     embed.color = discord.colour.Color.red()
                     embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
@@ -125,7 +125,7 @@ class GameResultSide(discord.ui.View):
                         await user.send(embed=embed)
                     except:
                         print(f"Cannot send dm to: {user.name}")
-                    pp('{} lost {} LP'.format(self.unlq['players'][str(p)]['name'], int(15-mmr+(red-blue)*0.06)))
+                    pp('{} lost {} LP'.format(self.unlq['players'][str(p)]['name'], int(17-mmr+(red-blue)*0.06)))
 
                 else:
                     pp('{} is now at 0 LP'.format(self.unlq['players'][str(p)]['name']))
@@ -210,9 +210,9 @@ class GameResultSide(discord.ui.View):
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
                 mmr = int(self.unlq['players'][str(p)]['mmr']/400)
-                self.unlq['players'][str(p)]['points'] += int(15+mmr+(blue-red)*0.06)
-                self.unlq['players'][str(p)]['lp_history'].append(f'+{int(15+mmr+(blue-red)*0.06)}')
-                embed = discord.Embed(title=f'+{int(15+mmr+(blue-red)*0.06)}')
+                self.unlq['players'][str(p)]['points'] += int(17+mmr+(blue-red)*0.06)
+                self.unlq['players'][str(p)]['lp_history'].append(f'+{int(17+mmr+(blue-red)*0.06)}')
+                embed = discord.Embed(title=f'+{int(17+mmr+(blue-red)*0.06)}')
                 embed.set_footer(text=f'Lobby ID: {self.lobby}')
                 embed.color = discord.colour.Color.green()
                 embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
@@ -223,7 +223,7 @@ class GameResultSide(discord.ui.View):
                     await user.send(embed=embed)
                 except:
                     print(f"Cannot send dm to: {user.name}")
-                pp('{} gained {} LP'.format(self.unlq['players'][str(p)]['name'], int(15+mmr+(blue-red)*0.06)))
+                pp('{} gained {} LP'.format(self.unlq['players'][str(p)]['name'], int(17+mmr+(blue-red)*0.06)))
                 
                 
             for p in self.unlq['lobbies'][self.lobby]['player_ids']['Blue']:
@@ -239,10 +239,10 @@ class GameResultSide(discord.ui.View):
                 blue = self.unlq['lobbies'][str(self.lobby)]['blue_team']
                 red = self.unlq['lobbies'][str(self.lobby)]['red_team']
                 mmr = int(self.unlq['players'][str(p)]['mmr']/400)
-                if self.unlq['players'][str(p)]['points'] >= int(15-mmr-(red-blue)*0.06):
-                    self.unlq['players'][str(p)]['points'] -= int(15-mmr-(red-blue)*0.06)
-                    self.unlq['players'][str(p)]['lp_history'].append(f'-{int(15-mmr-(red-blue)*0.06)}')
-                    embed = discord.Embed(title=f'-{int(15-mmr-(red-blue)*0.06)}')
+                if self.unlq['players'][str(p)]['points'] >= int(17-mmr-(red-blue)*0.06):
+                    self.unlq['players'][str(p)]['points'] -= int(17-mmr-(red-blue)*0.06)
+                    self.unlq['players'][str(p)]['lp_history'].append(f'-{int(17-mmr-(red-blue)*0.06)}')
+                    embed = discord.Embed(title=f'-{int(17-mmr-(red-blue)*0.06)}')
                     embed.set_footer(text=f'Lobby ID: {self.lobby}')
                     embed.color = discord.colour.Color.red()
                     embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
@@ -252,7 +252,7 @@ class GameResultSide(discord.ui.View):
                         await user.send(embed=embed)
                     except:
                         print(f"Cannot send dm to: {user.name}")
-                    pp('{} lost {} LP'.format(self.unlq['players'][str(p)]['name'], int(15-mmr-(red-blue)*0.06)))
+                    pp('{} lost {} LP'.format(self.unlq['players'][str(p)]['name'], int(17-mmr-(red-blue)*0.06)))
                     with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                         json.dump(self.unlq, unlq_file)
                         unlq_file.close()
