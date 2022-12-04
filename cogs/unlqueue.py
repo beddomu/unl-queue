@@ -11,7 +11,7 @@ from discord.ext import commands, tasks
 from discord import Interaction, TextChannel, app_commands
 from classes.player import Player
 from classes.queue import Queue
-from classes.owqueue import Queue as OWQueue
+#from classes.owqueue import Queue as OWQueue
 from classes.views.betting import BetModal
 from classes.views.game_result import GameResultView
 from classes.views.ow_game_result import GameResultView as OWGameResultView
@@ -19,7 +19,8 @@ from classes.views.matchmaking import MatchmakingView
 from classes.views.pay import Pay
 from classes.views.role_select import RoleSelectView
 from classes.views.ow_role_select import RoleSelectView as OWRoleSelectView
-from classes.owrole import fill, dps, tank, support
+from classes.role import fill
+from classes.owrole import dps, tank, support
 from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.ban import ban
@@ -61,7 +62,7 @@ class UNLQueue(commands.Cog):
         if str(interaction.user.id) in unlq['players']:
             if interaction.user.id not in self.queue.get_all_ids():
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
-                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360, 450720749439811585, 127003591339802624]:
+                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360]:
                     #if True:
                         await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
                     else:
@@ -77,7 +78,7 @@ class UNLQueue(commands.Cog):
             await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
 
 
-    @app_commands.command(name="owqueue", description="Enter this command to view the owqueue options")
+    '''@app_commands.command(name="owqueue", description="Enter this command to view the owqueue options")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def ow_queue_command(self, interaction: discord.Interaction):
         with open('C:\\DATA\\unlq.json', 'r') as file:
@@ -94,7 +95,7 @@ class UNLQueue(commands.Cog):
             else:
                 await interaction.response.send_message(view=MatchmakingView(self.owqueue), ephemeral=True)
         else:
-            await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
+            await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)'''
 
 
     @app_commands.command(name="report", description="Enter this command to report a player")
@@ -105,6 +106,7 @@ class UNLQueue(commands.Cog):
     @app_commands.command(name="result", description="Enter this command to report a game result")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def game_result(self, interaction: discord.Interaction):
+        print(f"{interaction.user.name} is trying to report a game result.")
         if self.queue.game_being_reported == False:
             with open('C:\\DATA\\unlq.json', 'r') as json_file:
                 self.unlq =  json.load(json_file)
@@ -118,7 +120,7 @@ class UNLQueue(commands.Cog):
         else:
             await interaction.response.send_message("Someone is already reporting a game, try again in a moment.", ephemeral=True)
 
-    @app_commands.command(name="owresult", description="Enter this command to report a game result")
+    '''@app_commands.command(name="owresult", description="Enter this command to report a game result")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def ow_game_result(self, interaction: discord.Interaction):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
@@ -128,7 +130,7 @@ class UNLQueue(commands.Cog):
             view = OWGameResultView(interaction.user.id, self._bot)
             await interaction.response.send_message(view=view, ephemeral=True)
         else:
-            await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)
+            await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)'''
         
     @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
@@ -284,7 +286,7 @@ class UNLQueue(commands.Cog):
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
         await channel.set_permissions(role, read_messages=False)
         self.queue.devmode = True
-        self.owqueue.devmode = True
+        #self.owqueue.devmode = True
         
     @commands.command(name="public", aliases=["p"])
     @commands.has_permissions(manage_messages=True)
@@ -304,8 +306,8 @@ class UNLQueue(commands.Cog):
         await channel.set_permissions(role, read_messages=True)
         self.queue.devmode = False
         await self.queue.new_lobby()
-        self.owqueue.devmode = False
-        await self.owqueue.new_lobby()
+        #self.owqueue.devmode = False
+        #await self.owqueue.new_lobby()
         
     @app_commands.command(name="cash_out", description="Enter this command to convert all your UN points into LP")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
@@ -330,7 +332,6 @@ class UNLQueue(commands.Cog):
     @commands.command(name="leaderboard", aliases=["l"])
     @commands.has_permissions(manage_messages=True)
     async def leaderboard(self, ctx):
-        update_games()
         await update_leaderboard()
         
     @commands.command(name="reset", aliases=["n"])
@@ -413,7 +414,7 @@ class UNLQueue(commands.Cog):
 
     @commands.command(name="clear_result", aliases=["cr, res, unlock"])
     @commands.has_permissions(manage_messages=True)
-    async def clear_result(self, ctx, member: discord.Member, points):
+    async def clear_result(self, ctx):
         self.queue.game_being_reported = False
             
     @app_commands.command(name="pay", description="Enter this command to send someone UN Points")

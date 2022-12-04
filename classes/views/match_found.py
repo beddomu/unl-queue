@@ -1,6 +1,5 @@
 import json
 from pprint import pp
-from time import time
 import discord
 
 from utils.ban import ban
@@ -22,7 +21,7 @@ class MatchFoundView(discord.ui.View):
                     player.ready = True
 
             await self.queue.update_queue_pop()
-            await self.queue.update_lobby()
+            #await self.queue.update_lobby()
             if self.queue.game.players_ready_check() and self.queue.initiated == False:
                 self.stop()
                 if self.queue.devmode == False:
@@ -37,6 +36,9 @@ class MatchFoundView(discord.ui.View):
                     if player not in last_game_players:
                         players.append(player)
                 await self.queue.new_lobby(players)'''
+        else:
+            pass
+
 
     @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger)
     async def decline_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):

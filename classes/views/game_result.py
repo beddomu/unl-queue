@@ -9,7 +9,6 @@ from classes.player import Player
 from classes.views.match_found import MatchFoundView
 from classes.views.matchmaking import MatchmakingView
 from classes.role import Role, top, jungle, middle, bottom, support, fill
-from utils.update_games import update_games
 from utils.update_leaderboard import update_leaderboard
 
 # Defines a custom Select containing colour options
@@ -151,7 +150,6 @@ class GameResultSide(discord.ui.View):
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                         
-            update_games()
             await update_leaderboard()
             guild = interaction.guild
             try:
@@ -177,6 +175,7 @@ class GameResultSide(discord.ui.View):
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                 unlq_file.close()
+            self.queue.game_being_reported = False
         else:
             await interaction.response.edit_message(content="This game was already reported.", view=None)
 
@@ -282,7 +281,6 @@ class GameResultSide(discord.ui.View):
             with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
                 json.dump(self.unlq, unlq_file)
                         
-            update_games()
             await update_leaderboard()
             guild = interaction.guild
             try:

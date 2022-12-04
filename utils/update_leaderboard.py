@@ -21,6 +21,7 @@ async def update_leaderboard():
         dict[player]['lp'] = unlq['players'][player]['points']
         dict[player]['wins'] = unlq['players'][player]['wins']
         dict[player]['losses'] = unlq['players'][player]['losses']
+        dict[player]['unp'] = unlq['players'][player]['unp']
         
     res = collections.OrderedDict(sorted(dict.items(), key=lambda t:t[1]["lp"], reverse=True))
     with open('..\\unlqueue.xyz\\json\\leaderboard.json', 'w') as unlq_file:

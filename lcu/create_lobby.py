@@ -1,5 +1,5 @@
 from pprint import pprint
-import requests
+import aiohttp
 import json
 from lcu import lockfile
 
@@ -34,10 +34,11 @@ class Lobby:
         }
         self.headers = {'accept': 'application/json', 'Authorization': 'Basic {}'.format(self.auth), 'Content-Type': 'application/json'}
 
-    def create(self):
-        r = requests.post(self.url, data=json.dumps(self.payload),headers=self.headers, verify=False)
-        if r.status_code == 200:
-            print("Lobby created successfully")
+    async def create(self):
+        async with aiohttp.ClientSession() as session:
+            r = await session.post(self.url, data=json.dumps(self.payload),headers=self.headers, verify_ssl=False)
+            if r.status == 200:
+                print("Lobby created successfully")
 
 
 

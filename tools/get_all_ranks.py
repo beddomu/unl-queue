@@ -1,6 +1,6 @@
 
 from pprint import pp
-from time import sleep
+from asyncio import sleep
 from urllib.request import urlopen
 import os
 import json

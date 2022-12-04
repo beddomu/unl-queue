@@ -36,7 +36,7 @@ class RoleSelect(discord.ui.Select):
             for p in unlq_json['players'].keys():
                 if p == str(interaction.user.id):
                     ign = unlq_json['players'][p]['name']
-                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
+                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*20))
                     role = getattr(sys.modules[__name__], self.values[0].lower())
                     player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
                     await self.queue.add_player(player)

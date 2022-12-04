@@ -6,8 +6,6 @@ from pprint import pp
 import random
 import time
 import discord
-from discord.ext import commands
-import urllib
 from classes.game import Game
 from classes.image.image import make_image
 from classes.role import Role, top, jungle, middle, bottom, support, fill
@@ -176,7 +174,7 @@ class Queue:
 
     async def pop(self, queue):
         self.locked = True
-        game = self.make_teams()
+        game = await self.make_teams()
         self.game = game
         self.player_mentions = game.get_player_mentions()
         random.shuffle(self.player_mentions)
@@ -198,7 +196,7 @@ class Queue:
         else:
             print("NOPE")
             
-    def make_teams(self):
+    async def make_teams(self):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         team_blue = Team(5, "Blue")
@@ -358,8 +356,7 @@ class Queue:
         embed.set_image(url=('attachment://res.png'))
         if self.devmode == False:
             lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=6)
-            lobby.create()
-            time.sleep(1)
+            await lobby.create()
             players = []
             guild = self.message.guild
             role = discord.utils.get(guild.roles, id=676740137815900160)
@@ -388,7 +385,7 @@ class Queue:
                         await member.move_to(voice)
                     except:
                         print(f'{player.name} is not in a voice channel.')
-                    invite_player(player.ign)
+                    await invite_player(player.ign)
                     ign_list.append(player.ign.replace(" ", ""))
                     players.append(player)
                     team_players_list.append(
@@ -397,7 +394,7 @@ class Queue:
                     ",".join(ign_list))
                 team_players_string = "\n".join(team_players_list)
                 embed.add_field(name=f'Team {team.side} ({team.rating})', value=team_players_string)
-            leave_lobby()
+            await leave_lobby()
         
         channel = await self.message.guild.fetch_channel(os.getenv("LIVE"))
         view = LiveGame(str(self.message.id)[:-8])

@@ -290,7 +290,6 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             json.dump(unlq_json, unlq_file)
                                             unlq_file.close()
                                             
-                update_games()
                 await update_leaderboard()
                 try:
                     game_category = discord.utils.get(
