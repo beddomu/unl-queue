@@ -27,24 +27,26 @@ class RoleSelect(discord.ui.Select):
         super().__init__(placeholder='Select your role...', min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
-            await interaction.response.edit_message(content="Game is about to begin...", view=None)
-        ign = None
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
-        if self.queue.spots_open > 0:
-            for p in unlq_json['players'].keys():
-                if p == str(interaction.user.id):
-                    ign = unlq_json['players'][p]['name']
-                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*20))
-                    role = getattr(sys.modules[__name__], self.values[0].lower())
-                    player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
-                    await self.queue.add_player(player)
-                    if self.queue.full != True:
-                        view = MatchmakingView(self.queue)
-                        await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+        if interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq_json['in_queue'].keys():
+            if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
+                await interaction.response.edit_message(content="Game is about to begin...", view=None)
+            if self.queue.spots_open > 0:
+                for p in unlq_json['players'].keys():
+                    if p == str(interaction.user.id):
+                        ign = unlq_json['players'][p]['name']
+                        rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*20))
+                        role = getattr(sys.modules[__name__], self.values[0].lower())
+                        player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                        await self.queue.add_player(player)
+                        if self.queue.full != True:
+                            view = MatchmakingView(self.queue)
+                            await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+            else:
+                await interaction.response.edit_message(content="Lobby is already full.", view=None)
         else:
-            await interaction.response.edit_message(content="Lobby is already full", view=None)
+            await interaction.response.edit_message(content="You are already in queue.", view=None)
 
 class RoleSelectView(discord.ui.View):
     def __init__(self, queue):
@@ -54,22 +56,24 @@ class RoleSelectView(discord.ui.View):
         
     @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:985153779148140584>")
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
-            await interaction.response.edit_message(content="Game is about to begin...", view=None)
-            self.queue.full = True
-        ign = None
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)
-        if self.queue.spots_open > 0:
-            for p in unlq_json['players'].keys():
-                if p == str(interaction.user.id):
-                    ign = unlq_json['players'][p]['name']
-                    rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
-                    role = fill
-                    player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
-                    await self.queue.add_player(player)
-                    if self.queue.full != True:
-                        view = MatchmakingView(self.queue)
-                        await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+        if interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq_json['in_queue'].keys():
+            if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq_json['in_queue'].keys():
+                await interaction.response.edit_message(content="Game is about to begin...", view=None)
+                self.queue.full = True
+            if self.queue.spots_open > 0:
+                for p in unlq_json['players'].keys():
+                    if p == str(interaction.user.id):
+                        ign = unlq_json['players'][p]['name']
+                        rating = int(unlq_json['players'][p]['rating'] + (unlq_json['players'][p]['mmr'] / 1000*30))
+                        role = fill
+                        player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                        await self.queue.add_player(player)
+                        if self.queue.full != True:
+                            view = MatchmakingView(self.queue)
+                            await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+            else:
+                await interaction.response.edit_message(content="Lobby is already full", view=None)
         else:
-            await interaction.response.edit_message(content="Lobby is already full", view=None)
+            await interaction.response.edit_message(content="You are already in queue.", view=None)
