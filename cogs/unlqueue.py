@@ -47,7 +47,7 @@ class UNLQueue(commands.Cog):
         message = await channel.send("**Initializing...**")
         self.queue.message = message
         #self.owqueue.message = message
-        await self.queue.new_lobby()
+        await self.queue.reset_lobby()
         #await self.owqueue.new_lobby()
         print("Queue initialized")
         
@@ -60,9 +60,9 @@ class UNLQueue(commands.Cog):
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         if str(interaction.user.id) in unlq['players']:
-            if interaction.user.id not in self.queue.get_all_ids():
+            if interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq['in_queue'].keys():
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
-                    if is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360]:
+                    if await is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360]:
                     #if True:
                         await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
                     else:
@@ -306,6 +306,8 @@ class UNLQueue(commands.Cog):
         await channel.set_permissions(role, read_messages=True)
         self.queue.devmode = False
         await self.queue.new_lobby()
+        channel = await self._bot.fetch_channel(int(os.getenv("CHAT")))
+        await channel.send("<@&953665730795151490> UNL queue is live! Queue up now\nhttps://discord.com/channels/603515060119404584/953616729911726100")
         #self.owqueue.devmode = False
         #await self.owqueue.new_lobby()
         
@@ -338,7 +340,7 @@ class UNLQueue(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def newlobbymessage(self, ctx: commands.context.Context):
         self.queue.locked = False
-        await self.queue.reset_lobby()
+        await self.queue.new_lobby()
 
     @commands.command(name="delete", aliases=["d"])
     @commands.has_permissions(manage_messages=True)

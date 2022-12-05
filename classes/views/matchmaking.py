@@ -1,3 +1,4 @@
+import json
 from pprint import pp
 import discord
 
@@ -12,6 +13,12 @@ class MatchmakingView(discord.ui.View):
 
     @discord.ui.button(label="Leave queue", style = discord.ButtonStyle.red)
     async def leavequeue_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        if str(interaction.user.id) in unlq['in_queue'].keys():
+            del unlq['in_queue'][str(interaction.user.id)]
+            with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+                json.dump(unlq, unlq_file)
         if self.queue.locked != True:
             list = self.queue.players
             for player in list:

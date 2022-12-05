@@ -4,10 +4,12 @@ import json
 import os
 from pprint import pp
 import random
+import sys
 import time
 import discord
 from classes.game import Game
 from classes.image.image import make_image
+from classes.player import Player
 from classes.role import Role, top, jungle, middle, bottom, support, fill
 from classes.team import Team
 from classes.views.live_game import LiveGame
@@ -47,10 +49,21 @@ class Queue:
         self.pop_message = None
         self.message = message
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
-        if self.devmode == False:
-            await channel.send(f"{' '.join(self.get_player_mentions())}\nThe lobby was reset. Queue up again here: https://discord.com/channels/603515060119404584/953616729911726100")
-        self.players.clear()
-        self.spots_open = 10
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        for id in unlq['in_queue'].keys():
+            role = getattr(sys.modules[__name__], unlq['in_queue'][id]['role'].lower())
+            user = await self.message.guild.fetch_member(int(id))
+            ign = None
+            for p in unlq['players'].keys():
+                if p == str(id):
+                    ign = unlq['players'][p]['name']
+                    rating = int(unlq['players'][p]['rating'] + (unlq['players'][p]['mmr'] / 1000*30))
+                    player = Player(id, user.name, role, user, False, ign, rating)
+                    await self.add_player(player)
+            player = Player(user.id, user.name, role, user, False, ign, unlq['players'][str(user.id)]['rating'])
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
         await self.update_lobby()
 
     async def new_lobby(self, players=None):
@@ -64,17 +77,27 @@ class Queue:
         self.initiated = False
         self.message = message
         self.players.clear()
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+            unlq['in_queue'] = {}
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
+        self.spots_open = 10
         if players:
             self.players = players
         self.unready_all_players()
         channel = await self.message.guild.fetch_channel(int(os.getenv("CHAT")))
-        if self.devmode == False:
-            await channel.send("League Of Legends queue is live! Queue up here: https://discord.com/channels/603515060119404584/953616729911726100")
         await self.update_lobby()
 
     async def add_player(self, player):
         self.players.append(player)
         print(f"{player} is now in queue as: {player.role}")
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+        unlq['in_queue'][player.id] = {}
+        unlq['in_queue'][player.id]['role'] = player.role.name
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
         await self.update_lobby()
         if self.full == True and self.locked != True:
             view = MatchFoundView(self)
@@ -427,6 +450,12 @@ class Queue:
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq_json, unlq_file)
             unlq_file.close()
+        with open('C:\\DATA\\unlq.json', 'r') as file:
+            unlq = json.load(file)
+            unlq['in_queue'] = {}
+        with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
+            json.dump(unlq, unlq_file)
+            
         self.locked = False
         
     def get_player_mentions(self):

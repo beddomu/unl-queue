@@ -1,5 +1,4 @@
 import imp
-from urllib.request import urlopen
 import os
 import json
 import aiohttp

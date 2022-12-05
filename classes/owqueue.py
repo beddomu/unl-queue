@@ -7,7 +7,6 @@ import random
 import time
 import discord
 from discord.ext import commands
-import urllib
 from classes.owgame import Game
 from classes.image.owimage import make_image
 from classes.owrole import Role, dps, tank, support, fill

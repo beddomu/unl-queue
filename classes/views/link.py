@@ -1,7 +1,6 @@
 import os
 from pprint import pp
 import discord
-import urllib
 import json
 import aiohttp
 import asyncio
