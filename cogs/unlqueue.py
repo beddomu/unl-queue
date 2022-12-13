@@ -324,7 +324,7 @@ class UNLQueue(commands.Cog):
                     unlq['players'][p]['unp'] = 0
                     break
                 else:
-                    await interaction.response.send_message("You don't have enough UN Points to exchange. Minimum required: 500")
+                    await interaction.response.send_message("You don't have enough UN Points to exchange. Minimum required: 500", ephemeral=True)
         else:
             await interaction.response.send_message(content="Couldn't find your profile, sorry <:Sadge:713704197526388746>. Have you linked your account?", ephemeral=True)
 
