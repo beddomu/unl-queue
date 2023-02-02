@@ -48,16 +48,16 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                 if "blue" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
                                     unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2
                                     user = await bot.fetch_user(int(player))
-                                    await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} UN Points betting on team blue.")
-                                    print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} UN Points betting on team blue.")
+                                    await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} CQ Points betting on team blue.")
+                                    print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['blue']*2} CQ Points betting on team blue.")
                 elif game['info']['teams'][1]['win'] == True:
                     for player in unlq_json['players'].keys():
                             if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                                 if "red" in unlq_json['players'][player]['bets'][str(lobby_id[9:])].keys():
                                     unlq_json['players'][player]['unp'] += unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2
                                     user = await bot.fetch_user(int(player))
-                                    await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} UN Points betting on team red.")
-                                    print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} UN Points betting on team red.")
+                                    await user.send(f"You made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} CQ Points betting on team red.")
+                                    print(f"{unlq_json['players'][player]['discord_name']} made {unlq_json['players'][player]['bets'][str(lobby_id[9:])]['red']*2} CQ Points betting on team red.")
                 for player in unlq_json['players'].keys():
                     if str(lobby_id[9:]) in unlq_json['players'][player]['bets'].keys():
                         del unlq_json['players'][player]['bets'][str(lobby_id[9:])]
@@ -107,7 +107,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             text=f'game id: {game_id}')
                                         embed.color = discord.colour.Color.green()
                                         embed.set_author(
-                                            name="UNL Queue", icon_url=bot.user.avatar.url)
+                                            name="Champions Queue", icon_url=bot.user.avatar.url)
                                         user = await bot.fetch_user(int(player))
                                         embed.description = "{}'s current LP: {}".format(
                                             unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
@@ -148,7 +148,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             text=f'game id: {game_id}')
                                         embed.color = discord.colour.Color.green()
                                         embed.set_author(
-                                            name="UNL Queue", icon_url=bot.user.avatar.url)
+                                            name="Champions Queue", icon_url=bot.user.avatar.url)
                                         user = await bot.fetch_user(int(player))
                                         embed.description = "{}'s current LP: {}".format(
                                             unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
@@ -189,7 +189,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
                                             embed.set_author(
-                                                name="UNL Queue", icon_url=bot.user.avatar.url)
+                                                name="Champions Queue", icon_url=bot.user.avatar.url)
                                             user = await bot.fetch_user(int(player))
                                             embed.description = "{}'s current LP: {}".format(
                                                 unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
@@ -213,7 +213,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                             embed.set_footer(text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
                                             embed.set_author(
-                                                name="UNL Queue", icon_url=bot.user.avatar.url)
+                                                name="Champions Queue", icon_url=bot.user.avatar.url)
                                             user = await bot.fetch_user(int(player))
                                             embed.description = "{}'s current LP: {} ._.".format(
                                                 unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
@@ -253,7 +253,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
                                             embed.set_author(
-                                                name="UNL Queue", icon_url=bot.user.avatar.url)
+                                                name="Champions Queue", icon_url=bot.user.avatar.url)
                                             user = await bot.fetch_user(int(player))
                                             embed.description = "{}'s current LP: {}".format(
                                                 unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])
@@ -278,7 +278,7 @@ async def report_game(bot: commands.Bot, game_id, guild: discord.Guild):
                                                 text=f'game id: {game_id}')
                                             embed.color = discord.colour.Color.red()
                                             embed.set_author(
-                                                name="UNL Queue", icon_url=bot.user.avatar.url)
+                                                name="Champions Queue", icon_url=bot.user.avatar.url)
                                             user = await bot.fetch_user(int(player))
                                             embed.description = "{}'s current LP: {} ._.".format(
                                                 unlq_json['players'][player]['name'], unlq_json['players'][player]['points'])

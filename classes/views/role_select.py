@@ -18,11 +18,11 @@ class RoleSelect(discord.ui.Select):
         self.queue = queue
         # Set the options that will be presented inside the dropdown
         options = [
-            discord.SelectOption(label='Top', value='Top', emoji='<:top:985153368563539988>'),
-            discord.SelectOption(label='Jungle', value='Jungle', emoji='<:jungle:985153365212295249>'),
-            discord.SelectOption(label='Middle', value='Middle', emoji='<:mid:985153366801915924>'),
-            discord.SelectOption(label='Bottom', value='Bottom', emoji='<:bot:985153363274522694>'),
-            discord.SelectOption(label='Support', value='Support', emoji='<:support:985153369779896391>')
+            discord.SelectOption(label='Top', value='Top', emoji='<:top:1070777307050016849>'),
+            discord.SelectOption(label='Jungle', value='Jungle', emoji='<:jungle:1070777302079782912>'),
+            discord.SelectOption(label='Middle', value='Middle', emoji='<:mid:1070777303287726200>'),
+            discord.SelectOption(label='Bottom', value='Bottom', emoji='<:bot:1070777298153902110>'),
+            discord.SelectOption(label='Support', value='Support', emoji='<:support:1070777306005643334>')
         ]
         super().__init__(placeholder='Select your role...', min_values=1, max_values=1, options=options)
 
@@ -54,7 +54,7 @@ class RoleSelectView(discord.ui.View):
         self.queue = queue
         self.add_item(RoleSelect(queue))
         
-    @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:985153779148140584>")
+    @discord.ui.button(label="Fill", style=discord.ButtonStyle.secondary, emoji="<:fill:1070777299827429519>")
     async def fill_button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
             unlq_json =  json.load(json_file)

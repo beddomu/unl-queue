@@ -66,8 +66,8 @@ class GameResultSide(discord.ui.View):
                     if "1" in self.unlq['players'][player]['bets'][str(self.lobby)].keys():
                         self.unlq['players'][player]['unp'] += self.unlq['players'][player]['bets'][str(self.lobby)]['1']*2
                         user = await self.bot.fetch_user(int(player))
-                        await user.send(f"You made {self.unlq['players'][player]['bets'][str(self.lobby)]['1']*2} UN Points betting on team 1.")
-                        print(f"{self.unlq['players'][player]['discord_name']} made {self.unlq['players'][player]['bets'][str(self.lobby)]['1']*2} UN Points betting on team 1.")
+                        await user.send(f"You made {self.unlq['players'][player]['bets'][str(self.lobby)]['1']*2} CQ Points betting on team 1.")
+                        print(f"{self.unlq['players'][player]['discord_name']} made {self.unlq['players'][player]['bets'][str(self.lobby)]['1']*2} CQ Points betting on team 1.")
 
             for p in self.unlq['owlobbies'][self.lobby]['player_ids']['1']:
                 self.unlq['players'][str(p)]['unp'] += 200
@@ -89,7 +89,7 @@ class GameResultSide(discord.ui.View):
                     title=f'+{int(15+mmr+(red-blue)*0.06)}')
                 embed.set_footer(text=f'Lobby ID: {self.lobby}')
                 embed.color = discord.colour.Color.green()
-                embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
+                embed.set_author(name="Champions Queue", icon_url=self.bot.user.avatar.url)
                 user = await self.bot.fetch_user(int(p))
                 embed.description = "{}'s current LP: {}".format(self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
                 try:
@@ -117,7 +117,7 @@ class GameResultSide(discord.ui.View):
                     embed = discord.Embed(title=f'-{int(15-mmr-(red-blue)*0.06)}')
                     embed.set_footer(text=f'Lobby ID: {self.lobby}')
                     embed.color = discord.colour.Color.red()
-                    embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
+                    embed.set_author(name="Champions Queue", icon_url=self.bot.user.avatar.url)
                     user = await self.bot.fetch_user(int(p))
                     embed.description = "{}'s current LP: {}".format(
                         self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
@@ -134,7 +134,7 @@ class GameResultSide(discord.ui.View):
                     embed = discord.Embed(title=f"-{self.unlq['players'][str(p)]['points']}")
                     embed.set_footer(text=f'Lobby ID: {self.lobby}')
                     embed.color = discord.colour.Color.red()
-                    embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
+                    embed.set_author(name="Champions Queue", icon_url=self.bot.user.avatar.url)
                     user = await self.bot.fetch_user(int(p))
                     embed.description = "{}'s current LP: {} ._.".format(self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
                     try:
@@ -194,8 +194,8 @@ class GameResultSide(discord.ui.View):
                     if "red" in self.unlq['players'][player]['bets'][str(self.lobby)].keys():
                         self.unlq['players'][player]['unp'] += self.unlq['players'][player]['bets'][str(self.lobby)]['red']*2
                         user = await self.bot.fetch_user(int(player))
-                        await user.send(f"You made {self.unlq['players'][player]['bets'][str(self.lobby)]['red']*2} UN Points betting on team red.")
-                        print(f"{self.unlq['players'][player]['discord_name']} made {self.unlq['players'][player]['bets'][str(self.lobby)]['red']*2} UN Points betting on team red.")
+                        await user.send(f"You made {self.unlq['players'][player]['bets'][str(self.lobby)]['red']*2} CQ Points betting on team red.")
+                        print(f"{self.unlq['players'][player]['discord_name']} made {self.unlq['players'][player]['bets'][str(self.lobby)]['red']*2} CQ Points betting on team red.")
                         
             for p in self.unlq['owlobbies'][self.lobby]['player_ids']['Red']:
                 self.unlq['players'][str(p)]['unp'] += 200
@@ -215,7 +215,7 @@ class GameResultSide(discord.ui.View):
                 embed = discord.Embed(title=f'+{int(15+mmr+(blue-red)*0.06)}')
                 embed.set_footer(text=f'Lobby ID: {self.lobby}')
                 embed.color = discord.colour.Color.green()
-                embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
+                embed.set_author(name="Champions Queue", icon_url=self.bot.user.avatar.url)
                 user = await self.bot.fetch_user(int(p))
                 embed.description = "{}'s current LP: {}".format(
                     self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
@@ -245,7 +245,7 @@ class GameResultSide(discord.ui.View):
                     embed = discord.Embed(title=f'-{int(15-mmr-(red-blue)*0.06)}')
                     embed.set_footer(text=f'Lobby ID: {self.lobby}')
                     embed.color = discord.colour.Color.red()
-                    embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
+                    embed.set_author(name="Champions Queue", icon_url=self.bot.user.avatar.url)
                     user = await self.bot.fetch_user(int(p))
                     embed.description = "{}'s current LP: {}".format(self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
                     try:
@@ -264,7 +264,7 @@ class GameResultSide(discord.ui.View):
                     embed = discord.Embed(title=f"-{self.unlq['players'][str(p)]['points']}")
                     embed.set_footer(text=f'Lobby ID: {self.lobby}')
                     embed.color = discord.colour.Color.red()
-                    embed.set_author(name="UNL Queue", icon_url=self.bot.user.avatar.url)
+                    embed.set_author(name="Champions Queue", icon_url=self.bot.user.avatar.url)
                     user = await self.bot.fetch_user(int(p))
                     embed.description = "{}'s current LP: {} ._.".format(self.unlq['players'][str(p)]['name'], self.unlq['players'][str(p)]['points'])
                     try:

@@ -83,6 +83,8 @@ class LinkAccount(discord.ui.Modal):
                         unlq_json['players'][str(interaction.user.id)]['owrating'] = 30
                         unlq_json['players'][str(interaction.user.id)]['lp_history'] = []
                         unlq_json['players'][str(interaction.user.id)]['banned_until'] = 0
+                        unlq_json['players'][str(interaction.user.id)]['role1'] = ""
+                        unlq_json['players'][str(interaction.user.id)]['role2'] = ""
                         
                         
                     unlq_json['players'][str(interaction.user.id)]["name"] = account['name']
@@ -95,7 +97,9 @@ class LinkAccount(discord.ui.Modal):
                     with open('C:\\DATA\\unlq.json', 'w') as json_file:
                         json.dump(unlq_json, json_file, ensure_ascii=False)
                     pp("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))
-                    
+
+                    channel = await interaction.guild.fetch_channel(int(os.getenv("CHAT")))
+                    await channel.send("{} linked a new account with the IGN: {}".format(interaction.user.name, account['name']))
     #async def on_error(self, error: Exception, interaction: discord.Interaction) -> None:
         #await interaction.response.send_message('Oops! Something went wrong.', ephemeral=True)
 

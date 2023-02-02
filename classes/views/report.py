@@ -21,7 +21,7 @@ class Report(discord.ui.Modal):
 
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.send_message(f'Thanks for your feedback, {interaction.user.display_name}!', ephemeral=True)
-        embed = discord.Embed(title="UNL Queue player report")
+        embed = discord.Embed(title="Champions Queue player report")
         embed.add_field(name = "----------------------------------", value = f'**{self.name.value}**' + "\n\n" + self.feedback.value)
         embed.set_author(name = self.bot.user.name, icon_url= self.bot.user.avatar.url)
         embed.set_footer(text = f"From: {interaction.user.name}")

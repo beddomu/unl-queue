@@ -115,7 +115,7 @@ class Queue:
 
     async def update_lobby(self):
         self.ready_check()
-        initial_string = f"**League Of Legends**\n`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------"
+        initial_string = f"`Players needed for full lobby:` *{self.spots_open}*\n---------------------------------------------"
         player_string_list = []
 
         top_list = []
@@ -150,11 +150,10 @@ class Queue:
         else:
             player_string = "       `none`"
 
-        role_list = f"\nTop        <:top:985153368563539988>: {len(top_list)}/2\nJungle   <:jungle:985153365212295249>: {len(jungle_list)}/2\nMiddle   <:mid:985153366801915924> : {len(mid_list)}/2\nBottom  <:bot:985153363274522694>: {len(bot_list)}/2\nSupport <:support:985153369779896391>: {len(supp_list)}/2\nFill           <:fill:985153779148140584>: {len(fill_list)}"
+        role_list = f"\nTop        <:top:1070777307050016849>: {len(top_list)}/2\nJungle   <:jungle:1070777302079782912>: {len(jungle_list)}/2\nMiddle   <:mid:1070777303287726200>: {len(mid_list)}/2\nBottom  <:bot:1070777298153902110>: {len(bot_list)}/2\nSupport <:support:1070777306005643334>: {len(supp_list)}"
 
         divider = "\n---------------------------------------------"
-        lobby_id_string = f"\n`Lobby id: {int(str(self.message.id)[:-8])}`"
-        end_string = initial_string +  role_list + divider + lobby_id_string
+        end_string = initial_string +  role_list
         await self.message.edit(content=end_string)
         
     async def update_queue_pop(self):
@@ -373,7 +372,7 @@ class Queue:
         self.initiated = True
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
-        embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
+        embed.set_author(name="Champions Queue", icon_url=user.avatar.url)
         embed.set_footer(text=f'Lobby ID: {int(str(self.message.id)[:-8])}')
         file = discord.File('classes\\image\\res.png', filename='res.png')
         embed.set_image(url=('attachment://res.png'))

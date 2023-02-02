@@ -342,7 +342,7 @@ class Queue:
         self.initiated = True
         embed = discord.Embed(color=discord.colour.Colour.brand_red())
         user = await self.message.guild.fetch_member(948863727032217641)
-        embed.set_author(name="UNL Queue", icon_url=user.avatar.url)
+        embed.set_author(name="Champions Queue", icon_url=user.avatar.url)
         embed.set_footer(text=f'Lobby ID: {int(str(self.message.id)[:-8])}')
         file = discord.File('classes\\image\\res.png', filename='res.png')
         embed.set_image(url=('attachment://res.png'))

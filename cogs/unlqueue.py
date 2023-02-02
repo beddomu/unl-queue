@@ -3,6 +3,7 @@ import datetime
 import json
 import os
 import random
+import sys
 import time
 import datetime
 import discord
@@ -19,8 +20,6 @@ from classes.views.matchmaking import MatchmakingView
 from classes.views.pay import Pay
 from classes.views.role_select import RoleSelectView
 from classes.views.ow_role_select import RoleSelectView as OWRoleSelectView
-from classes.role import fill
-from classes.owrole import dps, tank, support
 from classes.views.report import Report
 from classes.views.link import LinkAccount
 from utils.ban import ban
@@ -32,12 +31,14 @@ from utils.report_game import report_game
 from utils.unban import unban
 from utils.update_games import update_games
 from utils.update_leaderboard import update_leaderboard
+from classes.role import Role, top, jungle, middle, bottom, support, fill
 
 
 
 class UNLQueue(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self._bot = bot
+        
 
                     
     async def cog_load(self):
@@ -64,16 +65,39 @@ class UNLQueue(commands.Cog):
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
                     if await is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360]:
                     #if True:
-                        await interaction.response.send_message(view=RoleSelectView(self.queue), ephemeral=True)
+                        if interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq['in_queue'].keys():
+                            if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
+                                await interaction.response.edit_message(content="Game is about to begin...", view=None)
+                            if self.queue.spots_open > 0:
+                                for p in unlq['players'].keys():
+                                    if p == str(interaction.user.id):
+                                        ign = unlq['players'][p]['name']
+                                        rating = int(unlq['players'][p]['rating'] + (unlq['players'][p]['mmr'] / 1000*20))
+                                        role = getattr(sys.modules[__name__], unlq['players'][p]['role1'].lower())
+                                        player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                                        await self.queue.add_player(player)
+                                        if self.queue.full != True:
+                                            view = MatchmakingView(self.queue)
+                                            await interaction.response.send_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**", ephemeral=True)
+                            else:
+                                await interaction.response.send_message(content="Lobby is already full.", view=None, ephemeral=True)
+                        else:
+                            await interaction.response.send_message(content="You are already in queue.", view=None, ephemeral=True)
                     else:
-                        await interaction.response.send_message(f"You need to be ranked Gold 4 or above in Ranked Solo/Duo to play UNL Queue.", ephemeral=True)
+                        await interaction.response.send_message(f"You need to be ranked Gold 4 or above in Ranked Solo/Duo to play Champions Queue.", ephemeral=True)
                 else:
                     banned_until = unlq['players'][str(interaction.user.id)]['banned_until']
                     value = datetime.datetime.fromtimestamp(banned_until, pytz.timezone('Europe/London'))
                     res = value.strftime('%d %B %I:%M %p')
-                    await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
+                    await interaction.response.send_message(f"You are restricted from playing Champions Queue until {res} UK time.", ephemeral=True)
             else:
-                await interaction.response.send_message(view=MatchmakingView(self.queue), ephemeral=True)
+                for p in unlq['players'].keys():
+                    if p == str(interaction.user.id):
+                        ign = unlq['players'][p]['name']
+                        rating = int(unlq['players'][p]['rating'] + (unlq['players'][p]['mmr'] / 1000*20))
+                        role = getattr(sys.modules[__name__], unlq['players'][p]['role1'].lower())
+                        player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
+                await interaction.response.send_message(view=MatchmakingView(self.queue), content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**", ephemeral=True)
         else:
             await interaction.response.send_message("You need to link an account first! Try using **/link**", ephemeral=True)
 
@@ -91,7 +115,7 @@ class UNLQueue(commands.Cog):
                     banned_until = unlq['players'][str(interaction.user.id)]['banned_until']
                     value = datetime.datetime.fromtimestamp(banned_until, pytz.timezone('Europe/London'))
                     res = value.strftime('%d %B %I:%M %p')
-                    await interaction.response.send_message(f"You are restricted from playing UNL Queue until {res} UK time.", ephemeral=True)
+                    await interaction.response.send_message(f"You are restricted from playing Champions Queue until {res} UK time.", ephemeral=True)
             else:
                 await interaction.response.send_message(view=MatchmakingView(self.owqueue), ephemeral=True)
         else:
@@ -132,7 +156,7 @@ class UNLQueue(commands.Cog):
         else:
             await interaction.response.send_message("There are no live games at the moment.", ephemeral=True)'''
         
-    @app_commands.command(name="me", description="Enter this command to view information about your UNL Queue profile")
+    @app_commands.command(name="me", description="Enter this command to view information about your Champions Queue profile")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def me_command(self, interaction: discord.Interaction):
         with open('..\\unlqueue.xyz\\json\\leaderboard.json', 'r') as json_file:
@@ -159,7 +183,7 @@ class UNLQueue(commands.Cog):
                 me += f"LP: {leaderboard[p]['lp']}\n"
                 me += f"Wins: {leaderboard[p]['wins']}\n"
                 me += f"Losses: {leaderboard[p]['losses']}\n"
-                me += f"UN Points: {int(un_points)}\n"
+                me += f"CQ Points: {int(un_points)}\n"
                 
                 await interaction.response.send_message(content=me, ephemeral=True)
                 break
@@ -187,7 +211,7 @@ class UNLQueue(commands.Cog):
                     break
             else:
                 await self.queue.update_lobby()
-
+    """
     @commands.command(name="owaddsupport", aliases=["ows"])
     @commands.has_permissions(manage_messages=True)
     async def ow_add_support(self, ctx: commands.context.Context, input: int):
@@ -243,7 +267,7 @@ class UNLQueue(commands.Cog):
                 else:
                     break
             else:
-                await self.owqueue.update_lobby()
+                await self.owqueue.update_lobby()"""
                     
     @commands.command(name="addfill", aliases=["f"])
     @commands.has_permissions(manage_messages=True)
@@ -307,11 +331,11 @@ class UNLQueue(commands.Cog):
         self.queue.devmode = False
         await self.queue.new_lobby()
         channel = await self._bot.fetch_channel(int(os.getenv("CHAT")))
-        await channel.send("<@&953665730795151490> UNL queue is live! Queue up now\nhttps://discord.com/channels/603515060119404584/953616729911726100")
+        await channel.send("<@&953665730795151490> Champions queue is live! Queue up now\nhttps://discord.com/channels/603515060119404584/953616729911726100")
         #self.owqueue.devmode = False
         #await self.owqueue.new_lobby()
         
-    @app_commands.command(name="cash_out", description="Enter this command to convert all your UN points into LP")
+    @app_commands.command(name="cash_out", description="Enter this command to convert all your CQ points into LP")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def cash_out(self, interaction: discord.Interaction):
         with open('C:\\DATA\\unlq.json', 'r') as json_file:
@@ -320,11 +344,11 @@ class UNLQueue(commands.Cog):
             if interaction.user.id == int(p):
                 if unlq['players'][p]['unp'] > 500:
                     unlq['players'][p]['points'] += int(unlq['players'][p]['unp']/500)
-                    await interaction.response.send_message(content=f"You exchanged {unlq['players'][p]['unp']} UN Points for {int(unlq['players'][p]['unp']/500)} LP.\nCurrent LP: {unlq['players'][p]['points']}", ephemeral=True)
+                    await interaction.response.send_message(content=f"You exchanged {unlq['players'][p]['unp']} CQ Points for {int(unlq['players'][p]['unp']/500)} LP.\nCurrent LP: {unlq['players'][p]['points']}", ephemeral=True)
                     unlq['players'][p]['unp'] = 0
                     break
                 else:
-                    await interaction.response.send_message("You don't have enough UN Points to exchange. Minimum required: 500", ephemeral=True)
+                    await interaction.response.send_message("You don't have enough CQ Points to exchange. Minimum required: 500", ephemeral=True)
         else:
             await interaction.response.send_message(content="Couldn't find your profile, sorry <:Sadge:713704197526388746>. Have you linked your account?", ephemeral=True)
 
@@ -419,14 +443,14 @@ class UNLQueue(commands.Cog):
     async def clear_result(self, ctx):
         self.queue.game_being_reported = False
             
-    @app_commands.command(name="pay", description="Enter this command to send someone UN Points")
+    @app_commands.command(name="pay", description="Enter this command to send someone CQ Points")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
     async def send_points(self, interaction: discord.Interaction, member: discord.Member):
         if interaction.user.id != member.id:
             modal = Pay(interaction.user, member)
             await interaction.response.send_modal(modal)
         else:
-            await interaction.response.send_message("You can't send yourself UN Points.", ephemeral=True)
+            await interaction.response.send_message("You can't send yourself CQ Points.", ephemeral=True)
             
     
         
