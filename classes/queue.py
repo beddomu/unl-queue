@@ -150,7 +150,7 @@ class Queue:
         else:
             player_string = "       `none`"
 
-        role_list = f"\nTop        <:top:1070777307050016849>: {len(top_list)}/2\nJungle   <:jungle:1070777302079782912>: {len(jungle_list)}/2\nMiddle   <:mid:1070777303287726200>: {len(mid_list)}/2\nBottom  <:bot:1070777298153902110>: {len(bot_list)}/2\nSupport <:support:1070777306005643334>: {len(supp_list)}"
+        role_list = f"\nTop        <:top:1070777307050016849>: {len(top_list)}/2\nJungle   <:jungle:1070777302079782912>: {len(jungle_list)}/2\nMiddle   <:mid:1070777303287726200>: {len(mid_list)}/2\nBottom  <:bot:1070777298153902110>: {len(bot_list)}/2\nSupport <:support:1070777306005643334>: {len(supp_list)}/2"
 
         divider = "\n---------------------------------------------"
         end_string = initial_string +  role_list
