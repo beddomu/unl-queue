@@ -1,45 +1,48 @@
-from pprint import pp, pprint
-import requests
+import asyncio
+import datetime
 import json
-import lockfile
+import os
+import random
+import time
+from discord import Object
+import discord
+from discord.ext import commands, tasks
+from discord import app_commands
+import dotenv
 
 
-class Lobby:
-    def __init__(self, name: str, password=None, team_size: int = 5, map_id: int = 11, mutator_id: int = 2):
-        self.auth = lockfile.auth
-        self.port = lockfile.port
-        self.name = name
-        self.password = password
-        self.team_size = team_size
-        self.map_id = map_id
-        self.mutator_id = mutator_id
-        self.url = 'https://127.0.0.1:{}/lol-lobby/v2/lobby'.format(self.port)
-        self.payload = {
-            "customGameLobby": {
-                "configuration": {
-                    "gameMode": "CLASSIC",
-                    "gameMutator": "",
-                    "gameServerRegion": "EUW",
-                    "mapId": self.map_id,
-                    "mutators": {
-                        "id": self.mutator_id,
-                    },
-                    "spectatorPolicy": "AllAllowed",
-                    "teamSize": self.team_size
-                },
-                "lobbyName": "UNLQ ID: {}".format(self.name),
-                "lobbyPassword": "{}".format(password)
-            },
-            "isCustom": True
-        }
-        self.headers = {'accept': 'application/json', 'Authorization': 'Basic {}'.format(self.auth), 'Content-Type': 'application/json'}
+dotenv.load_dotenv()
+intents = discord.Intents.all()
 
-    def create(self):
-        r = requests.post(self.url, data=json.dumps(self.payload),headers=self.headers)
-        if r.status_code == 200:
-            print("Lobby created successfully")
-        else:
-            pp(r.json())
 
-lobby = Lobby('test', None, 5, 11, 6)
-lobby.create()
+class MyBot(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix='.', intents = intents, application_id = int(os.getenv("APP_ID")))
+        
+
+    async def setup_hook(self):
+        pass
+            
+    @tasks.loop(minutes=0.25)
+    async def background_task(self):
+        pass
+        
+    async def on_ready(self):
+        guild = await self.fetch_guild(1070774301957034086)
+        category = await guild.create_category(name="test", position=(1))
+        await guild.create_voice_channel("Team Blue🔵", category=category)
+        await guild.create_voice_channel("Team Red 🔴", category=category)
+        
+
+bot = MyBot()
+
+@bot.event
+async def on_message(message):
+    if message.channel.id == int(os.getenv("QUEUE")) and message.author.id != bot.user.id:
+        await bot.process_commands(message)
+        try:
+            await message.delete()
+        except:
+            pass
+
+asyncio.run(bot.run(os.getenv("TOKEN")))

@@ -32,12 +32,14 @@ class LeftQueue(discord.ui.View):
                                         if p == str(interaction.user.id):
                                             ign = unlq['players'][p]['name']
                                             rating = int(unlq['players'][p]['rating'] + (unlq['players'][p]['mmr'] / 1000*20))
-                                            role = getattr(sys.modules[__name__], unlq['players'][p]['role1'].lower())
-                                            player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
-                                            await self.queue.add_player(player)
-                                            if self.queue.full != True:
-                                                view = MatchmakingView(self.queue)
-                                                await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**")
+                                            if unlq['players'][p]['role1'] != "" and unlq['players'][p]['role2'] != "":
+                                                role1 = getattr(sys.modules[__name__], unlq['players'][p]['role1'].lower())
+                                                role2 = getattr(sys.modules[__name__], unlq['players'][p]['role2'].lower())
+                                                player = Player(interaction.user.id, interaction.user.name, role1, interaction.user, False, ign, rating, role2=role2)
+                                                await self.queue.add_player(player)
+                                                if self.queue.full != True:
+                                                    view = MatchmakingView(self.queue)
+                                                    await interaction.response.edit_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role1.name} {role1.emoji}**")
                                 else:
                                     await interaction.response.edit_message(content="Lobby is already full.", view=None)
                             else:

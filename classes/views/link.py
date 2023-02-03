@@ -14,7 +14,7 @@ class Confirm(discord.ui.View):
 
     @discord.ui.button(label='Confirm', style=discord.ButtonStyle.green)
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.edit_message(content="This account was successfully linked.", view=None, embed=None)
+        await interaction.response.edit_message(content="This account was successfully linked and a friend request from CQ Admin has been sent.", view=None, embed=None)
         self.value = True
         self.stop()
 

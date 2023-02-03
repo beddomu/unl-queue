@@ -27,7 +27,7 @@ class Lobby:
                     "spectatorPolicy": "AllAllowed",
                     "teamSize": self.team_size
                 },
-                "lobbyName": "UNLQ ID: {}".format(self.name),
+                "lobbyName": "CQ ID: {}".format(self.name),
                 "lobbyPassword": "{}".format(password)
             },
             "isCustom": True

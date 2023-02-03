@@ -91,11 +91,11 @@ class Queue:
 
     async def add_player(self, player):
         self.players.append(player)
-        print(f"{player} is now in queue as: {player.role}")
+        print(f"{player} is now in queue as: {player.role1}")
         with open('C:\\DATA\\unlq.json', 'r') as file:
             unlq = json.load(file)
         unlq['in_queue'][player.id] = {}
-        unlq['in_queue'][player.id]['role'] = player.role.name
+        unlq['in_queue'][player.id]['role'] = player.role1.name
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
         await self.update_lobby()
@@ -105,7 +105,7 @@ class Queue:
 
     def list_players(self):
         for player in self.players:
-            print(f'{player}: {player.role}')
+            print(f'{player}: {player.role1}')
 
     def get_all_ids(self):
         list = []
@@ -126,15 +126,15 @@ class Queue:
         fill_list = []
 
         for player in self.players:
-            if player.role == top:
+            if player.role1 == top:
                 top_list.append(player)
-            elif player.role == jungle:
+            elif player.role1 == jungle:
                 jungle_list.append(player)
-            elif player.role == middle:
+            elif player.role1 == middle:
                 mid_list.append(player)
-            elif player.role == bottom:
+            elif player.role1 == bottom:
                 bot_list.append(player)
-            elif player.role == support:
+            elif player.role1 == support:
                 supp_list.append(player)
             else:
                 fill_list.append(player)
@@ -170,15 +170,15 @@ class Queue:
 
         
 
-    def ready_check(self):
+    def ready_check_old(self):
         role_list = []
         fill_list = []
         if self.full != True:
             index = 0
             i = 0
             for player in self.players:
-                if player.role.name != "Fill":
-                    role_list.append(player.role.name)
+                if player.role1.name != "Fill":
+                    role_list.append(player.role1.name)
                     roles_in_queue = Counter(role_list)
                 else:
                     fill_list.append(player)
@@ -191,6 +191,13 @@ class Queue:
                     elif r == 1:
                         i += 1
             self.spots_open = 10 - i - len(fill_list)
+            if self.spots_open == 0:
+                self.full = True
+
+
+    def ready_check(self):
+        if self.full != True:
+            self.spots_open = 10 - len(self.players)
             if self.spots_open == 0:
                 self.full = True
 
@@ -239,18 +246,21 @@ class Queue:
         ]
 
         for player in self.players:
-            if player.role == top:
+            if player.role1 == top:
                 self.top_list.append(player)
-            elif player.role == jungle:
+            elif player.role1 == jungle:
                 self.jungle_list.append(player)
-            elif player.role == middle:
+            elif player.role1 == middle:
                 self.mid_list.append(player)
-            elif player.role == bottom:
+            elif player.role1 == bottom:
                 self.bot_list.append(player)
-            elif player.role == support:
+            elif player.role1 == support:
                 self.supp_list.append(player)
-            else:
-                self.fill_list.append(player)
+
+        for role in role_lists:
+            while len(role) > 2:
+                self.fill_list.append(role.pop())
+
         for role in role_lists:
             while len(role) < 2 and len(self.fill_list) >= 0:
                 role.append(self.fill_list.pop(
@@ -376,20 +386,19 @@ class Queue:
         embed.set_footer(text=f'Lobby ID: {int(str(self.message.id)[:-8])}')
         file = discord.File('classes\\image\\res.png', filename='res.png')
         embed.set_image(url=('attachment://res.png'))
-        if self.devmode == False:
+        if self.devmode == False or True:
             lobby = Lobby(name=int(str(self.message.id)[:-8]), team_size=5, mutator_id=6)
             await lobby.create()
             players = []
             guild = self.message.guild
-            role = discord.utils.get(guild.roles, id=676740137815900160)
+            role = discord.utils.get(guild.roles, id=1070794066083708948)
             member = guild.get_member(301821822502961152)
             permissions = {
                 role: discord.PermissionOverwrite(view_channel=True),
                 member: discord.PermissionOverwrite(view_channel=True)
             }
-            unlq_category = discord.utils.get(
-                guild.categories, id=953292613115605012)
-            category = await guild.create_category(name=f"{int(str(self.message.id)[:-8])}", position=(unlq_category.position - 1), overwrites=permissions)
+            unlq_category = discord.utils.get(guild.categories, id=1070788637760962601)
+            category = await guild.create_category(name=f"{int(str(self.message.id)[:-8])}", position=(unlq_category.position + 1), overwrites=permissions)
             await guild.create_voice_channel("Team Blue🔵", category=category, overwrites=permissions)
             await guild.create_voice_channel("Team Red 🔴", category=category, overwrites=permissions)
             for team in self.game.teams:
@@ -411,7 +420,7 @@ class Queue:
                     ign_list.append(player.ign.replace(" ", ""))
                     players.append(player)
                     team_players_list.append(
-                        player.role.emoji + player.user.mention)
+                        player.role1.emoji + player.user.mention)
                 multiopgg = "https://www.op.gg/multisearch/euw?summoners={}".format(
                     ",".join(ign_list))
                 team_players_string = "\n".join(team_players_list)

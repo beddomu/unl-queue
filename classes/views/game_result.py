@@ -287,7 +287,7 @@ class GameResultSide(discord.ui.View):
                 game_category = discord.utils.get(guild.categories, name=self.lobby)
             except:
                 print("Game category doesn't exist")
-            queue_voice = discord.utils.get(guild.voice_channels, id=959880784116854794)
+            queue_voice = discord.utils.get(guild.voice_channels, id=1070900470446571550)
             try:
                 for channel in game_category.voice_channels:
                     for member in channel.members:

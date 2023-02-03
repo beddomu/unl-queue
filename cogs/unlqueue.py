@@ -63,22 +63,26 @@ class UNLQueue(commands.Cog):
         if str(interaction.user.id) in unlq['players']:
             if interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq['in_queue'].keys():
                 if unlq['players'][str(interaction.user.id)]['banned_until'] < time.time():
-                    if await is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360]:
-                    #if True:
+                    #if await is_player_gold_plus(unlq['players'][str(interaction.user.id)]['id']) or interaction.user.id in [301821822502961152, 300052305540153354, 178867201753743360, 704455870947524678]:
+                    if True:
                         if interaction.user.id not in self.queue.get_all_ids() and str(interaction.user.id) not in unlq['in_queue'].keys():
                             if len(self.queue.players) == 9 and interaction.user.id not in self.queue.get_all_ids():
-                                await interaction.response.edit_message(content="Game is about to begin...", view=None)
+                                await interaction.response.send_message(content="Game is about to begin...", delete_after= 5)
                             if self.queue.spots_open > 0:
                                 for p in unlq['players'].keys():
                                     if p == str(interaction.user.id):
                                         ign = unlq['players'][p]['name']
                                         rating = int(unlq['players'][p]['rating'] + (unlq['players'][p]['mmr'] / 1000*20))
-                                        role = getattr(sys.modules[__name__], unlq['players'][p]['role1'].lower())
-                                        player = Player(interaction.user.id, interaction.user.name, role, interaction.user, False, ign, rating)
-                                        await self.queue.add_player(player)
-                                        if self.queue.full != True:
-                                            view = MatchmakingView(self.queue)
-                                            await interaction.response.send_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role.name} {role.emoji}**", ephemeral=True)
+                                        if unlq['players'][p]['role1'] != "" and unlq['players'][p]['role2'] != "":
+                                            role1 = getattr(sys.modules[__name__], unlq['players'][p]['role1'].lower())
+                                            role2 = getattr(sys.modules[__name__], unlq['players'][p]['role2'].lower())
+                                            player = Player(interaction.user.id, interaction.user.name, role1, interaction.user, False, ign, rating, role2=role2)
+                                            await self.queue.add_player(player)
+                                            if self.queue.full != True:
+                                                view = MatchmakingView(self.queue)
+                                                await interaction.response.send_message(view=view, content=f"*You can dismiss this window, you will be mentioned once a match has been found.\nIf you want to bring this window up again after closing it, enter the /queue command again.*\n**You are in queue...**\n**`{player.ign}`**\n**{role1.name} {role1.emoji}**", ephemeral=True)
+                                        else:
+                                            await interaction.response.send_message(content="You currently don't have a roles assigned to your profile. Contact <@301821822502961152> about it", view=None, ephemeral=True)
                             else:
                                 await interaction.response.send_message(content="Lobby is already full.", view=None, ephemeral=True)
                         else:
@@ -203,9 +207,10 @@ class UNLQueue(commands.Cog):
                     with open('C:\\DATA\\unlq.json', 'r') as json_file:
                         unlq_json =  json.load(json_file)
                     if str(user.id) in unlq_json['players'].keys() and user.id not in [301821822502961152]:
-                        player = Player(user.id, user.name, fill, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
+                        role = getattr(sys.modules[__name__], unlq_json['players'][str(user.id)]['role1'].lower())
+                        player = Player(user.id, user.name, role, user, True, "beddomu", unlq_json['players'][str(user.id)]['rating'])
                         if player not in self.queue.players:
-                            self.queue.players.append(player)
+                            await self.queue.add_player(player)
                             n += 1
                 else:
                     break
@@ -304,7 +309,7 @@ class UNLQueue(commands.Cog):
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
         guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
-        role = discord.utils.get(guild.roles, id = 676740137815900160)
+        role = discord.utils.get(guild.roles, id = 1070794066083708948)
         channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
         await channel.set_permissions(role, read_messages=False)
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
@@ -323,7 +328,7 @@ class UNLQueue(commands.Cog):
         with open('C:\\DATA\\unlq.json', 'w') as unlq_file:
             json.dump(unlq, unlq_file)
         guild = await self._bot.fetch_guild(int(os.getenv("SERVER_ID")))
-        role = discord.utils.get(guild.roles, id = 676740137815900160)
+        role = discord.utils.get(guild.roles, id = 1070794066083708948)
         channel = await self._bot.fetch_channel(int(os.getenv("QUEUE")))
         await channel.set_permissions(role, read_messages=True)
         channel = await self._bot.fetch_channel(int(os.getenv("LIVE")))
@@ -331,7 +336,7 @@ class UNLQueue(commands.Cog):
         self.queue.devmode = False
         await self.queue.new_lobby()
         channel = await self._bot.fetch_channel(int(os.getenv("CHAT")))
-        await channel.send("<@&953665730795151490> Champions queue is live! Queue up now\nhttps://discord.com/channels/603515060119404584/953616729911726100")
+        await channel.send("Champions queue is live! Queue up now\nhttps://discord.com/channels/1070774301957034086/1070774396840587356")
         #self.owqueue.devmode = False
         #await self.owqueue.new_lobby()
         
@@ -442,6 +447,12 @@ class UNLQueue(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def clear_result(self, ctx):
         self.queue.game_being_reported = False
+
+    @commands.command(name="accept", aliases=["aa, ac"])
+    @commands.has_permissions(manage_messages=True)
+    async def accept_all(self, ctx):
+        for player in self.queue.players:
+            player.ready = True
             
     @app_commands.command(name="pay", description="Enter this command to send someone CQ Points")
     @app_commands.guilds(int(os.getenv("SERVER_ID")))
